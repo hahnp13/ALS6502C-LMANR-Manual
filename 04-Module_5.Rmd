@@ -1,0 +1,750 @@
+# Mixed-effect models
+
+After completing this module, students will be able to:
+
+* 5.1 Differentiate between fixed and random effects
+
+* 5.2 Interpret output for fixed and random effects in R
+
+* 5.3 Design experiments with blocks, repeated measures, and fixed effect treatments
+
+
+## Interactions in statistical models
+
+Before we learn about random effects, we will briefly cover interactions in statistical models. We will need the following libraries:
+
+```{r, message=F, warning=F}
+library(tidyverse)   
+library(car) ### helpful for analyzing linear models
+library(emmeans) ### helpful for getting means from linear models
+library(multcompView)
+library(glmmTMB)
+library(performance)
+```
+
+For this section we will construct data using some code. For this example, we need to "doctor" up a data set. We will use the InsectSprays data set (from previous examples) but we will make a few changes. Don't worry about the changes, but the code below does this. The main one is that we have added a new column to the dataset called 'weeds', which represents the amount of weed cover in the plot.
+
+```{r, echo=F}
+set.seed(17)
+data("InsectSprays")
+d <- InsectSprays %>% filter(spray=='A'|spray=='B'|spray=='C'|spray=='F') %>%
+  droplevels()
+d$count[13:24] <- d$count[13:24]+5
+d$weeds <- abs(round(rnorm(48,2*d$count,10),1))
+d$weeds[25:36] <- c(55.3,46.8,30.2,62.3,24.2,33.2,18.2,12.6,39.7,41.0,46.9,42.8)
+```
+
+Let's plot the raw data to show the count values as a function of spray types using boxplots:
+
+```{r, fig.cap="Plot of insect count data."}
+ggplot(d, aes(x=spray,y=count)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(height=0,width=.1) 
+```
+
+We want to look at pairwise means between these spray types. To do this we can use the emmeans package and set the pairwise arguments from the `emmeans` function as `pairwise ~ spray`. We need to apply this function to a linear model (basically an ANOVA) that assesses the counts as a function of the spray type. The pairwise comparisons are seen in the 'contrasts' section of the output below:
+
+```{r}
+anova_means <- emmeans(glmmTMB(count~spray, data=d), pairwise~spray) 
+anova_means
+```
+
+It would also be helpful to view counts as a function of weed cover. We can do this using `facet_wrap()` and `geom_smooth`:
+
+```{r, fig.cap="Insect counts plotted against weed cover for the four spray treatments."}
+ggplot(d, aes(x=weeds,y=count)) +
+  geom_point() +
+  facet_wrap(~spray) +
+  geom_smooth(method='lm')
+```
+
+### ANCOVA: multiple intercept model
+
+In the previous example we ran an ANOVA with only a categorical predictor. ANOVAs have long been taught to be used for categorical predictors only if your response variable is continuous. This is not entirely accurate considering that an ANOVA is the same thing as a linear model which can use continuous predictors.
+
+For this part, let's run a model that assesses counts as a function of both a categorical and continuous variable, **spray type** and **weed cover**. This would be a biologically reasonable model to run as we see from the plots above that our counts are not only different based on spray types but also vary along a weed cover gradient where, in most cases, there are higher insect counts associated with higher weed cover.
+
+Our goal should therefore be to assess the effects of spray types on counts while accounting for this relationship between counts and weed cover. We can incorporate both types of predictors in the same linear model format as before. With the inclusion of a continuous variable, an ANOVA is often called an ANCOVA (an analysis of covariance). Here is the basic form of the linear model with a categorical and continous variable:
+
+$$y = \beta_{0} + \beta_{i} + \beta_{1}*x + \varepsilon$$
+  $y$ is the **response variable**  
+  $\beta_{0}$ is the **intercept**  
+  $\beta_{i}$ is the **adjustment to the intercept** for each group $_{i}$ 
+  $\beta_{1}$ is the **slope**   
+  $x$ is the **predictor variable** and
+  $\varepsilon$ are the residuals.  
+  
+Let's run our ANCOVA model:
+
+```{r}
+lm1i <- glmmTMB(count ~ spray + weeds, data=d)
+```
+
+Let's get an ANOVA table with Type II sums of squares (see Box 5.1 for overview of Sums of Squares and differences with SAS Type III):
+
+```{r}
+Anova(lm1i, type=2) 
+```
+
+Note: Don't use the base `anova()`! 
+
+If we want to look at the model coefficients we can use `summary()`:
+
+```{r}
+summary(lm1i) ## model coefficients
+```
+
+There is quite a bit in that output and its difficult to piece together. What does it all mean?!?! Really all we want to do is calculate the estimated means for each group once we've accounted for the effect of weed cover. With `emmeans` we can just that -- that is, calculate estimated marginal mean for each group (ie. groups means after accounting for the effect of weeds). We can extract the emmeans means (ie. group means after accounting for the effect of weeds):
+
+```{r}
+ancova_means <- emmeans(lm1i, pairwise~spray)  
+ancova_means
+```
+
+If we want to plot these readouts from the emmeans output then we first need to convert this table into a data frame using `as.data.frame()`:
+
+```{r}
+lm1i_coef <- as.data.frame(emmeans(lm1i, ~spray))
+```
+
+Now that we have saved the emmeans outputs into a data.frame we can extract intercepts and add slopes into new dataframe. We can do this by using the `at=list(weeds=0)' in emmeans to specify that we want to means of each spray treatment when the covariate **weeds** is equal to zero (in other words, the intercepts for each group). We also extract the slope manually from the saved model.
+
+```{r}
+lm1i_coef2 <- as.data.frame(emmeans(lm1i,
+                                    ~spray,
+                                    at=list(weeds=0)))
+lm1i_coef2$slope <- coef(lm1i)[5]
+```
+
+We can now plot the data with the fitted model and also color in specific values of importance. We can color code the different intercepts as well as the different means:
+
+```{r, fig.cap="Plot of insect counts against weed cover for each spray type. Red dots represent intercepts and blue dots represent emmeans."}
+ggplot(data=d, aes(x=weeds,y=count)) +
+  geom_point() +
+  facet_wrap(~spray) + 
+  geom_abline(data=lm1i_coef2,
+              aes(intercept=emmean, slope=slope)) +
+  geom_point(data=lm1i_coef2,
+             aes(x=0,y=emmean),color="red") +
+  geom_point(data=lm1i_coef,
+             aes(x=mean(d$weeds),y=emmean),
+             color="blue", size=2)
+```
+
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| **Box 5.1. Sums of Squares** In `car::Anova()` the Type II sums of squares is the default and is preferred over Type I or III. Type II SS are calculated based on the principal of marginally, meaning the test statistic for each term in the model is calculated after all other terms excluding the term's high-order relatives. How the car package calculates SS is different from SAS. In SAS, Type III SS are almost always preferred. In `car::Anova()` Type II are similar to Type III in SAS, although there are some differences. See the help for `??car::Anova` for additional information. Long story short, Type II SS are preferred in `car::Anova()`. |
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+### ANCOVA: multiple intercept AND slope model
+
+In the previous example above we ran a ANCOVA to account for variation around the intercept. The idea being: weed cover percentages are associated with insect counts and therefore they need to be accounted for because different spray types were done across a gradient of weed cover. For example, in the previous plot, **Spray A** tended to have plots with low weed cover, whereas **Spray B** tended to have plots with high weed cover (mostly >40%). Therefore, we assumed that insect counts, and therefore the intercepts per spray type, would be different. The previous model does a good job at capturing these different intercepts for each spray type.
+
+There is one problem with the previous model, though. Look at the fitted regression line for **Spray C** -- it doesn't fit that well. The intercept looks way too low, the slope looks too steep, but the emmean estimate looks ok. If we wanted to also account for different slope values across the grass cover gradient then we can do so by including an interaction term between spray type and weeds. This would be done by coding in the interaction as `spray:weeds` into the model predictors as shown below.
+
+This is how we do an ANCOVA with multiple intercept and slopes:
+
+```{r}
+lm1is <- glmmTMB(count ~ spray + weeds + spray:weeds, data=d)
+
+```
+
+The above code essentially translates to: "Use a linear model to assess count as a function of the additive effects of spray and weeds as well as the interactive effect of the two predictors.
+
+Another shorthand way to code the above would be:
+
+```{r}
+glmmTMB(count ~ spray * weeds, data=d)
+```
+
+Let's get an ANOVA table and a summary of the model as we did in the previous examples:
+
+```{r}
+Anova(lm1is, type=2)
+summary(lm1is)
+```
+
+From the ANOVA table we can see all three terms (the two main effects as well as the interaction) are all highly significant. The `summary()` output is difficult to make sense of. Once again we can use `emmeans` to calculate the estimated marginal mean for each group (ie. groups means after accounting for the effect of weeds):
+
+```{r}
+ancova_is_means <- emmeans(lm1is, pairwise~spray)  
+ancova_is_means
+```
+
+In addition to retrieving estimated means we should also calculate and extract the different slope values. We can calculate the slope for each group with `emtrends()`:
+
+```{r}
+ancova_is_slopes <- emtrends(lm1is, pairwise~spray, var="weeds")  
+ancova_is_slopes
+```
+
+We can extract the emmeans means (ie. group means after accounting for the effect of weeds):
+
+```{r}
+lm1is_coef <- as.data.frame(emmeans(lm1is, ~spray))
+```
+
+We can also extract the intercepts and add slopes into a new data frame:
+
+```{r}
+lm1is_coef2a <- as.data.frame(emmeans(lm1is, ~spray, at=list(weeds=0)))
+lm1is_coef2b <- as.data.frame(emtrends(lm1is, var="weeds"))
+lm1is_coef2 <- full_join(lm1is_coef2a,lm1is_coef2b,by="spray")
+```
+
+Finally we can plot the data of the fitted model:
+
+```{r, fig.cap="Plot of insect counts against weed cover for each spray type. Orange dots represent intercepts and purple dots represent emmeans."}
+ggplot(data=d, aes(x=weeds,y=count)) +
+  geom_point() +
+  facet_wrap(~spray) + 
+  geom_abline(data=lm1is_coef2, aes(intercept=emmean,
+                                    slope=weeds.trend), lty=2) +
+  geom_point(data=lm1is_coef2, 
+             aes(x=0,y=emmean),
+             color="orange") +
+  geom_point(data=lm1is_coef,
+             aes(x=mean(d$weeds),y=emmean),
+             color="purple", size=2)
+
+```
+
+Note with the plot above that we can observe the slopes differing in values compared to the previous model that only accounted for varying intercepts. Now, even for **Spray C** the intercept and slope look like good estimates.
+
+Here's an alternative nice plot of the data with weed cover:
+
+```{r, fig.cap="Plot of insect counts against weed cover for each spray type."}
+ggplot(d, aes(x=weeds,y=count)) +
+  geom_point() + 
+  facet_wrap(~spray) + 
+  geom_smooth(method='lm', color='black') +
+  theme_bw(base_size = 16) +
+  labs(x = "Weed Coverage %", y = "Count")
+```
+
+## Block Designs
+
+### Data prep and Plotting
+
+Let's load the packages and data. Note we are using the InsectSprays data set one again.
+
+```{r}
+library(tidyverse)
+library(car)
+library(glmmTMB)
+data("InsectSprays")
+```
+
+Now we can add our blocks to the data by constructing a vector of factor variables using the `as.factor(rep(c(1:12), 6))`. This code essentially builds 12 different blocks in the data set with each block being comprised of 6 replicates for a total of 72 replicates or samples.
+
+```{r}
+InsectSprays$block <- as.factor(rep(c(1:12), 6)) 
+d <- InsectSprays %>%
+  filter(spray=='A'|spray=='B'|spray=='C'|spray=='F')
+glimpse(d)
+```
+
+We can graph the data by treatment group based on spray type by using a combination of raw data points and boxplots:
+
+```{r, fig.cap="Plot of insect counts."}
+#plot data by treatment group
+ggplot(d, aes(x=spray,y=count)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(height=0,width=.1)
+```
+
+A plot by treatment and block (note one observation per block, which is why the boxplots are just a point and line):
+
+```{r, fig.cap="Plot of insect counts by block."}
+ggplot(d, aes(x=spray,y=count)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(height=0,width=.1) +
+  facet_wrap(~block)  #12 blocks
+```
+
+### Models with block designs
+
+If we were to ignore the blocked design in our data then we would simply run a linear model of counts as a function of spray type:
+
+```{r}
+lm1 <- glmmTMB(count~spray, data=d)
+Anova(lm1)
+```
+
+We can easily account for the blocking factors by adding the **block** variable to our model as a fixed effect. We can see there is still a significant **Spray** effect and also a significant **block** effect.
+
+```{r}
+lm2 <- glmmTMB(count~spray+block, data=d)
+Anova(lm2)
+```
+
+### Blocks as random effects
+
+In the previous example, we aren't necessarily interested in testing the significance, or estimating parameters, for the **block** effect -- we just want to account for it. Therefore, **block** may be more appropriate fitted as a *random* effect. Another nice thing about the `glmmTMB()` function is that we can also incorporate random effects. In this section we will utilize random effects to account for blocks as opposed to fixed effects in the models prior to this section.
+
+Now let's set up a linear mixed effect model with a block as a random effect (random intercept). The syntax to set this up is relatively similar to how we specify a regular linear model. However to add a random effect we utilize parentheses. More specifically we include the term `(1|block)` to include a random intercept that varies across blocks:
+
+```{r}
+# block as random effect
+lm3 <- glmmTMB(count~spray+(1|block), data=d)
+Anova(lm3)
+```
+
+In the ANOVA table above, we can see the results for the **spray** effect. 
+
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| **Box 5.2. Alternative packages for linear mixed models** Another great package for running linear mixed models the `lme4` package. This was actually a precursor to glmmTMB -- for the part, glmmTMB has superceded lme4, although there are a few things that are usefully implemented in lme4 that are not available with glmmTMB objects. One is the extension package `lmerTest` which calculates F-values, Type III SS, and p-values using algorithms borrowed from SAS. The `anova()` function is from the `lmerTest` package and uses Type III SS. See Box 5.1 for a refresher on sums of squares. The results are usually similar between glmmTMB and lme4, but sometimes its useful to be able to obtain F-values for mixed models. |
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+
+Now let's compare the model for blocks as fixed vs. random effects:
+
+```{r}
+# compare summary() for fixed vs. random blocking effect
+summary(lm2)
+summary(lm3)
+coef(lm3)    ## prints model coefficients
+```
+
+Notice the different outputs above and how they differ between the model types. When blocks are added as a fixed effect in `lm2` we see every block effect in the summary. Whereas for the mixed effect model `lm3`, the effect of block is not printed in the summary; rather, we have to print it out using the `coef()`. The coefficients for the spray treatment types are essentially the same as well as the standard errors between the two models.
+
+Let's check residuals:
+
+```{r}
+plot(resid(lm2)~fitted(lm2)) # check residuals of fixed-effect block models
+plot(resid(lm3)~fitted(lm3)) # check residuals of random-effect block model
+
+hist(resid(lm2))
+hist(resid(lm3))
+```
+
+Finally, we can compare estimated marginal means:
+
+```{r}
+emmeans(lm2, pairwise~spray) ## fixed effect block
+emmeans(lm3, pairwise~spray) ## random effect block
+```
+
+The results are similar for the fixed and random effect model, so what's the difference? We will discuss the advantages of random effects in lecture and cover other aspects in the sections below.
+
+## Variance components
+
+One of the major differences for mixed-effect models is that we can calculate the **variance component** of the random effects. We will go through how to do this in lecture, but basically the **variance component** is how much variation there is among the intercepts of the levels of the random effect. In the InsectSprays example, if the block had very little effect on the insect counts (all blocks are about the same), the variance component would be low (near zero). However, if there was a large amount of variation among the blocks (some blocks as very few insects and some had a lot), the variance component would be high. The concept of variance components is closely related to the **coefficient of determination** or $R^2$. 
+
+### R2
+
+Let's review the $R^2$ using some fake data we will make up. The code below will make a dataset with 8 sites. At each site, temperature (temp) was measured, so just one temp per site. Body size was measured on 5 insects per site, with each measured indivdual getting a unique ID. Make and view the dataset below:
+
+```{r}
+set.seed(10)
+fakedata <- data.frame(Site=factor(40), ID=factor(40), temp=double(40), size=double(40), stringsAsFactors = F)
+fakedata$Site <- rep(1:8, each=5)
+fakedata$ID <- rep(1:5, times=8)
+fakedata$temp <- rep(c(10,18,12,15,8,11,10,16), each=5)
+fakedata$size <- round(rnorm(40, (2*fakedata$temp), 8), 1)
+
+head(fakedata)
+hist(fakedata$size)
+```
+
+Make a plot of the data:
+
+```{r, fig.cap="Size plotted against temp."}
+ggplot(fakedata, aes(x=temp, y=size)) + 
+  geom_point() + 
+  geom_smooth(method="lm") + 
+  theme_bw(base_size=16)
+```
+
+Calculate R2 for linear model and linear mixed model. Obe nice thing about the simple `lm()` function is that it is easy to obtain the R2.
+```{r}
+lm1 <- lm(size ~ temp , data=fakedata)
+summary(lm1) # look at R2 from MuMIn package
+```
+
+For the mixed model, where is the R2?
+```{r}
+lmm1 <- glmmTMB(size ~ temp + (1|Site), data=fakedata)
+summary(lmm1)
+```
+
+
+Load `performance` package to calculate R2 for mixed models. Note that we get two values, $R^2m$ and $R^2c$. $R^2m$ is the marginal $R^2$ for the fixed-effects and $R^2c$ is the conditional $R^2$ for the fixed plus random effects. The `MuMIn` package also has a function `r.squaredGLMM()` that calculates $R^2m$ and $R^2c$. Usually the results are identical, but sometimes not (as $R^2$ for generalized mixed models are still being developed). So, use a bit of caution. For example, be suspitous if you see a very high $R^2m$ (>0.9).
+
+```{r}
+library(performance)
+r2(lmm1)
+```
+
+### Chick weight example
+
+Load in the ChickWeight dataset. It contains weight (g) of small chickens grown on four different diets. Chickens were weighed every few days for 21 days.
+```{r}
+data("ChickWeight")
+ChickWeight$Diet <- as.factor(ChickWeight$Diet)
+?ChickWeight
+head(ChickWeight)
+```
+
+
+Plot out data
+```{r, fig.cap="Chick weight by week on the four different diets."}
+ggplot(ChickWeight, aes(x=Time,y=weight))+
+  geom_point()+
+  facet_wrap(~Diet)+
+  geom_smooth(method="lm")+
+  theme_bw(base_size = 16)
+```
+Construct a regular linear model ignoring chick
+```{r}
+cw0 <- glmmTMB(weight ~ Time * Diet , data=ChickWeight)
+Anova(cw0)
+```
+
+
+Examine means at time 20
+```{r}
+emmeans(cw0, pairwise~Diet, at=list(Time=20)) # All contrasts are significant
+```
+
+
+Construct a new model with chick as fixed effect
+```{r}
+cw1a <- glmmTMB(weight ~ Time * Diet + Chick , data=ChickWeight)
+summary(cw1a) ## look for R2
+```
+
+There are some problems with this model. Basically, there are so many levels of *chick* that the model errors out (runs out of degrees of freedom). This causes the Hessian matrix warning.
+
+Examine means at time 20 for the new model with the chick fixed-effect.
+```{r}
+emmeans(cw1a, pairwise~Diet, at=list(Time=20)) # Contrasts similar to above
+```
+
+
+Construct model with chick as a random (block) effect. No more warnings when chick is a random effect!
+```{r}
+cw1 <- glmmTMB(weight ~ Time * Diet + (1|Chick), data=ChickWeight)
+summary(cw1) ## look for variance component. Where is R2 ???
+```
+
+Examine means at time 20 for the new model with the chick random-effect
+```{r}
+emmeans(cw1, pairwise~Diet, at=list(Time=20)) # Contrasts similar to above
+```
+
+Print off only variance component
+```{r}
+cvar <- VarCorr(cw1)
+print(cvar, comp=c("Variance","Std.Dev."))
+```
+
+
+Print off anova table. 
+```{r}
+Anova(cw1) ## Anova() from car package.
+```
+
+
+Examine model residuals. Residuals are not great, but we'll fix this later. For now we will proceed with caution.
+```{r, fig.cap="Residual plots."}
+plot(resid(cw1)~fitted(cw1)) 
+```
+
+Examine emmeans and contrasts
+```{r}
+emmeans(cw1, pairwise~Diet, at=list(Time=20)) # 4 of 6 differ at time 20
+```
+
+Calculate R2 for the mixed-model
+```{r}
+r2(cw1)
+```
+
+Question: How much of the variance in weight is explained by Diet and Time? How much by Chick?
+Harder question: calculate the R2c by hand based (based on lecture notes) on the R2m and variance components (just to check)
+
+
+## Split-plot and nested designs
+
+```{r, message=F, warning=F}
+library(tidyverse)
+library(glmmTMB)
+library(emmeans)
+library(MuMIn)
+library(agridat) ## install and load package for datasets
+library(multcomp) ## install and load package for multiple comparisons
+```
+
+Some experimental treatments are easier to apply than others. Or, some treatments work better in bigger plots while others work better in smaller plots. For these logistical reasons (and others), ecologists often design their experiments with some nestedness. Lets take a look at the dataset below as an example. The 'gomez.multilocsplitplot' dataset contains data on rice yield from an experiment that manipulated nitrogen (6 levels) and genotype (2 levels). Logistically, it is much easier to apply nitrogen to big plots and then plant the two genotypes within those plots (see lecture notes for sketch of design). The experiment was setup at three locations (blocks). 
+
+Based on the experimental design, do we have the same number of independent plots (ie. true replicates) for the nitrogen treatment and the genotype treatment? Remember, nitrogen was added to big (whole) plots and then the genotypes were planted within that (split-plots). So, what we have is a **split-plot design**. Let's take a look at how to analyze these data.
+
+Load the rice data and process for analyses.
+```{r}
+data("gomez.multilocsplitplot")
+gomez.multilocsplitplot$nitro <- as.factor(gomez.multilocsplitplot$nitro)
+gomez <- gomez.multilocsplitplot
+head(gomez)
+?gomez.multilocsplitplot
+```
+
+```{r, fig.cap="Boxplot of gomez rice data."}
+ggplot(gomez, aes(x=gen, y=yield, fill=nitro))+
+  geom_boxplot(outlier.shape = NA)+
+  geom_point(position = position_jitterdodge(jitter.height=0,jitter.width=.1))+
+  facet_wrap(~loc)
+```
+
+One addition aspect of the experiment is that there were additional replicates planted within each plot. This technically creates another level of nestedness, which we need to deal with. For now, we will average the data by loc, nitro, gen to account for pseudo-replication (n = 36 plots total).
+
+```{r}
+gomez_summarized <- gomez %>% group_by(loc,nitro,gen) %>% summarize(yield=mean(yield, na.rm=T))
+```
+
+Now we are ready to fit a linear model to the data. To see the difference between no block, blocking, and split-plot designs, we will make a model for each of these. Take a look at the anova table for each, keeping an eye especially of the DF values. 
+
+Start with a regular two-way anova using summarized dataset -- no blocking. 
+```{r}
+mm0 <- glmmTMB(yield ~ gen*nitro, data=gomez_summarized)
+Anova(mm0)
+```
+
+Two-way anova with block as a random effect
+```{r}
+mm1 <- glmmTMB(yield ~ gen*nitro+(1|loc), data=gomez_summarized)
+Anova(mm1)
+```
+
+
+Two-way anova with block and nitro nested within block as random effects. This is a case where glmmTMB() errors out for some reason but lmer can handle the model. (not sure why)
+```{r}
+mm2 <- lme4::lmer(yield ~ gen*nitro+(1|loc/nitro), data=gomez_summarized)
+Anova(mm2)
+```
+
+Summary for split-plot model
+```{r}
+summary(mm2)
+```
+
+emmeans for just for nitro and genotype)
+```{r}
+emmeans(mm2, pairwise~nitro)
+emmeans(mm2, pairwise~gen)
+```
+
+### Additional nesting
+Above we dealt with the extra replicates by averaging them to avoid pseudo-replication. However, we can ully embrace the nestedness and include plot as a random effect instead of averaging (n=108 data points, use them all!). Let's do this now and compare the results to the model `mm2` above.
+
+Two-way anova with block, nitro, and gen nested within block as random effects, using the full dataset.
+```{r}
+mm3 <- lme4::lmer(yield ~ gen*nitro+(1|loc/nitro/gen), data=gomez)
+Anova(mm3) ## identical to averaged model in mm2
+summary(mm3)  ## additional variance component, so no information sacrificed
+```
+
+Now look at emmeans for nitro and gen
+```{r}
+emmeans(mm3, pairwise~nitro)
+emmeans(mm3, pairwise~gen)
+```
+
+Examine pairwise comparisons as compact letter displays (ie. CLD, sometimes called tukey groupings). Treatments that share the same number in the ".group" column do not differ significantly, while treatments that with different numbers are significantly different. Oftentimes people use letters rather than numbers. In certain cases the CLD can be convenient, although most times it is better to directly report the contrasts. Nevertheless, lets go through an example here.
+
+First calculate the emmeans and then the CLD.
+```{r}
+mm3em <- emmeans(mm3, pairwise~nitro)
+cld(mm3em)
+```
+
+
+Extract means and make plot of nitrogen emmeans with CLD. I have manually added the letters based on the `cld()` table above.
+```{r, fig.cap="Rice yield in different nitrogen treatments. Letters indicate significant differences based on tukey-adjusted p-values."}
+n1 <- emmeans(mm3, ~nitro) %>% as.data.frame()
+
+ggplot(n1, aes(x=nitro, y=emmean)) + 
+  geom_point(size=5) + 
+  geom_errorbar(aes(ymin=lower.CL, ymax=upper.CL), width=0, lwd=2) + 
+  ylab("yield (g) +/- 95% CI") + 
+  theme_bw(base_size = 20)+
+  annotate("text", x=c(1,2,3,4,5,6), y=7750, label=c("A","B","B","B","B","B"), size=10)
+```
+
+### R CHALLENGE
+
+In this challenge we are interested in answering the question: Do grazing or Nitrogen affect insect abundance? The experiment measured insect abundances in experimental plots with nitrogen addition (control, low, medium, and high amounts of N added) and different grazing regimes (not grazed and grazed). See the image below for the physical layout of the plots.  
+
+```{r, message=F, echo=F, fig.align="center", fig.cap="Example of two sites of the nitrogen x grazing experimental design."}
+knitr::include_graphics("./splitplotgrazing.jpg")
+```
+Based on the experimental design, complete the questions below:
+
+  1. Construct an appropriate linear model
+  
+  2. Model assumptions met?
+  
+  3. Do grazing or Nitrogen affect insect abundance?
+  
+  4. How do the results change depending on whether you include a block or split-plot?
+  
+  4a. How big is the blocking and split-plot effect?
+
+Load dataset and reorder levels. 
+```{r}
+d1 <-read_csv("InsectData.csv")
+head(d1)
+d1$N_Add <- factor(d1$N_Add, levels=c("No.N","Low.N","Med.N","High.N"))  ## reorder factor levels
+```
+
+Couple plots to begin
+```{r}
+ggplot(d1, aes(x=abund)) + 
+  geom_histogram(aes(y=..density..), color="white", fill="grey",bins=8)+
+  geom_density(alpha=.5, color="red", lwd=1.5) +
+  labs(title="histogram of raw data") +
+  theme_bw() + theme(text = element_text(size=18))
+
+ggplot(d1, aes(y=abund, x=grazed, fill=N_Add))+
+  geom_boxplot()+
+  geom_point(position = position_jitterdodge(jitter.height=0,jitter.width=.1), 
+             size=3, stroke=1.5, pch=21, color="grey")+
+  scale_fill_manual(values=c("white","grey90","grey50","grey25"))+    
+  theme_bw(base_size = 18)
+```
+
+## Repeated Measures
+
+Many reseach projects involve collecting data on the same units through time. For example, plant ecologists may be interested in monitoring changes is plant richness in plots through time or stream biogeochemists often monitor seasonal changes in stream chemistry. These **repeated measures** are a unique case of nestedness and therefore many on the principles we learned about regarding **split-plots** also apply here. Basically, the unit being repeatedly sampled (e.g. plot or stream) is the **whole plot** while *time* is the **split-plot**. There are some more complexities of repeated measures, sometimes called **temporal autocorrelation**, that we will get to in this section. First, lets load packages and look at the chick weight data from before.   
+
+LOAD AND PROCESSES DATA
+```{r, message=F, warning=F}
+library(tidyverse)
+library(car)
+library(emmeans)
+library(viridis)
+library(MuMIn)
+library(glmmTMB) 
+```
+
+```{r}
+data("ChickWeight")
+ChickWeight$Diet <- as.factor(ChickWeight$Diet)
+?ChickWeight
+```
+
+Plot out the chick weight data
+```{r, fig.cap="Chick weight data."}
+ggplot(data=ChickWeight)+
+  geom_point(data=ChickWeight, aes(x=Time,y=weight, color=as.numeric(Chick)))+
+  scale_color_viridis() +
+  facet_wrap(~Diet)+
+  geom_smooth(data=ChickWeight, method="lm",aes(x=Time,y=weight))+
+  theme_bw(base_size = 16)
+```
+
+We've used the chick weight data before, but to refresh there are 50 chicks each given one of four diets. Chicks are weighed through time and we are interested in comparing the growth rate or final weight among the four diets. We will start by making the same model we used in Section 5.3.2 for looking at variance components. The model has weight as the response variable, time as the (fixed-effect) predictor and Chick as a random (block) effect. 
+
+```{r}
+cw1 <- glmmTMB(weight ~ Time * Diet + (1|Chick), data=ChickWeight)
+summary(cw1) 
+Anova(cw1) 
+```
+
+Remember that the residuals from this model look weird. The histogram is great, but the residuals ~ fitted plot has funneling and curvature.
+```{r, fig.cap="Histograms of residuals."}
+hist(resid(cw1)) ## resids from first model
+plot(residuals(cw1)~fitted(cw1)) ## resids from first model
+```
+
+
+One of the 'unique' aspects of temporal data is that measurements closer in time are likely to be much more highly correlated than time points further apart. For example, if we correlate all the chick weights from week 2 with week 4, they will be very highly correlated, whereas week 2 vs week 10 will be less correlated:
+
+```{r, echo=F, message=F, warning=F, fig.cap="Correlations of chick weights between different weeks."}
+library(patchwork)
+(ChickWeight %>% filter(Time==2|Time==4) %>% group_by(Diet,Chick) %>% 
+  pivot_wider(names_from = Time, values_from = weight) %>% 
+  ggplot(aes(x=`2`,y=`4`)) + 
+  geom_point() + 
+  ggtitle('week 2 vs week 4') +
+  theme_bw(base_size=12)+
+  annotate(geom='text', label='r = 0.77', x=42,y=65, size=5)
++
+ChickWeight %>% filter(Time==2|Time==10) %>% group_by(Diet,Chick) %>% 
+  pivot_wider(names_from = Time, values_from = weight) %>% 
+  ggplot(aes(x=`2`,y=`10`)) + 
+  geom_point() + 
+  ggtitle('week 2 vs week 10') +
+  theme_bw(base_size=12)+
+  annotate(geom='text', label='r = 0.36', x=42,y=140, size=5))
+
+```
+
+We can capture that temporal autocorrelation by fitting a special covariation or correlation structure via a random effect (more about this in lecture). Below is a model incorporating an **autoregressive covariance** (ar1) structure to account for the temporal autocorrelation:
+
+```{r}
+cw1ar <- glmmTMB(weight ~ Time * Diet + ar1(0 + as.factor(Time)|Chick), data=ChickWeight)
+```
+
+In the `summary()` output notice that for the 'Chick' random effect, we have the usual variance component plus now we also get a correlation coeffiect "Corr", which is 0.97, which is very high indicating strong temporal autocorrelation. The parameter estimates are a little different, but everything else is similar to the previous model.
+
+```{r}
+summary(cw1ar)
+Anova(cw1ar)
+```
+
+Let's take a look at the residuals:
+```{r, fig.cap="Histograms of residuals."}
+hist(residuals(cw1ar)) ## hist looks ok
+plot(residuals(cw1ar)~fitted(cw1ar)) ## resids look great 
+```
+
+They look great! It seems that the model that accounts for temporal autocorrelation fits much better than just incorporating chick as a regular random effect. We can also compare the AIC of the two models to make sure. Indeed, it is much lower for the ar1 model.
+
+```{r}
+AIC(cw0,cw1ar)
+```
+
+Now we can look at the emmeans for the two models. Notice the estimates are similar, but the SE is much higher for the AR1 model. This changes the p-values for the contrasts a little bit too. It is important we interpret the results from the AR1 model because it is much better, even though the SEs are higher.
+```{r}
+emmeans(cw1, pairwise~Diet, at=list(Time=20)) # Yes, 4 of 6 differ at time 20
+emmeans(cw1ar, pairwise~Diet, at=list(Time=20)) # Yes, 4 of 6 differ at time 20
+```
+
+### R CHALLANGE - REPEATED MEASURES
+
+Take a look at the 'harris.wateruse' dataset. The dataset contains information on water use by two species of horticultural trees (S1 and S2). The dataset also contains two age groups, although we will focus on just one group (A1). 10 trees of each species were assessed for water usage for approximately every 5 days over the course of a year. There are some missing values.
+
+```{r message=F}
+library(agridat)
+wat <- harris.wateruse %>% filter(age=='A1')
+head(wat)
+str(wat)
+```
+
+Plot data
+```{r, warning=F, fig.cap="Plot of water usage by two horticultural tree species through time."}
+ggplot(data=wat, aes(x=day, y=water, color=species))+
+  geom_point()+
+  scale_color_viridis(discrete = T, end=.8) +
+  theme_bw(base_size = 16)
+```
+
+To Do:
+
+  1. Fit several models, one that accounts for tree ID as a regular random effect and one that accounts for temporal autocorrelation. Additionally, it seems like there is some non-linearity so try a quadratic term. Choose the right fixed effects to answer the question: do the species differ in water use and does this change through time?
+  
+  2. Examine the residuals and AIC for your models. Which is best? If your model has temporal autocorrelation, how strong is it?
+  
+  3. Does water use differ between the species at these two time points: 175 days and 275 days?
+
+
+## Additional LMM reading
+For those of you interested in other aspects of GLMMs, we will cover other ways we tangle with statistics and data with them in the next module. However, even with another module dedicated to GLMMs we will be barely scratching the surface. If you want more information on what else we can do with these powerful models check out the box below!
+
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| **Box 1. Mixed Models.**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+|                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Mixed-effect models are powerful tools that can help gain stronger inference or predictive power in your analyses. This is especially seen in experimental or hierarchically structured designs of studies. These models have been used to account for pseudoreplication effects but please be wary of this! Because models that don't have the proper random effect structures may actually not be accounting for the pseudoreplication! For more insight into this please read this [paper](https://arnqvist.org/tree_2020.pdf).                                                                        |
+|                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| So what else can be done with GLMMs? One thing it allows is the modeling of specific spatial and temporal structures to account for spatial or temporal autocorrelation! This is a problem with ecological data. In the context of spatial autocorrelation, patterns in your data may be a result of things being generally more similar to one another due to the spatial distance between data points than due to actual biological processes. GLMMs can account for this! For a crash course on this, check this [link](https://cran.r-project.org/web/packages/glmmTMB/vignettes/covstruct.html) out! |
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+

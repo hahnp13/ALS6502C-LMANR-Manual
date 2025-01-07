@@ -1,0 +1,444 @@
+# Generalized linear mixed models
+
+After completing this module, students will be able to:
+
+* 6.1 Construct models with both fixed and random effects and non-normal distributions
+
+## Poisson and NB GLMMs
+
+In this module we will go over a variety of advanced models. We will start with Poisson generalized linear mixed effect models. The poisson error distribution is often used to model count data and because of this it is a popular tool for most biologist or ecologists as biological or ecological data is often in the form of counts (e.g., species richness). Let's first load the libraries we will need:
+
+```{r, message=F, warning=F}
+library(tidyverse)
+library(emmeans)
+library(car)
+library(agridat)
+library(glmmTMB)
+library(DHARMa)
+library(performance)
+library(MuMIn)
+library(bbmle)
+library(aods3)
+library(boot)
+```
+
+Let's load in the primary data set we will be working with and read about the `beall.webworms` data set. The variables of interest are the y-count of webworms, spray- spray treatment, and lead-lead treatment. Don't worry about the blocks or other variables for now.
+
+```{r}
+data("beall.webworms")
+d1 <- beall.webworms
+?beall.webworms  ## info about the beall.webworms dataset
+```
+
+We can also glimpse the first several rows of the data:
+
+```{r}
+head(d1) ## view data set
+```
+
+Let's examine a plot of data where we look at the raw data points as well as violin plots of the y response variable on the y axis and the x-axis as the spray treatment and lead treatment type:
+
+```{r}
+ggplot(d1, aes(x=spray, y=y, fill=lead)) +
+  geom_violin(scale="width", adjust=2) + 
+  geom_point(position = position_jitterdodge(jitter.width=.5,
+                                             jitter.height=.1,
+                                             dodge.width = 1),
+             alpha=.1)+
+  facet_wrap(~block)
+```
+
+Here we create two models, r1 and r2. They were previously used in module 4C. So let's first create r1. `r1` will be a Poisson GLM with the repose variable of y being ,modeled as a function of both the additive and interactive effects of spray and lead treatments.
+
+```{r}
+r1 <- glm(y ~ spray * lead, data=d1, family="poisson")
+summary(r1)
+Anova(r1)
+emmeans(r1, ~spray:lead, type='response') 
+```
+
+We check overdispersion in the model with the `check_overdisperson` wrapper:
+
+```{r}
+check_overdispersion(r1) # overdispersion ratio calculator from performance
+```
+
+Now let's implement the second model, `r2`, a negative binomial error distribution. While most of the information regarding this error distribution and its comparison to the Poisson should be covered in the main lecture material a brief explanation on when and why you may implement the negative binomial is as follows:
+
+1.  The Poisson distribution assumes that the mean and the variance of the distribution are the same, so as the mean increases the variance increases the same amount. The negative binomial assumes that these two components are different, usually with the variance being greater than the mean (often the case with real world data).
+
+2.  Poisson models can result in over-dispersion because the variance in real data is often greater than the means. This issue can lead to several problems such as but not limited to: poor model convergence, weak effect sizes of model coefficients, or p-values that are way too low.
+
+3.  The negative binomial distribution can be used in the cases above to improve model fit or reach model convergence. Oftentimes it performs better than the poisson even if both models converge successfully. Visually examining simulated residuals is usually the best way to assess model fit. Another way is to compare AIC (Akaike information criterion) of Poisson vs negative binomial models.
+
+```{r}
+r2 <- glmmTMB(y ~ spray * lead, data=d1, family="nbinom2")
+Anova(r2)
+emmeans(r2, ~spray:lead, type='response') 
+```
+
+Now let's simulate residuals for poisson:
+
+```{r}
+plot(simulateResiduals(r1))
+hist(simulateResiduals(r1)) ## histogram should be flat
+```
+
+Here are the residuals for the negative binomial model:
+```{r}
+plot(simulateResiduals(r2))
+hist(simulateResiduals(r2)) ## histogram should be flat
+```
+
+We can also compare the AIC:
+```{r}
+AIC(r1,r2)
+```
+
+### Improving the models: What's next?
+
+How can we improve the models? What's next? Are there any aspects of the experimental design missing from the model that we should maybe account for similar to the grass cover predictor from the previous module?
+
+We did notice some dispersion issues in the previous model and one way we can wrestle and address this is to implement an individual-level random effect to use for overdispersed Poission GLMs. For more information of this approach please see [this paper](https://peerj.com/articles/616/).
+
+To do this we can construct models that includes any missing factors. In the case of overdispersed Poission GLMs we can create an observation level random effect variable by simple creating another column titled `obs` and filling it with unique number for each observation such as a sequence of numbers from 1 to the number of observations we have in the dataset:
+
+```{r}
+d1$obs <- 1:length(d1$y) ## makes a unique number for each row in dataset
+```
+
+We can also create other models that include different random effects that account for blocks. In total let's run 6 different models. For the sake of clarity we have built a table to showcase the 6 different models and we have also coded them in:
+
+| Model name | Response | Fixed Effect(s) |              Random Effect(s)               | Error Distribution |
+|:------------:|:------------:|:------------:|:-----------------:|:------------:|
+|     r0     |    y     |  spray \* lead  |                    none                     |      Gaussian      |
+|     r1     |    y     |  spray \* lead  |                    none                     |      Poisson       |
+|     r2     |    y     |  spray \* lead  |                    none                     |   Neg. Binomial    |
+|     r3     |    y     |  spray \* lead  | Obs. level random effect for overdispersion |      Poisson       |
+|     r4     |    y     |  spray \* lead  |             Block random effect             |   Neg. Binomial    |
+|     r5     |    y     |  spray \* lead  |  Both Obs. level and Block random effects   |      Poisson       |
+
+```{r}
+r0 <- glmmTMB(y ~ spray * lead, data=d1, family="gaussian")              ### gaussian glm just to see how bad it really is
+r1 <- glmmTMB(y ~ spray * lead, data=d1, family="poisson")               ### poisson glm
+r2 <- glmmTMB(y ~ spray * lead, data=d1, family="nbinom2")               ### nb glm
+r3 <- glmmTMB(y ~ spray * lead + (1|obs), data=d1, family="poisson")     ### overdispersed poisson glm
+r4 <- glmmTMB(y ~ spray * lead + (1|block), data=d1, family="nbinom2")   ### nb w/ block
+r5 <- glmmTMB(y ~ spray * lead + (1|obs) + (1|block), data=d1, family="poisson")   ### OD poisson w/ block
+```
+
+Six models above differ only distribution and random effects. Fixed effects are the same. We can now use the AIC framework for selecting the most appropriate or most plausible model, distribution, and random effect structure. One key thing to remember is that the more complex models will be penalized in the calculation of AIC values:
+
+```{r}
+#### for model selection, use AIC or likihood ratio test
+model.sel(r0,r1,r2,r3,r4,r5) ## from MuMIn
+AICtab(r0,r1,r2,r3,r4,r5,base=T,logLik=T,weights=T)    ## from bbmle
+```
+
+Looks like the best model according to AIC was r4, the negative binomial GLMM with a random effect for blocks. Of course we would also want to check the model residuals and glance at the parameter estimates and SE to make sure they look reasonable.
+
+## Binomial GLMMs
+
+In this section we look at the binomial distribution. We often implement this distribution when we have a binary outcome in our data. For example survival is often coded as a binary where the only results can be that there is survival or there is no survival. Let's load in the data we will use:
+
+```{r}
+data("wheatley.carrot")
+?wheatley.carrot
+```
+
+Let's clean up the data by filtering out any insecticide value that was coded as 'nil'. Let's also create a new variable called `propdmg` which stand for damage proportion. This new variable is calculated by dividing the number of damaged plants (`damaged`) by the number of total plants (`total)`.
+
+```{r}
+dat1 <- wheatley.carrot %>% filter(insecticide!='nil')
+dat1$propdmg <- dat1$damaged/dat1$total
+head(dat1) 
+```
+
+Let's visualize the distribution of the new variable as well:
+
+```{r}
+hist(dat1$propdmg)
+```
+
+Now let's plot out some of the data. Let's visualize the damage proportion across different depths as well as the insecticide variable (diazinon vs. disulfoton). Because the variable depth is so wide ranging it'll be easier for us to visualize the axis if depth is log-transformed.
+
+```{r, fig.cap="Plot of carrot data."}
+ggplot(dat1, aes(x=log(depth),
+                 y=(damaged/total), color=insecticide)) +
+  geom_point(size=3) + 
+  theme_bw(base_size = 16)
+```
+
+It would be useful to also plot a line of best fit across these data points. Note that for plotting we can use the "beta_family" although for analysis we use "binomial".
+
+```{r, fig.cap="Plot of carrot data with best fit line."}
+ggplot(dat1, aes(x=log(depth), y=(damaged/total), color=insecticide)) +
+  geom_point(size=3) +
+  geom_smooth(method='glm',
+              method.args=list(family="beta_family"),
+              formula = y~x) +
+  theme_bw(base_size = 16)
+```
+
+From the plot above it looks like the best fit lines do not necessarily fit or follow the raw data well. Look at the red beta line above and notice how the line and the confidence intervals do not overlap with almost 3 different types of depth groups. This is one of the more important parts of visualizing your data before using models because we now see potential evidence that our data follow a possible non-linear trend.
+
+To confirm this we can use ggplot2 to plot a more non-linear trend line while using the Beta family. To do this we have to switch the formula used in the `formula` argument of `geom_smooth` from `y~x` to `y~x+I(x^2)`. This change essentially means that the model used to fit the trend line is actually a quadratic model (notice the extra squared term).
+
+| More on quadratic models                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+|------------------------------------------------------------------------|
+| Note: A quadratic model is part of larger family of models called polynomial models. Polynomial models are used to model non-linear trends BUT they are still essentially linear regressions. One way to think about these sort of models is that we are essentially modeling the trends to have distinct slopes. Keep in mind, the interpretations of the models can be complicated and are often misinterpreted! Some decent resources for helping you understand these models can be found (here)[<https://www.datatechnotes.com/2018/02/polynomial-regression-curve-fitting-in-r.html>] |
+
+```{r, fig.cap="Plot of carrot data with quadratic fit."}
+ggplot(dat1, aes(x=log(depth), y=(damaged/total),
+                 color=insecticide)) + geom_point() +
+  geom_smooth(method='glm', 
+              method.args=list(family="beta_family"), 
+              formula = y~x+I(x^2))
+
+```
+
+Once we plot the new trend line and its potential non-linearity we see a generally better fit with less data points not overlapping with the confidence intervals.
+
+Now let's build two different binomial error distributed GLMMs with different set ups that relate to either a linear assumption of the data or a non-linear assumption. To do this there are several key differences between what we have done before till now:
+
+1.  Our response variable needs to be binary but need to account for damaged plants and non-damaged plants. This can be calculated by subtracting the number of damaged plants from the total number of plants: `total-damaged`. To combine the values of the damaged and the non damaged we use the function `cbind()` which combines the two into one vector that the model can use for a response variable: `cbind(damaged,total-damaged)`.
+2.  We need to model a quadratic model for `mod2`. In order to do this we will essentially follow the same formula as we did with the ggplot above. So for `mod2` our quadratic predictor of depth would be: `depth + I(depth^2)`. Notice we do not add a quadratic component to the predictor `insecticide` as we did not see a non-linear trend with this variable.
+
+```{r}
+mod1 <- glmmTMB(cbind(damaged,total-damaged) ~ insecticide * depth + (1|rep), data=dat1, family='binomial')
+
+mod2 <- glmmTMB(cbind(damaged,total-damaged) ~ insecticide * depth + I(depth^2) + (1|rep), data=dat1, family='binomial')
+```
+
+For easier syntax interpretation note above that mod2 is applying a non-linear modification where we include depth and depth squared. The "\^" is another way of saying raise depth to the 2nd power. The I() isolate this and tells the R interpreter that the model is including a second order fixed effect. For more info check ?formula.
+
+We can plot residuals:
+
+```{r}
+plot(simulateResiduals(mod1))
+plot(simulateResiduals(mod2))
+```
+
+Which of the two is better? Remember, the *best* model might not be perfect.
+
+Finally, we can also run ANOVAs on the models:
+
+```{r}
+Anova(mod1)
+Anova(mod2)
+```
+
+## Beta Distributions
+
+In this section we show an example of applying the beta family using true proportions (or percentages). The beta family has major utility when modeling proportion data as in the past the most suitable distributions would have been the gamma distribution or a arcsin transformation of the y response variable.
+
+First let's load data from a case study. The study by Lynn et al. examined herbivory on several plant species at 42 different sites spanning a large latitudinal gradient. They are interested to know if there is more herbivore damage near the equator. If you are interested in the data the paper for this is found (here)[<https://onlinelibrary.wiley.com/doi/10.1111/ecog.06114>].Let's take a look but filter species to just one for simplicity:
+
+```{r}
+b1 <-read_csv("LynnETAL_2022_Ecography_sodCaseStudy.csv") %>%
+  filter(species=='SALA')
+head(b1)
+```
+
+
+Let's examine a histogram of the response variable `mean_herb`:
+
+```{r}
+hist(b1$mean_herb) ## examine histogram. Data are entered as percentage (0-100%)
+```
+
+Let's plot out the data. Note: data was collected at 42 unique sites (one data point per site).
+
+```{r, fig.cap="Plot of herbivory data."}
+ggplot(b1 , aes(x=latitude, y=mean_herb)) +
+  geom_point()
+```
+
+We see a potential decreasing of mean_herb across a latitudinal gradient (from latitude 42 to \~48 degrees).
+
+Now we need to convert `mean_herb` to a proportion and then do a small transformation to remove 0s and 1s:
+
+```{r}
+b1$mean_herb1 <- (b1$mean_herb/100)
+b1$mean_herb1 <- (b1$mean_herb1*(length(b1$mean_herb1)-1)+.5)/length(b1$mean_herb1)
+```
+
+Let's plot this along with a trend line applying the beta family as done previously above:
+
+```{r, fig.cap="Plot of herbivory by latitude with best fit line."}
+ggplot(b1, aes(x=latitude, y=mean_herb1)) + geom_point() +
+  geom_smooth(method='glm', 
+              method.args=list(family="beta_family"),
+              formula = y~x)
+```
+
+Now let's build a GLMM with a beta distribution. Implementing this model structure is relatively simple with `glmmTMB`. In the code below we simply specify the family argument with `beta_family.`
+
+```{r}
+bm1 <- glmmTMB(mean_herb1 ~ latitude, data=b1, family='beta_family')
+Anova(bm1)
+```
+
+Let's check the summary:
+
+```{r}
+summary(bm1)
+```
+
+The model indicates a strong statistical effect of latitude on `mean_herb` with lower values of `mean_herb` tracking an increase in latitude.
+
+Plot and check residuals:
+
+```{r}
+plot(simulateResiduals(bm1)) 
+```
+
+The QQ plot is good. The residuals versus prediction plot and line is not ideal but is probably ok.
+
+### R CHALLENGE
+
+1.  For this part of the problem set you will use real data (Rivkin et al. 2018 Am J Bot). If you want to know more about the study, follow this (link)[<https://bsapubs.onlinelibrary.wiley.com/doi/full/10.1002/ajb2.1098>].
+
+Herbivory data was collected from 43 populations of an aquatic plant across a latitudinal gradient in Canada. At each population, many plants (\~5-15) were examined for herbivory damage. Some additional covariates were recorded, such as competition around the plant (1-3 from less to more) and plant height (cm).
+
+Read in data, look at the data structure, and plot the variable of interest, lead damage:
+
+```{r}
+d1 <-read.csv("ajb21098-sup-0002-appendixs2.csv")
+head(d1)
+hist(d1$LeafDamage)
+```
+
+Let's remove 0's and 1's (see Smithson & Verkuilen 2006 (here)[<https://psycnet.apa.org/doiLanding?doi=10.1037%2F1082-989X.11.1.54>] or Douma & Weedon 2018 (here)[<https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.13234>]):
+
+```{r}
+d1$LeafDamage <- (d1$LeafDamage*(length(d1$LeafDamage)-1)+.5)/length(d1$LeafDamage)
+```
+
+Now plot data where we have a proportion value of leaf damage on the y-axis along the x-axis of latitude. Let's also fit a best fit line using the beta family:
+
+```{r}
+ggplot(d1 , aes(x=Latitude, y=LeafDamage)) +
+  geom_point() +
+  geom_smooth(method='glm', 
+              method.args=list(family="beta_family"),
+              formula = y~x)
+```
+
+Question: Does herbivory increase towards the equator? How do residuals look? Any way to improve them?
+
+2.  For this part of the problem set we will use the Rats data set with only females. Half treated with a drug and the other half were untreated. Then they were checked for tumors. Does the drug reduce probability of developing tumor? After 50 days? After 100 days?
+
+Load data:
+
+```{r}
+library(survival)
+rats <- (survival::rats) %>% filter(sex=='f') 
+?rats
+head(rats)
+```
+
+Plot data:
+
+```{r}
+ggplot(rats , aes(x=time, y=status)) + 
+  geom_point() +
+  geom_smooth(method='glm', 
+              method.args=list(family="binomial"), 
+              formula = y~x) + 
+  facet_wrap(~rx)
+```
+
+## Zero-Inflated Models
+
+In this section we will go over applying zero-inflated models. While the main lecture should have covered these types of models in depth, let's quickly review some main points when it comes to these models:
+
+1.  In biological data, especially in ecology, zeros are often widespread in the dataset. However these zeroes and what they represent, i.e. absence of species, are not necessarily 'true'. For example, in a survey of species I may not have found species A at specific sites but that may not be because species A truly does not exist in those sites but instead those zeros may be due to poor sampling methods or sampling mistakes. Therefore the underlying thought is that many of these zeros in these datasets are technically 'false zeros' that should be modeled separately from the rest of the data.
+2.  Therefore, because there are likely to be two distinct processes that generate zeros in a dataset a zero-inflated model will apply two types of models. The first model is a logit model that will model the excess zeros while the second model can be a count model such as a poisson or negative binomial GLM.
+
+Now let's load the data (wheatley carrot infection by carrot fly larvae):
+
+```{r}
+data("ridout.appleshoots")
+```
+
+Let's clean up the data and check out the distribution of the data in question:
+
+```{r}
+dat1 <- ridout.appleshoots %>% mutate(photo=as.factor(photo))
+hist(dat1$roots)
+```
+
+Now let's run several models: a Poisson, a negative binomial, and a negative binomial with a general intercept for zero inflation:
+
+```{r}
+## poisson model
+mod1 <- glmmTMB(roots ~ photo * bap , data=dat1, family='poisson')
+plot(simulateResiduals(mod1))
+```
+
+```{r}
+## negative binomial model
+mod2 <- glmmTMB(roots ~ photo * bap , data=dat1, family='nbinom2')
+plot(simulateResiduals(mod2))
+```
+
+```{r}
+## negative binomial w/ a general intercept for zero inflation (ie. ZI equal for all observations)
+mod3 <- glmmTMB(roots ~ photo * bap , data=dat1, family='nbinom2', zi=~1)
+plot(simulateResiduals(mod3))
+```
+
+```{r}
+summary(mod3) ## back-transform ZI intercept (exp(p)/(1+exp(p)))
+inv.logit(fixef(mod3)$zi) ## use inv.logit from boot package to backtransform
+```
+
+The zero-inflated model is much better than without, so there is definately some zero-inflation. To understand the zero-inflation parameter (-1.226) we need to back-transform it. The zero-inflated model uses a logit-link fuction, which is seperate from the distribution and link function of the main model (although in this example with the beta family, it also has a logit-link). We can do this manually or use the `inv.logit` function from the boot package. We get a value of 0.22, meaning there is a 22% change any observation will be a zero beyond what is expected by the main model assuming a beta distribution. We don't really know what causes the extra zeros, but this model does an ok job of caturing them.
+
+Maybe we can do a little better though. What do we expect to cause the zero inflation? We can check out further details in the data's metadata:
+
+```{r}
+??ridout.appleshoots
+```
+
+The metadata state that "Almost all of the shoots in the 8 hour photoperiod rooted. Under the 16 hour photoperiod only about half rooted." Perhaps the photoperiod treatment is a better predictor of extra zeros?
+
+
+```{r, fig.cap="Plot of apple shoot data."}
+ggplot(dat1, aes(x=roots)) + 
+  geom_histogram() +
+  facet_grid(bap~photo) + 
+  theme_bw(base_size=16)
+```
+
+Now let's run a negative binomial with zero inflation modeled as a function of treatment:
+
+```{r}
+mod4 <- glmmTMB(roots ~ photo * bap , data=dat1, family='nbinom2', zi=~photo)
+summary(mod4)
+```
+
+
+Plot residuals:
+
+```{r}
+plot(simulateResiduals(mod4))
+```
+
+
+Now let's compare all models with AIC. Which one was the best? Why do you think?
+
+```{r}
+### check with AIC
+AIC(mod1,mod2,mod3,mod4)
+```
+
+## Model App exercise
+
+This shinyapp will allow you to practice and implement a variety of model types to fit randomly generated data. You can test yourself by randomly generating data and then choosing which models you would apply based on plots of the data as well as the data structure (e.g. count data vs. binary).
+
+```{r,  out.width = "100%"}
+knitr::include_app("https://leoohyama.shinyapps.io/adv_residuals/",
+                   height = 1000)
+```

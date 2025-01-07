@@ -1,0 +1,657 @@
+# Generalized Linear Models
+
+After completing this module, students will be able to:
+
+* 4.1 Describe common statistical distributions and types of data they generate
+
+* 4.2 Analyze data using non-normal distributions in R
+
+* 4.3 Evaluate and justify model fit
+
+* 4.4 Interpret and report results from statistical analysis
+
+## Overview of Generalized Linear Models
+
+Generalized linear models (GLMs) are a class of linear-based regression models developed to handle varying types of error distributions. These class of models are extremely useful for data types that may not conform to what is typically expected given Gaussian expectations or assumptions. For example, data that is binary (e.g. 0 or 1, alive or dead) or count data that is never negative all have different properties. While data transformations prior to model implementation can be done, it may be difficult to interpret results or may not help in meeting the assumptions of the model. In this section we first start with basic data transformations that can be applied to ordinary linear models and then move into different types of GLMs.
+
+```{r, message=F, warning=F}
+library(tidyverse)
+library(emmeans)
+library(car)
+library(agridat)
+library(glmmTMB)
+library(viridis)
+```
+
+### Example: One-way ANOVA with non-normal data
+
+In this example we will run an ANOVA with non-normal data. To do this we first must load the InsectSprays data:
+
+```{r}
+data("InsectSprays")# available from base R  
+```
+
+Now we need to filter the data to just 4 treatments (A, B, C, F):
+
+```{r}
+d <- InsectSprays %>% filter(spray=='A'|spray=='B'|spray=='C'|spray=='F') %>% 
+  droplevels()
+```
+
+Let's plot out data:
+
+```{r, fig.cap="Insect count data by spray type"}
+ggplot(d, aes(x=spray,y=count)) + 
+  geom_boxplot(outlier.shape = NA, width = 0.5) + 
+  geom_jitter(height=0,width=.1, size = 3, pch = 21) +
+  labs(x = "Spray Treatment Type",
+       y = "Count") +
+  theme_bw() +
+  theme(axis.title = element_text(face= 'bold', size = 15),
+        axis.text = element_text(face= 'bold', size = 15))
+
+```
+
+Let's examine a histogram of the response variable 'count'. 
+
+```{r, fig.cap="Histogram of insect counts."}
+hist(d$count)
+```
+
+The distribution is not visually normal but remember, with linear models the assumption of normality is not necessarily with the response variable but is instead about the errors (residuals of the model). Therefore, this histogram can hint of what sort of transformations we may want to use to have a model that better meets assumptions.
+
+While not ideal let's construct a linear model to examine the effect of the different sprays on insect counts without executing any data transformations or applying fancy GLMs:
+
+```{r}
+lm1 <- glmmTMB(count~spray, data=d)
+Anova(lm1, type=2)  ## car::Anova will print out an ANOVA table
+```
+
+Let's check the residuals of the model:
+
+```{r, fig.cap="Residual plots."}
+hist(resid(lm1)) #' residuals should be normally distributed, even for glm
+plot(resid(lm1)~fitted(lm1))   ## residuals should be evenly dispersed around 0 across the range of x's
+abline(h=0)     # funnel shapes or curvature is bad
+```
+
+```{r, fig.cap="QQ plot"}
+qqPlot(resid(lm1))  ## residuals should line up pretty closely to the blue line
+```
+
+Normality of the residuals would pass an eye check. However when we look at the variance of the residuals across spray treatment types we see evidence of violation where the variances are not necessarily homogeneous for each group:
+
+```{r, fig.cap="Boxplot of residuals to check for heterogeneity."}
+boxplot(resid(lm1) ~ d$spray)  ## variances should be homogeneous for each group
+```
+
+Let's use emmeans to calculate model means and confidence intervals.
+
+```{r}
+emmeans(lm1, ~spray)
+```
+
+Note all the standard error estimates are the same and the lower CL can be negative (although we know that counts can never be negative). Is this ok?
+
+### Log-linear model
+
+Now let's use a log-linear model to examine the effect of the different sprays on insect counts. To implement a log-linear model we can log transform the counts with the `log()` function. Note that the this function applies a natural logarithmic transformation to the specified variable or vector. If you want to use a base 10 logarithmic transformation then the correct function to use would be `log10`. Notice add 1 to the variable before the transformation because log(0) is undefined. You could add any small constant (e.g. 0.01 or 0.0001) but +1 is convenient because zeros go back to zero after the transformation. 
+
+```{r}
+log(0)
+log(1)
+```
+
+```{r}
+lm2 <- glmmTMB(log(count+1)~spray, data=d)
+Anova(lm2, type=2)  ## car::Anova will print out an ANOVA table testing
+```
+
+Let's check residuals:
+
+```{r, fig.cap="Residual plots."}
+hist(resid(lm2)) ## residuals should be normally distributed, even for glm
+plot(resid(lm2)~fitted(lm2)) +  ## residuals should be evenly dispersed around 0 across the range of x's
+  abline(h=0)                               # funnel shapes or curvature is bad
+```
+
+Let's plot the QQplot and boxplots next:
+
+```{r, fig.cap="QQ and box plots."}
+qqPlot(resid(lm2))  ## residuals should line up pretty closely to the blue line
+boxplot(resid(lm2) ~ d$spray)  ## variances should be homogeneous for each group
+```
+
+We can see above that the transformation makes the homogeneity of the residuals a little but more constant and consistent across treatment types. This seems to help especially treatment C relative to the model without the log transformation. However, the residuals of treatment C are still highly variable compared to treatments A, B, and C.
+
+Let's use emmeans again:
+
+```{r}
+emmeans(lm2, ~spray) ## note that all means still transformd to be on the log-scale
+
+```
+
+Note that the means are now on the log-transformed scale, as pointed out at the bottom on the emmeans table. Usually we want to back-transform the means to the original scale so they are easier to interpret. To calculate back-transformed means with 'emmeans' we can add additional arguments to the function:
+
+```{r}
+emmeans(lm2, ~spray, type='response') ## note that now all means are back-transformed
+```
+
+Now notice how the means columns has been relabeled response and is in the same units that we originally started with.
+
+### Generalized linear models (GLMs)
+
+Now let's use GLMs to examine the effect of the different sprays:
+
+```{r}
+glm1 <- glmmTMB(count~spray, data=d, family='poisson') 
+```
+
+The nice thing about using `glmmTMB()` is that it is a general function that conducts can a *generalized* linear model. To do this, we simply specify the 'family' (aka error distribution). The default is the 'Gaussian' distribution (normal), so if we don't specify a family it run a simple linear model. In the example above we implement a Poisson distribution, a distribution that is frequently used with count data. All the model "calculations" are saved in an object we called 'glm1'. An alternative to the `glmmTMB()` function is `glm()` which is available in base R.
+
+```{r}
+Anova(glm1, type=2)  ## car::Anova will print out an ANOVA table testing 
+```
+
+For the ANOVA table above, the null hypothesis that all group means are equal. The argument, type = 2, provides margin tests, which is usually better than the default Type I, especially for more complicated models (See 2.3.1 Box 3 for additional information about the type 2 method). For GLMs, Anova returns a likelihood ratio test with a chi-sq value.
+
+```{r}
+summary(glm1)   ## summary() will provide the model coefficients (ie. the "guts" of the model)
+```
+
+The coefficients allow you rebuild the means from the linear model, just like we did in 2.3. In this case, rebuilding the model from the coefficients is not super helpful because they are still on the log-scale and the p-values aren't as meaningful. Residual deviance should be about equal to the degrees of freedom. More than twice as high is problematic (note: we will come back to this problem when we discuss "overdispersion" in the next section).
+
+Now let's check assumptions of model by examining residuals:
+
+```{r, fig.cap="Residual plots."}
+hist(resid(glm1)) ## residuals should be normally distributed, but don't need to be for GLMs
+plot(resid(glm1)~fitted(glm1))  ## residuals should be evenly dispersed around 0 across the range of x's
+abline(h=0)                               # funnel shapes or curvature is bad
+```
+
+```{r, fig.cap="QQ and box plots."}
+qqPlot(resid(glm1))  ## calls from car package, residuals should line up pretty closely to the blue line
+# points that drift from line might be outliers
+boxplot(resid(glm1) ~ d$spray)  ## variances should be homogeneous for each group
+```
+
+Above, we see further improvement in the residual variances across treatment types. Diagnosing complex GLMs can be very difficult. Residuals are often NOT NORMALLY DISTRIBUTED, even though they should be. We will return to this later.
+
+```{r}
+emmeans(glm1, ~spray) ## emmeans::emmmeans will rebuild the model for you
+```
+
+The emmeans code above will print off the means, SE, and confidence intervals for each treatment group. Note, the coefficients are on the log-scale (look at model specifications of glm1 object). 
+
+We can also use `emmeans()` to make pairwise comparisons to directly compare each spray to the others. 
+
+```{r}
+emmeans(glm1, pairwise~spray, type='response')  ## adding 'pairwise' will conduct pairwise contrasts -- ie. compare each group mean to the others
+```
+
+Adding the argument 'pairwise' will conduct pairwise contrasts -- ie. compare each group mean to the others. This automatically adjusts p-values using the 'tukey' adjust. This can be changed using 'adjust=XX' within the `emmeans()` function. The type='response' will back-transform (i.e. in this case, exponentiate) to the original scale
+
+Let's compare residuals for normal, log-transformed, and poisson models:
+
+```{r, fig.cap="Residual plots for all models."}
+par(mfrow=c(1,3)) #allow plots to be shown in three
+boxplot(resid(lm1) ~ d$spray, main = "Linear") 
+boxplot(resid(lm2) ~ d$spray, main = "Log-Linear") 
+boxplot(resid(glm1) ~ d$spray, main = "GLM") 
+par(mfrow=c(1,1)) #return to default
+```
+
+Let's also compare means for normal, log-transformed, and poisson models:
+
+```{r}
+emmeans(lm1, ~spray)
+emmeans(lm2, ~spray, type='response')
+emmeans(glm1, ~spray, type='response')
+```
+
+What model do you think we should go with?
+
+## Overdispersion
+
+In this section we will go over how to deal with overdispersion. While overdispersion is covered more extensively in the lecture portion of the class, we will quickly outline what it is.
+
+Overdispersion is when variation is higher than what would be expected. A great example of how overdispersion would biologically come about in a given dataset is found from this [website](http://biometry.github.io/APES//LectureNotes/2016-JAGS/Overdispersion/OverdispersionJAGS.html). To summarize it briefly, imagine if you are collecting tree seedlings within a forest. These seedlings are naturally not uniformly distributed throughout the forest area. Instead they are more likely clumped, where most plots don't have any seedlings but a few have a ton. Therefore your counts of seedlings for a given plot can vary from 0 to numbers that are extremely high. This sort of variation can cause overdispersion to be observed in the model if it is not appropriately accounted for.
+
+Let's load the necessary libraries:
+
+```{r}
+library(tidyverse)
+library(emmeans)
+library(car)
+library(agridat)
+library(glmmTMB)
+```
+
+Load in and read about the `beall.webworms` dataset. The variables of interest are the y=count of webworms, spray = spray treatment, and lead = lead pesticide treatment. Don't worry about the block or other variables for now.
+
+```{r}
+data("beall.webworms")
+d1 <- beall.webworms
+?beall.webworms
+```
+
+```{r}
+head(d1)
+```
+
+Let's examine and plot the data:
+
+```{r, fig.cap="Plot of webworm data."}
+ggplot(d1, aes(x=spray, y=y, fill=lead)) + 
+  geom_violin(scale="width", adjust=2) + 
+  geom_point(position = position_jitterdodge(jitter.width=.5,
+                                             jitter.height=.1,
+                                             dodge.width = 1),
+             alpha=.1) +
+  theme_bw(base_size = 14)
+```
+
+Let's now run a model with the interaction of spray and lead. Its count data, so lets assume a Poisson distribution.
+
+```{r}
+r3 <- glm(y ~ spray * lead, data=d1, family="poisson")
+```
+
+Examine the model summary:
+
+```{r}
+summary(r3)
+Anova(r3)
+emmeans(r3, ~spray:lead, type='response') 
+```
+
+We need to load library(performance) to test for overdispersion:
+
+```{r}
+library(performance)
+check_overdispersion(r3) # overdispersion ratio calculator from performance package
+```
+Note that there is overdispersion and the "dispersion ratio = 1.355", which is (approximately) the **Residual deviance** over the **degrees of freedom** from the `summary()` printout.
+
+Now let's implement the negative binomial distribution, which will account for the overdispersion in the data.
+
+```{r}
+r4 <- glmmTMB(y ~ spray * lead, data=d1, family="nbinom2")
+Anova(r4)
+emmeans(r4, ~spray:lead, type='response') 
+```
+
+Let's use the DHARMa package to simulate residuals for poisson and negative binomial models.
+
+```{r}
+library(DHARMa)
+```
+
+We can interpret the simulated residuals very similarly to the raw residuals we have previously examined. The residuals should line up along the line in the QQ plot and there should be (roughly) equal scatter in the residuals among the groups. First let's look at simulated residuals from the Poisson model:
+
+```{r}
+simulateResiduals(r3, plot=T) ## plot simulated residuals
+```
+
+Histograms of the simulated residuals will be different than before. Here the simulated residuals should be flat. Its ok if the bars bump up and down, but they should be on average flat across the graph.The bars shouldn't be peaked (eg. "normally" distributed) or U-shaped or increasing/decreasing.
+
+```{r}
+hist(simulateResiduals(r3)) ## histogram should be flat
+```
+
+The residuals from the Poisson model look ok, but not perfect. The line in the QQ plot deviates from 1:1 and the variances are a little different among the groups. The histogram looks ok.
+
+Now let's look at residuals for negative binomial model:
+
+```{r}
+simulateResiduals(r4, plot=T) ## plot simulated residuals
+simulateResiduals(r4, hist=T) ## histogram should be flat
+```
+
+## Binomial GLM
+
+In this section we will run a GLM with a binomial error distribution. We load the following packages:
+
+```{r}
+library(tidyverse)
+library(emmeans)
+library(car)
+library(agridat)
+library(DHARMa)
+library(glmmTMB)
+library(viridis)
+```
+
+We will use the Titanic survival dataset for the binomial GLM.
+
+```{r}
+## LOAD TITANIC SURVIVAL DATASET
+data("TitanicSurvival")
+t1 <- TitanicSurvival %>% filter(age>17) # filter out children
+head(t1)
+```
+
+Let's quickly plot the data:
+
+```{r, fig.cap="Plot of titanic survival data."}
+ggplot(t1, aes(x=passengerClass, y=survived, color=sex)) +
+  geom_jitter(height=.2, width=0.2)
+```
+
+Now we can construct a GLM to estimate survival as a function of sex and passengerClass while include Age as co-variate.
+
+```{r}
+tglm1 <- glmmTMB(survived ~ sex * passengerClass + age, data=t1, family = binomial(link = "logit"))
+```
+
+Let's look at the ANOVA table and summary of the model:
+
+```{r}
+## print off anova table
+Anova(tglm1)
+## print off summary
+summary(tglm1)
+```
+
+Now we can check residuals:
+
+```{r, fig.cap="Residual plots."}
+hist(resid(tglm1)) ## residuals should be normally distributed, even for glm
+plot(resid(tglm1)~fitted(tglm1)) +  ## residuals should be evenly dispersed around 0 across the range of x's
+  abline(h=0)                               # funnel shapes or curvature is bad
+```
+
+```{r, fig.cap="Residual plots."}
+qqPlot(resid(tglm1))  ## residuals should line up pretty closely to the blue line
+boxplot(resid(tglm1) ~ t1$passengerClass)  ## variances should be homogeneous for each group
+```
+
+```{r, fig.cap="Simulated residual plots."}
+## simulate residuals
+plot(simulateResiduals(tglm1)) ## plot simulated residuals
+hist(simulateResiduals(tglm1)) ## histogram should be flat
+```
+
+To make sense of the model output let's use the emmeans package:
+
+```{r}
+emmeans(tglm1, pairwise ~ sex:passengerClass)
+```
+
+The estimates in the above output are transformed via the link funciton (logit in this case). We can obtain back-transformed means. This will provide the estimated probability of survival for each sex:passengerClass combination.
+
+```{r}
+emmeans(tglm1, pairwise ~ sex:passengerClass, type="response")      ## type= does contrasts before back-transforming (more appropriate!)
+```
+
+In order to plot we need to create new variable that is 0 or 1, instead of 'yes' or 'no'.
+
+```{r}
+t1$surv <- if_else(t1$survived=='yes',1,0)
+```
+
+Now we can make a plot with regression lines:
+
+```{r, fig.cap="Plot of survival probabilities by sex and class."}
+ggplot(t1, aes(x=age, y=surv, color=sex)) + 
+  geom_jitter(height=.1, width=0) + 
+  geom_smooth(method="glm",
+              method.args=list(family="binomial"), 
+              formula = y ~ x, se=F, lwd=1.5) +
+  facet_wrap(~passengerClass) +
+  theme_bw(base_size = 20)
+```
+
+We can improve the aesthetics of the plot:
+
+```{r}
+tm <- emmeans(tglm1, ~ sex:passengerClass, type="response") %>% as.data.frame()
+
+plot1 <- ggplot() +
+  geom_jitter(data=t1 %>% filter(sex=='female'),
+              aes(x=passengerClass, y=surv+.01, color=sex),
+              height=0, width=.25, size=1, alpha=.1) +
+  geom_jitter(data=t1 %>% filter(sex=='male'), 
+              aes(x=passengerClass, y=surv-.01, color=sex), 
+              height=0, width=.25, size=1, alpha=.1) +
+  geom_errorbar(data=tm,
+                aes(x=passengerClass,
+                    y=prob, ymin=(prob-SE), 
+                    ymax=(prob+SE), color=sex), 
+                width=.2, lwd=1.25,
+                position = position_dodge(width=0.5)) +
+  geom_point(data=tm , 
+             aes(x=passengerClass, y=prob, color=sex), 
+             size=5, position=position_dodge(width=0.5)) + 
+  scale_y_continuous('survival', labels = scales::percent) +
+  scale_color_viridis(discrete = T) +
+  theme(panel.background = element_blank(),                           
+        panel.border = element_rect(color="black",
+                                    fill=NA, size=2)) +
+  theme(axis.ticks.length=unit(0.3, "cm"),  
+        axis.text.x =  element_text(margin=margin(5,5,5,5,"pt"),colour="black"),
+        axis.text.y = element_text(margin=margin(5,5,5,5,"pt"),colour="black")) +  ## change axis tick marks to make them a little longer
+  #theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+  theme(text = element_text(size=20)) 
+plot1
+```
+
+```{r}
+plot2 <- ggplot() +
+  geom_jitter(data=t1 ,
+              aes(x=passengerClass, y=surv, 
+                  color=passengerClass), 
+              height=.01, width=.35, 
+              size=1, alpha=.2) +
+  geom_errorbar(data=tm ,
+                aes(x=passengerClass,
+                    y=prob, ymin=(prob-SE),
+                    ymax=(prob+SE), 
+                    color=passengerClass), 
+                width=.2, lwd=1.25) + ## make bars thinner
+  geom_point(data=tm , 
+             aes(x=passengerClass, 
+                 y=prob, color=passengerClass), size=5) +
+  facet_wrap(~sex) +
+  scale_y_continuous('survival', labels = scales::percent) +
+  scale_color_viridis(discrete = T, option = 'C', direction=-1) +
+  theme(panel.background = element_blank(),                           
+        panel.border = element_rect(color="black", fill=NA, size=2)) +
+  theme(axis.ticks.length=unit(0.3, "cm"),  
+        axis.text.x = element_text(margin=margin(5,5,5,5,"pt"),colour="black"),
+        axis.text.y = element_text(margin=margin(5,5,5,5,"pt"),colour="black")) + 
+  theme(text = element_text(size=20)) 
+plot2
+```
+
+## Gamma GLM
+
+In this section we will learn about implementing the Gamma distribution in R. This distribution is helpful in for modeling a variety of data but is most frequently applied to data that is right skewed but not necessarily count data. The next several examples will illustrate how to generate Gamma distributed data based on several parameters as well as how to implement Gamma GLMs.
+
+### Example 1
+
+Here we generate a distribution using the `rgamma()` function. Remember to set.seed so we get reproducible results.
+
+```{r}
+set.seed(15)
+var1 <- rgamma(1000, shape = 2, scale = .5)
+hist(var1, main='mean=1, scale=0.5')
+```
+
+Note that the mean of this distribution should be 1 because the mean is equal to product of the shape parameter and scale parameter. So, 2 multiplied by 0.5 should be 1.
+
+```{r}
+set.seed(15)
+g1 <- glmmTMB(var1 ~ 1, family=Gamma(link="inverse"))
+g1
+## mean should be ~1 with inverse link function
+1/0.9657
+```
+
+In the above example we run a Gamma GLM as an intercept only model. By running an intercept only model we assume no other predictors can predict the response variable. Therefore the output from this model would simply be the mean of the response, which should be \~1 (which it is after applying the right link function to the intercept).
+
+```{r}
+g1a <- glmmTMB(var1 ~ 1, family=Gamma(link="log"))
+g1a
+## mean should be ~1 with log link function
+exp(0.03491)
+```
+
+The same is shown above but in this case we use a log link and so to back transform the intercept we exponentiate. Using either the inverse or log-link should give us the same answer.
+
+### Example 2
+
+In the example below we generate another Gamma distributed variable but we change the shape and scale parameter. But because the mean is based on the product of the two, the mean remains as 1.
+
+```{r}
+set.seed(15)
+var1 <- rgamma(1000, shape = 4, scale = .25)
+hist(var1, main='mean=1, scale=0.25')
+
+# mean = a (shape) * b (rate)
+# mean = 4 * .25 = 1.0
+
+g1 <- glmmTMB(var1 ~ 1, family=Gamma(link="inverse"))
+g1
+## mean should be 1 with inverse link function
+1/0.9711
+
+g1a <- glmmTMB(var1 ~ 1, family=Gamma(link="log"))
+g1a
+## mean should be 1 with log link function
+exp(0.02937)
+
+```
+
+We once again repeat the same exercise as example 1 and see that when the appropriate back transformation based on link functions are applied to the intercept, it results in the original mean.
+
+### Example 3
+
+In this example we change the mean of the distribution to 0.5 by changing the shape and scale parameters to 1 and 0.5 respectively. We then repeat the previous examples and run the inverse and log link Gamma GLMs and observe how the intercepts are backtransformed to approximate the previously set mean value.
+
+```{r}
+set.seed(15)
+var1 <- rgamma(1000, shape = 1, scale = .5)
+hist(var1, main='mean=0.5, scale=0.5')
+
+# mean = a (shape) * b (rate)
+# mean = 1 * .5 = 0.5
+
+g1 <- glmmTMB(var1 ~ 1, family=Gamma(link="inverse"))
+g1
+## mean should be 1 with inverse link function
+1/g1$sdr$par.fixed[1]
+```
+
+```{r}
+g1a <- glmmTMB(var1 ~ 1, family=Gamma(link="log"))
+g1a$sdr$par.fixed[1]
+
+## mean should be 1 with log link function
+exp(g1a$sdr$par.fixed[1])
+```
+
+### Example 4
+
+This example follows the previous examples but with the mean changed to 0.25.
+
+```{r}
+set.seed(15)
+var1 <- rgamma(1000, shape = .25, scale = 1)
+hist(var1, main='mean=0.25, scale=1')
+
+# mean = a (shape) * b (rate)
+# mean = .5 * 1 = 0.5
+
+g1 <- glmmTMB(var1 ~ 1, family=Gamma(link="inverse"))
+g1
+## mean should be 1 with inverse link function
+1/g1$sdr$par.fixed[1]
+```
+
+```{r}
+
+g1a <- glmmTMB(var1 ~ 1, family=Gamma(link="log"))
+g1a
+## mean should be 1 with log link function
+exp(g1a$sdr$par.fixed[1])
+
+```
+
+## Briefly running Gamma GLMs
+
+In this section we simulate data for two groups:
+
+```{r}
+set.seed(25)
+v1 <- rgamma(100, shape = 3, scale = .5) %>% as.data.frame()
+colnames(v1) <- "var"
+v1$group <- "one"
+head(v1)
+v2 <- rgamma(100, shape = 1, scale = .2) %>% as.data.frame()
+colnames(v2) <- "var"
+v2$group <- "two"
+head(v2)
+```
+
+Then bind the two groups into one dataset:
+
+```{r}
+dat1 <- rbind(v1,v2) #mean group 1 = 1.5, group 2 = 0.5
+dat1 %>% mutate(obs=rep(1:100,2)) %>% group_by(obs) %>% pivot_wider(names_from = group,values_from = var) %>% 
+  ungroup() %>% select(one,two)
+
+```
+
+We then check the data distributions:
+
+```{r, fig.cap="Histogram."}
+hist(dat1$var)
+```
+
+```{r, fig.cap="Histogram for each group."}
+ggplot(dat1, aes(x=var)) + geom_histogram(bins=8, fill="grey", color="black") + 
+  facet_wrap(~group, scales="free") + theme_bw(base_size = 16)
+```
+
+Then we construct several different models (a Gaussian, a Gamma, and a log-normal) and use AIC to compare models. Obviously we know the data come from a Gamma distribution because we simulated them. However, we will fit these different models to examine model fit using residuals and AIC.
+
+```{r}
+#### construct model w/ normal distribution
+mod0 <- glmmTMB(var ~ group, data=dat1)
+plot(simulateResiduals(mod0))
+summary(mod0)
+emmeans(mod0, ~group, type="response")
+```
+
+```{r}
+#### construct model w/ log-normal distribution
+mod0a <- glmmTMB(log(var) ~ group, data=dat1)
+plot(simulateResiduals(mod0a))
+summary(mod0a)
+emmeans(mod0a, ~group, type="response")
+```
+
+```{r}
+#### construct model w/ Gamma distribution and inverse link
+mod1 <- glmmTMB(var ~ group, data=dat1, family=Gamma(link = "inverse"))
+plot(simulateResiduals(mod1))
+summary(mod1)
+emmeans(mod1, ~group, type="response")
+```
+
+```{r}
+#### construct model w/ Gamma distribution and log link
+mod2 <- glmmTMB(var ~ group, data=dat1, family=Gamma(link = "log"))
+plot(simulateResiduals(mod2))
+summary(mod2)
+emmeans(mod2, ~group, type="response")
+```
+
+AIC:
+
+```{r}
+AIC(mod0,mod0a,mod1,mod2)
+```
+
+Which model is the best ranked model?
