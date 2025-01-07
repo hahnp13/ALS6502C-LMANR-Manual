@@ -516,9 +516,9 @@ Anova(mm1)
 ```
 
 
-Two-way anova with block and nitro nested within block as random effects. This is a case where glmmTMB() errors out for some reason but lmer can handle the model. (not sure why)
+Two-way anova with block and nitro nested within block as random effects.
 ```{r}
-mm2 <- lme4::lmer(yield ~ gen*nitro+(1|loc/nitro), data=gomez_summarized)
+mm2 <- glmmTMB(yield ~ gen*nitro+(1|loc/nitro), data=gomez_summarized)
 Anova(mm2)
 ```
 
