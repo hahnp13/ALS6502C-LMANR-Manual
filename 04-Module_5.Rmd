@@ -538,7 +538,7 @@ Above we dealt with the extra replicates by averaging them to avoid pseudo-repli
 
 Two-way anova with block, nitro, and gen nested within block as random effects, using the full dataset.
 ```{r}
-mm3 <- lme4::lmer(yield ~ gen*nitro+(1|loc/nitro/gen), data=gomez)
+mm3 <- glmmTMB(yield ~ gen*nitro+(1|loc/nitro/gen), data=gomez)
 Anova(mm3) ## identical to averaged model in mm2
 summary(mm3)  ## additional variance component, so no information sacrificed
 ```
