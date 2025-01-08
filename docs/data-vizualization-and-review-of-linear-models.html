@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>2 Data vizualization and review of linear models | Linear models in Agriculture and Natural Resources</title>
+  <meta name="description" content="<p>This book contains code associated with ALS6502C.
+The HTML output format for this example is bookdown::gitbook,
+set in the _output.yml file.</p>" />
+  <meta name="generator" content="bookdown 0.42 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="2 Data vizualization and review of linear models | Linear models in Agriculture and Natural Resources" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="<p>This book contains code associated with ALS6502C.
+The HTML output format for this example is bookdown::gitbook,
+set in the _output.yml file.</p>" />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="2 Data vizualization and review of linear models | Linear models in Agriculture and Natural Resources" />
+  
+  <meta name="twitter:description" content="<p>This book contains code associated with ALS6502C.
+The HTML output format for this example is bookdown::gitbook,
+set in the _output.yml file.</p>" />
+  
+
+<meta name="author" content="Phil Hahn &amp; Leo Ohyama" />
+
+
+<meta name="date" content="2025-01-08" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="index.html"/>
+<link rel="next" href="data-management-and-exploration.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Linear Models in Agriculture and Natural Resources</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Preface</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#learning-outcomes"><i class="fa fa-check"></i><b>1.1</b> Learning outcomes:</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#overview-of-statistical-analysis-workflow"><i class="fa fa-check"></i><b>1.2</b> Overview of statistical analysis workflow</a>
+<ul>
+<li class="chapter" data-level="1.2.1" data-path="index.html"><a href="index.html#workflow-pre-analysis"><i class="fa fa-check"></i><b>1.2.1</b> Workflow pre-analysis</a></li>
+<li class="chapter" data-level="1.2.2" data-path="index.html"><a href="index.html#workflow-for-analysis"><i class="fa fa-check"></i><b>1.2.2</b> Workflow for analysis</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html"><i class="fa fa-check"></i><b>2</b> Data vizualization and review of linear models</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#introduction-to-data-visualization"><i class="fa fa-check"></i><b>2.1</b> Introduction to Data Visualization</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#continuous-variables"><i class="fa fa-check"></i><b>2.1.1</b> Continuous Variables</a></li>
+<li class="chapter" data-level="2.1.2" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#fancy-scatter-plots"><i class="fa fa-check"></i><b>2.1.2</b> Fancy Scatter plots</a></li>
+<li class="chapter" data-level="2.1.3" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#categorical-variables"><i class="fa fa-check"></i><b>2.1.3</b> Categorical Variables</a></li>
+<li class="chapter" data-level="2.1.4" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#plots-for-categorical-data-with-ggplot2"><i class="fa fa-check"></i><b>2.1.4</b> Plots for categorical data with ggplot2</a></li>
+<li class="chapter" data-level="2.1.5" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#breakout-group-challenge"><i class="fa fa-check"></i><b>2.1.5</b> Breakout group challenge</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#regression-as-a-linear-model"><i class="fa fa-check"></i><b>2.2</b> Regression as a linear model</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#an-example-of-linear-regression-in-r"><i class="fa fa-check"></i><b>2.2.1</b> An Example of Linear Regression in R</a></li>
+<li class="chapter" data-level="2.2.2" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#regression-challenge"><i class="fa fa-check"></i><b>2.2.2</b> Regression Challenge</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#anova-as-a-linear-model"><i class="fa fa-check"></i><b>2.3</b> ANOVA as a linear model</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#example-of-a-one-way-anova-in-r"><i class="fa fa-check"></i><b>2.3.1</b> Example of a one-way ANOVA in R</a></li>
+<li class="chapter" data-level="2.3.2" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#anova-challenge"><i class="fa fa-check"></i><b>2.3.2</b> ANOVA Challenge</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#extra-data-visualization"><i class="fa fa-check"></i><b>2.4</b> Extra Data Visualization</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#adding-model-averages-to-plots"><i class="fa fa-check"></i><b>2.4.1</b> Adding Model Averages to Plots</a></li>
+<li class="chapter" data-level="2.4.2" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#extra-r-challenge"><i class="fa fa-check"></i><b>2.4.2</b> Extra R Challenge</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#ggplot2-app-via-shiny"><i class="fa fa-check"></i><b>2.5</b> ggplot2 app via Shiny</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html"><i class="fa fa-check"></i><b>3</b> Data Management and Exploration</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#data-management"><i class="fa fa-check"></i><b>3.1</b> Data Management</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#making-and-modifying-variables"><i class="fa fa-check"></i><b>3.1.1</b> Making and modifying variables</a></li>
+<li class="chapter" data-level="3.1.2" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#variables-with-the-tidyverse"><i class="fa fa-check"></i><b>3.1.2</b> Variables with the tidyverse</a></li>
+<li class="chapter" data-level="3.1.3" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#reshape-data-for-better-usability"><i class="fa fa-check"></i><b>3.1.3</b> Reshape data for better usability</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#data-exploration"><i class="fa fa-check"></i><b>3.2</b> Data Exploration</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#distributions-summary-statistics"><i class="fa fa-check"></i><b>3.2.1</b> Distributions &amp; summary statistics</a></li>
+<li class="chapter" data-level="3.2.2" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#examining-for-outliers"><i class="fa fa-check"></i><b>3.2.2</b> Examining for outliers</a></li>
+<li class="chapter" data-level="3.2.3" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#exploring-relationships-in-data"><i class="fa fa-check"></i><b>3.2.3</b> Exploring relationships in data</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#model-selection"><i class="fa fa-check"></i><b>3.3</b> Model Selection</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#quick-introduction"><i class="fa fa-check"></i><b>3.3.1</b> Quick introduction</a></li>
+<li class="chapter" data-level="3.3.2" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#basic-calculations"><i class="fa fa-check"></i><b>3.3.2</b> Basic calculations</a></li>
+<li class="chapter" data-level="3.3.3" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#aicc"><i class="fa fa-check"></i><b>3.3.3</b> AICc</a></li>
+<li class="chapter" data-level="3.3.4" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#case-study-with-aic"><i class="fa fa-check"></i><b>3.3.4</b> Case study with AIC</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html"><i class="fa fa-check"></i><b>4</b> Generalized Linear Models</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#overview-of-generalized-linear-models"><i class="fa fa-check"></i><b>4.1</b> Overview of Generalized Linear Models</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#example-one-way-anova-with-non-normal-data"><i class="fa fa-check"></i><b>4.1.1</b> Example: One-way ANOVA with non-normal data</a></li>
+<li class="chapter" data-level="4.1.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#log-linear-model"><i class="fa fa-check"></i><b>4.1.2</b> Log-linear model</a></li>
+<li class="chapter" data-level="4.1.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#generalized-linear-models-glms"><i class="fa fa-check"></i><b>4.1.3</b> Generalized linear models (GLMs)</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#overdispersion"><i class="fa fa-check"></i><b>4.2</b> Overdispersion</a></li>
+<li class="chapter" data-level="4.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#binomial-glm"><i class="fa fa-check"></i><b>4.3</b> Binomial GLM</a></li>
+<li class="chapter" data-level="4.4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#gamma-glm"><i class="fa fa-check"></i><b>4.4</b> Gamma GLM</a>
+<ul>
+<li class="chapter" data-level="4.4.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#example-1"><i class="fa fa-check"></i><b>4.4.1</b> Example 1</a></li>
+<li class="chapter" data-level="4.4.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#example-2"><i class="fa fa-check"></i><b>4.4.2</b> Example 2</a></li>
+<li class="chapter" data-level="4.4.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#example-3"><i class="fa fa-check"></i><b>4.4.3</b> Example 3</a></li>
+<li class="chapter" data-level="4.4.4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#example-4"><i class="fa fa-check"></i><b>4.4.4</b> Example 4</a></li>
+</ul></li>
+<li class="chapter" data-level="4.5" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#briefly-running-gamma-glms"><i class="fa fa-check"></i><b>4.5</b> Briefly running Gamma GLMs</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html"><i class="fa fa-check"></i><b>5</b> Mixed-effect models</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#interactions-in-statistical-models"><i class="fa fa-check"></i><b>5.1</b> Interactions in statistical models</a>
+<ul>
+<li class="chapter" data-level="5.1.1" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#ancova-multiple-intercept-model"><i class="fa fa-check"></i><b>5.1.1</b> ANCOVA: multiple intercept model</a></li>
+<li class="chapter" data-level="5.1.2" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#ancova-multiple-intercept-and-slope-model"><i class="fa fa-check"></i><b>5.1.2</b> ANCOVA: multiple intercept AND slope model</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#block-designs"><i class="fa fa-check"></i><b>5.2</b> Block Designs</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#data-prep-and-plotting"><i class="fa fa-check"></i><b>5.2.1</b> Data prep and Plotting</a></li>
+<li class="chapter" data-level="5.2.2" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#models-with-block-designs"><i class="fa fa-check"></i><b>5.2.2</b> Models with block designs</a></li>
+<li class="chapter" data-level="5.2.3" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#blocks-as-random-effects"><i class="fa fa-check"></i><b>5.2.3</b> Blocks as random effects</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#variance-components"><i class="fa fa-check"></i><b>5.3</b> Variance components</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#r2"><i class="fa fa-check"></i><b>5.3.1</b> R2</a></li>
+<li class="chapter" data-level="5.3.2" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#chick-weight-example"><i class="fa fa-check"></i><b>5.3.2</b> Chick weight example</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#split-plot-and-nested-designs"><i class="fa fa-check"></i><b>5.4</b> Split-plot and nested designs</a>
+<ul>
+<li class="chapter" data-level="5.4.1" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#additional-nesting"><i class="fa fa-check"></i><b>5.4.1</b> Additional nesting</a></li>
+<li class="chapter" data-level="5.4.2" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#r-challenge"><i class="fa fa-check"></i><b>5.4.2</b> R CHALLENGE</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#repeated-measures"><i class="fa fa-check"></i><b>5.5</b> Repeated Measures</a>
+<ul>
+<li class="chapter" data-level="5.5.1" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#r-challange---repeated-measures"><i class="fa fa-check"></i><b>5.5.1</b> R CHALLANGE - REPEATED MEASURES</a></li>
+</ul></li>
+<li class="chapter" data-level="5.6" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#additional-lmm-reading"><i class="fa fa-check"></i><b>5.6</b> Additional LMM reading</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="generalized-linear-mixed-models.html"><a href="generalized-linear-mixed-models.html"><i class="fa fa-check"></i><b>6</b> Generalized linear mixed models</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="generalized-linear-mixed-models.html"><a href="generalized-linear-mixed-models.html#poisson-and-nb-glmms"><i class="fa fa-check"></i><b>6.1</b> Poisson and NB GLMMs</a>
+<ul>
+<li class="chapter" data-level="6.1.1" data-path="generalized-linear-mixed-models.html"><a href="generalized-linear-mixed-models.html#improving-the-models-whats-next"><i class="fa fa-check"></i><b>6.1.1</b> Improving the models: What’s next?</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="generalized-linear-mixed-models.html"><a href="generalized-linear-mixed-models.html#binomial-glmms"><i class="fa fa-check"></i><b>6.2</b> Binomial GLMMs</a></li>
+<li class="chapter" data-level="6.3" data-path="generalized-linear-mixed-models.html"><a href="generalized-linear-mixed-models.html#beta-distributions"><i class="fa fa-check"></i><b>6.3</b> Beta Distributions</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="generalized-linear-mixed-models.html"><a href="generalized-linear-mixed-models.html#r-challenge-1"><i class="fa fa-check"></i><b>6.3.1</b> R CHALLENGE</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="generalized-linear-mixed-models.html"><a href="generalized-linear-mixed-models.html#zero-inflated-models"><i class="fa fa-check"></i><b>6.4</b> Zero-Inflated Models</a></li>
+<li class="chapter" data-level="6.5" data-path="generalized-linear-mixed-models.html"><a href="generalized-linear-mixed-models.html#model-app-exercise"><i class="fa fa-check"></i><b>6.5</b> Model App exercise</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Linear models in Agriculture and Natural Resources</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="data-vizualization-and-review-of-linear-models" class="section level1 hasAnchor" number="2">
+<h1><span class="header-section-number">2</span> Data vizualization and review of linear models<a href="data-vizualization-and-review-of-linear-models.html#data-vizualization-and-review-of-linear-models" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>After completing this module, students will be able to:</p>
+<ul>
+<li><p>2.1 Create figures for graphing continuous and categorical variable</p></li>
+<li><p>2.2 Analyze continuous data using linear models (aka regression) in R</p></li>
+<li><p>2.3 Analyze categorical data using linear models (aka ANOVA) in R</p></li>
+</ul>
+<div id="introduction-to-data-visualization" class="section level2 hasAnchor" number="2.1">
+<h2><span class="header-section-number">2.1</span> Introduction to Data Visualization<a href="data-vizualization-and-review-of-linear-models.html#introduction-to-data-visualization" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Data visualization is a great way to start a statistics course because it is a powerful form of communication. Think about this, where do your eyes normally go to when you read a peer-reviewed paper? For most people its the figures. Oftentimes many academics will structure their papers around several key figures allowing these figures to tell the “story” of the manuscript. As such, effective data viz is a powerful tool for any scientist. Additionally, by setting up the x- and y-axes, it makes us think about the statistical model that we will eventually use to analyze the data.</p>
+<p>In this section, we will begin by practicing plotting data in RStudtio using the iris dataset. The iris dataset contains measurements of plant floral traits across several species. Let’s take a look.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="data-vizualization-and-review-of-linear-models.html#cb1-1" tabindex="-1"></a><span class="fu">data</span>(iris) <span class="co"># load data (already exists in base R)</span></span></code></pre></div>
+<p>Quick note: the <em>#</em> allows us to make comments in the code without R reading it.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="data-vizualization-and-review-of-linear-models.html#cb2-1" tabindex="-1"></a><span class="fu">str</span>(iris)</span></code></pre></div>
+<pre><code>## &#39;data.frame&#39;:    150 obs. of  5 variables:
+##  $ Sepal.Length: num  5.1 4.9 4.7 4.6 5 5.4 4.6 5 4.4 4.9 ...
+##  $ Sepal.Width : num  3.5 3 3.2 3.1 3.6 3.9 3.4 3.4 2.9 3.1 ...
+##  $ Petal.Length: num  1.4 1.4 1.3 1.5 1.4 1.7 1.4 1.5 1.4 1.5 ...
+##  $ Petal.Width : num  0.2 0.2 0.2 0.2 0.2 0.4 0.3 0.2 0.2 0.1 ...
+##  $ Species     : Factor w/ 3 levels &quot;setosa&quot;,&quot;versicolor&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
+<p>The <code>str()</code> function allows us to see the structure of the data. The iris dataframe has measurements of 4 traits on 3 species. The traits (Sepal.Lenth, Sepal.Width, Petal.Length, Petal.Width) are continuous, or numeric, variables, whereas the Species column is a factor with three levels (three species). Below we can use the <code>head()</code> function to print the first 6 rows of the dataframe.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="data-vizualization-and-review-of-linear-models.html#cb4-1" tabindex="-1"></a><span class="fu">head</span>(iris)</span></code></pre></div>
+<pre><code>##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+## 1          5.1         3.5          1.4         0.2  setosa
+## 2          4.9         3.0          1.4         0.2  setosa
+## 3          4.7         3.2          1.3         0.2  setosa
+## 4          4.6         3.1          1.5         0.2  setosa
+## 5          5.0         3.6          1.4         0.2  setosa
+## 6          5.4         3.9          1.7         0.4  setosa</code></pre>
+<div id="continuous-variables" class="section level3 hasAnchor" number="2.1.1">
+<h3><span class="header-section-number">2.1.1</span> Continuous Variables<a href="data-vizualization-and-review-of-linear-models.html#continuous-variables" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="scatterplots-with-base-r" class="section level4 hasAnchor" number="2.1.1.1">
+<h4><span class="header-section-number">2.1.1.1</span> Scatterplots with base R<a href="data-vizualization-and-review-of-linear-models.html#scatterplots-with-base-r" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>We can start with a simple plot where we plot sepal length by width:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="data-vizualization-and-review-of-linear-models.html#cb6-1" tabindex="-1"></a><span class="fu">plot</span>(Sepal.Length<span class="sc">~</span>Sepal.Width, <span class="at">data=</span>iris)</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-4"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-4-1.png" alt="Plot of Sepal.Length by Sepal.Width" width="960" />
+<p class="caption">
+Figure 2.1: Plot of Sepal.Length by Sepal.Width
+</p>
+</div>
+<p>We can also specify colors using the “col =” argument within the plot function wrapper.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="data-vizualization-and-review-of-linear-models.html#cb7-1" tabindex="-1"></a><span class="fu">plot</span>(Sepal.Length<span class="sc">~</span>Sepal.Width, <span class="at">data=</span>iris, <span class="at">col=</span><span class="st">&quot;blue&quot;</span>)</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-5"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-5-1.png" alt="Plot of Sepal.Length by Sepal.Width with blue points" width="960" />
+<p class="caption">
+Figure 2.2: Plot of Sepal.Length by Sepal.Width with blue points
+</p>
+</div>
+<p>We can get more complex by specifying solid dots with separate colors for each species.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="data-vizualization-and-review-of-linear-models.html#cb8-1" tabindex="-1"></a><span class="fu">plot</span>(Sepal.Length<span class="sc">~</span>Sepal.Width, </span>
+<span id="cb8-2"><a href="data-vizualization-and-review-of-linear-models.html#cb8-2" tabindex="-1"></a>     <span class="at">data=</span>iris, </span>
+<span id="cb8-3"><a href="data-vizualization-and-review-of-linear-models.html#cb8-3" tabindex="-1"></a>     <span class="at">pch=</span><span class="dv">16</span>,</span>
+<span id="cb8-4"><a href="data-vizualization-and-review-of-linear-models.html#cb8-4" tabindex="-1"></a>     <span class="at">col=</span><span class="fu">c</span>(<span class="st">&quot;red&quot;</span>,<span class="st">&quot;blue&quot;</span>,<span class="st">&quot;purple&quot;</span>)[iris<span class="sc">$</span>Species]) </span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-6"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-6-1.png" alt="Plot of Sepal.Length by Sepal.Width with different colored points for each of the three species" width="960" />
+<p class="caption">
+Figure 2.3: Plot of Sepal.Length by Sepal.Width with different colored points for each of the three species
+</p>
+</div>
+<p>We can specify to plot only one species by editing the “data=” argument. The “==” in the code means “exactly equals”. Using just “=” will not work.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="data-vizualization-and-review-of-linear-models.html#cb9-1" tabindex="-1"></a><span class="do">### plot only the data for Iris virginica</span></span>
+<span id="cb9-2"><a href="data-vizualization-and-review-of-linear-models.html#cb9-2" tabindex="-1"></a><span class="fu">plot</span>(Sepal.Length<span class="sc">~</span>Sepal.Width, </span>
+<span id="cb9-3"><a href="data-vizualization-and-review-of-linear-models.html#cb9-3" tabindex="-1"></a>     <span class="at">data=</span>iris[iris<span class="sc">$</span>Species<span class="sc">==</span><span class="st">&#39;virginica&#39;</span>,]) <span class="do">## use brackets to select the columns you want</span></span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-7"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-7-1.png" alt="Plot of Sepal.Length by Sepal.Width for only viriginica species" width="960" />
+<p class="caption">
+Figure 2.4: Plot of Sepal.Length by Sepal.Width for only viriginica species
+</p>
+</div>
+<p>Finally, we can add a standard linear trend line across the data. These trend lines can be used to both explore potential relationships in the data and to also show readers or viewers of an established and existing trend.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="data-vizualization-and-review-of-linear-models.html#cb10-1" tabindex="-1"></a><span class="fu">plot</span>(Sepal.Length<span class="sc">~</span>Sepal.Width, </span>
+<span id="cb10-2"><a href="data-vizualization-and-review-of-linear-models.html#cb10-2" tabindex="-1"></a>     <span class="at">data=</span>iris[iris<span class="sc">$</span>Species<span class="sc">==</span><span class="st">&#39;virginica&#39;</span>,])</span>
+<span id="cb10-3"><a href="data-vizualization-and-review-of-linear-models.html#cb10-3" tabindex="-1"></a><span class="fu">abline</span>(<span class="fu">lm</span>(Sepal.Length<span class="sc">~</span>Sepal.Width,</span>
+<span id="cb10-4"><a href="data-vizualization-and-review-of-linear-models.html#cb10-4" tabindex="-1"></a>          <span class="at">data=</span>iris[iris<span class="sc">$</span>Species<span class="sc">==</span><span class="st">&#39;virginica&#39;</span>,]))  <span class="do">## adds trend line for linear model</span></span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-8"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-8-1.png" alt="Plot of Sepal.Length by Sepal.Width with trendline for viriginica species" width="960" />
+<p class="caption">
+Figure 2.5: Plot of Sepal.Length by Sepal.Width with trendline for viriginica species
+</p>
+</div>
+</div>
+<div id="scatter-plots-with-ggplot2" class="section level4 hasAnchor" number="2.1.1.2">
+<h4><span class="header-section-number">2.1.1.2</span> Scatter plots with ggplot2<a href="data-vizualization-and-review-of-linear-models.html#scatter-plots-with-ggplot2" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>In the previous plots we used the basic R commands to plot. But we can also use other packages to ease the coding and specification of plot types. One of these packages is called gpplot2. ggplot2 comes with the metapackage (a package of packages) called the ‘tidyverse’ package.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="data-vizualization-and-review-of-linear-models.html#cb11-1" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="do">## install tidyverse if necessary</span></span></code></pre></div>
+<p>More information on how to use ggplot2 can be found <a href="https://r4ds.had.co.nz/data-visualisation.html">here</a>. For the sake of time, we provide a very bare bones but basic introduction to this powerful package in the next few lines.</p>
+<table>
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>Box 1. ggplot2</strong> is a popular package for many life science researchers because it offer an intuitive way to code graphics. The ggplot language structure uses layers of different <em>geom</em> objects. A geom object is essentially what the structure of a ggplot plot object. So a scatter plot would include a geom object for points which is created with the <code>geom_points()</code> function.</td>
+</tr>
+</tbody>
+</table>
+<p>The basic framework that ggplot2 revolves around specifying a data set and plotting those data using arguments in the aesthetic section of the ggplot2 code. The data set is specified with the <strong>data=</strong> argument. The aesthetic section of code is specified by the function <code>aes()</code>. Within the parentheses of this function you will be able to choose and manipulate a variety of variables from your chosen data set.</p>
+<p>Let’s start by recreating the simple plot of sepal length by width. Here we set the data = argument to iris because we are plotting data from the iris data set. Noticed we specify the x and y axes within the <code>aes()</code> function in the code below. The <code>ggplot()</code> merely draws the axes; we need to add the points using the `geom_point()’ function. The aestetics will carry through from the main ggplot call.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="data-vizualization-and-review-of-linear-models.html#cb12-1" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>iris, </span>
+<span id="cb12-2"><a href="data-vizualization-and-review-of-linear-models.html#cb12-2" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x=</span>Sepal.Width, </span>
+<span id="cb12-3"><a href="data-vizualization-and-review-of-linear-models.html#cb12-3" tabindex="-1"></a>           <span class="at">y=</span>Sepal.Length)) <span class="sc">+</span>              </span>
+<span id="cb12-4"><a href="data-vizualization-and-review-of-linear-models.html#cb12-4" tabindex="-1"></a>  <span class="fu">geom_point</span>() </span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-10"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-10-1.png" alt="Sepal.Length by Sepal.Width made with ggplot" width="960" />
+<p class="caption">
+Figure 2.6: Sepal.Length by Sepal.Width made with ggplot
+</p>
+</div>
+<p>We can also add colors to the points just like base R using the “color =” argument within the geom_point function. Here we specify the color to be blue. If you want to explore colors and choose different ones, this <a href="https://www.datanovia.com/en/blog/awesome-list-of-657-r-color-names/">website</a> is an excellent resource.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="data-vizualization-and-review-of-linear-models.html#cb13-1" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>iris, <span class="fu">aes</span>(<span class="at">x=</span>Sepal.Width, </span>
+<span id="cb13-2"><a href="data-vizualization-and-review-of-linear-models.html#cb13-2" tabindex="-1"></a>                      <span class="at">y=</span>Sepal.Length)) <span class="sc">+</span>                                               </span>
+<span id="cb13-3"><a href="data-vizualization-and-review-of-linear-models.html#cb13-3" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color=</span><span class="st">&#39;blue&#39;</span>) </span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-11"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-11-1.png" alt="Sepal.Length by Sepal.Width made using ggplot with blue points" width="960" />
+<p class="caption">
+Figure 2.7: Sepal.Length by Sepal.Width made using ggplot with blue points
+</p>
+</div>
+<p>We can also color the points by species identify by including the “color =” argument within the <strong>aes()</strong> wrapper in the first ggplot line. As previously mentioned, <strong>aes()</strong> sets the aesthetics of the plot based on the data that is being used. The data is specified with the “data =”. Therefore, to change colors, sizes etc. of the plot in the context of your data, all arguments should be done typed within the aes() wrapper.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="data-vizualization-and-review-of-linear-models.html#cb14-1" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>iris, <span class="fu">aes</span>(<span class="at">x=</span>Sepal.Width, </span>
+<span id="cb14-2"><a href="data-vizualization-and-review-of-linear-models.html#cb14-2" tabindex="-1"></a>                      <span class="at">y=</span>Sepal.Length, </span>
+<span id="cb14-3"><a href="data-vizualization-and-review-of-linear-models.html#cb14-3" tabindex="-1"></a>                      <span class="at">color=</span>Species)) <span class="sc">+</span></span>
+<span id="cb14-4"><a href="data-vizualization-and-review-of-linear-models.html#cb14-4" tabindex="-1"></a>  <span class="fu">geom_point</span>() </span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-12"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-12-1.png" alt="Sepal.Length by Sepal.Width made using ggplot with different colored points for each species" width="960" />
+<p class="caption">
+Figure 2.8: Sepal.Length by Sepal.Width made using ggplot with different colored points for each species
+</p>
+</div>
+<p>What if we want to see the different species in different plot panels? We can do this by using the argument <code>facet_wrap()</code>. <strong>facet_wrap()</strong> allows you to facet the plot by a a categorical variable from the data set. In the example below, we facet the plot above by species.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="data-vizualization-and-review-of-linear-models.html#cb15-1" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>iris, <span class="fu">aes</span>(<span class="at">x=</span>Sepal.Width, </span>
+<span id="cb15-2"><a href="data-vizualization-and-review-of-linear-models.html#cb15-2" tabindex="-1"></a>                      <span class="at">y=</span>Sepal.Length, </span>
+<span id="cb15-3"><a href="data-vizualization-and-review-of-linear-models.html#cb15-3" tabindex="-1"></a>                      <span class="at">color=</span>Species)) <span class="sc">+</span></span>
+<span id="cb15-4"><a href="data-vizualization-and-review-of-linear-models.html#cb15-4" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb15-5"><a href="data-vizualization-and-review-of-linear-models.html#cb15-5" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Species) </span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-13"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-13-1.png" alt="Sepal.Length by Sepal.Width made with ggplot facet-wrapped so each species is in a seperate panel" width="960" />
+<p class="caption">
+Figure 2.9: Sepal.Length by Sepal.Width made with ggplot facet-wrapped so each species is in a seperate panel
+</p>
+</div>
+<p>Now finally let’s redo the plots we did in base R. Let’s first plot only one species. We can do this by manipulating the data set being used within the “data =” argument. We filter the original data set “iris” so that only a specific species is being used in the plot. To make things clear, we should also add a title stating how the plot reflects only one species. In the below code we do all this and also show how to change the size of the plot title using the <code>theme()</code> function.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="data-vizualization-and-review-of-linear-models.html#cb16-1" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>iris <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Species<span class="sc">==</span><span class="st">&#39;virginica&#39;</span>),</span>
+<span id="cb16-2"><a href="data-vizualization-and-review-of-linear-models.html#cb16-2" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x=</span>Sepal.Width, </span>
+<span id="cb16-3"><a href="data-vizualization-and-review-of-linear-models.html#cb16-3" tabindex="-1"></a>           <span class="at">y=</span>Sepal.Length)) <span class="sc">+</span>                                       </span>
+<span id="cb16-4"><a href="data-vizualization-and-review-of-linear-models.html#cb16-4" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb16-5"><a href="data-vizualization-and-review-of-linear-models.html#cb16-5" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Plot with only Virginica&quot;</span>)  <span class="sc">+</span><span class="co">#we can add a title to the plot using the labs() and specifying the &quot;title =&quot; argument</span></span>
+<span id="cb16-6"><a href="data-vizualization-and-review-of-linear-models.html#cb16-6" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">25</span>))</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-14"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-14-1.png" alt="Sepal.Length by Sepal.Width made with ggplot with only species viriginica" width="960" />
+<p class="caption">
+Figure 2.10: Sepal.Length by Sepal.Width made with ggplot with only species viriginica
+</p>
+</div>
+<p>Now let’s plot the data and add a linear trend line. To do this we use geom_smooth(). Within geom_smooth() we use the argument “method =” to specify the type of trend line. Since we want a linear one based on a linear model we use “lm”.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="data-vizualization-and-review-of-linear-models.html#cb17-1" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>iris <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Species<span class="sc">==</span><span class="st">&#39;virginica&#39;</span>), </span>
+<span id="cb17-2"><a href="data-vizualization-and-review-of-linear-models.html#cb17-2" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x=</span>Sepal.Width, </span>
+<span id="cb17-3"><a href="data-vizualization-and-review-of-linear-models.html#cb17-3" tabindex="-1"></a>           <span class="at">y=</span>Sepal.Length)) <span class="sc">+</span>                                     </span>
+<span id="cb17-4"><a href="data-vizualization-and-review-of-linear-models.html#cb17-4" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb17-5"><a href="data-vizualization-and-review-of-linear-models.html#cb17-5" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&#39;lm&#39;</span>)</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-15"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-15-1.png" alt="Sepal.Length by Sepal.Width made using ggplot with trendline for species virginica" width="960" />
+<p class="caption">
+Figure 2.11: Sepal.Length by Sepal.Width made using ggplot with trendline for species virginica
+</p>
+</div>
+<p>We can also add a separate trend line for all three species. ggplot2 can do this in a very user friendly way. By specifying different colors for different species in the first <code>ggplot()</code> line, the usage of <code>geom_smooth()</code> automatically applies the categorization by colors to the trend line resulting in separate trend lines for each species.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="data-vizualization-and-review-of-linear-models.html#cb18-1" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>iris, <span class="fu">aes</span>(<span class="at">x=</span>Sepal.Width,</span>
+<span id="cb18-2"><a href="data-vizualization-and-review-of-linear-models.html#cb18-2" tabindex="-1"></a>                      <span class="at">y=</span>Sepal.Length, </span>
+<span id="cb18-3"><a href="data-vizualization-and-review-of-linear-models.html#cb18-3" tabindex="-1"></a>                      <span class="at">color=</span>Species)) <span class="sc">+</span></span>
+<span id="cb18-4"><a href="data-vizualization-and-review-of-linear-models.html#cb18-4" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb18-5"><a href="data-vizualization-and-review-of-linear-models.html#cb18-5" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&#39;lm&#39;</span>)</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-16"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-16-1.png" alt="Sepal.Length by Sepal.Width made using ggplot with trendline for each species" width="960" />
+<p class="caption">
+Figure 2.12: Sepal.Length by Sepal.Width made using ggplot with trendline for each species
+</p>
+</div>
+<p>Notice that if we move the “color =” argument to the outside of the aes() and just specify a single color. it changes the colors of all points. This happens because any arguments (e.g. color = ) that are entered out of the <strong>aes()</strong> wrapper do not apply to the data (e.g. species types).</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="data-vizualization-and-review-of-linear-models.html#cb19-1" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>iris, <span class="fu">aes</span>(<span class="at">x=</span>Sepal.Width,</span>
+<span id="cb19-2"><a href="data-vizualization-and-review-of-linear-models.html#cb19-2" tabindex="-1"></a>                      <span class="at">y=</span>Sepal.Length)) <span class="sc">+</span> </span>
+<span id="cb19-3"><a href="data-vizualization-and-review-of-linear-models.html#cb19-3" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color=</span><span class="st">&quot;blue&quot;</span>) <span class="sc">+</span>   </span>
+<span id="cb19-4"><a href="data-vizualization-and-review-of-linear-models.html#cb19-4" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Species) <span class="sc">+</span></span>
+<span id="cb19-5"><a href="data-vizualization-and-review-of-linear-models.html#cb19-5" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&#39;lm&#39;</span>)</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-17"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-17-1.png" alt="Sepal.Length by Sepal.Width made using ggplot with each species on a seperate panel with all blue points" width="960" />
+<p class="caption">
+Figure 2.13: Sepal.Length by Sepal.Width made using ggplot with each species on a seperate panel with all blue points
+</p>
+</div>
+</div>
+</div>
+<div id="fancy-scatter-plots" class="section level3 hasAnchor" number="2.1.2">
+<h3><span class="header-section-number">2.1.2</span> Fancy Scatter plots<a href="data-vizualization-and-review-of-linear-models.html#fancy-scatter-plots" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>For more appealing color options we use the ‘viridis’ package. This package comes with several pre-made colorways or palettes that work well with a variety of plot and data types. Furthermore, many of their palettes are geared to be color-blind friendly which is important especially when publishing visuals.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="data-vizualization-and-review-of-linear-models.html#cb20-1" tabindex="-1"></a><span class="fu">library</span>(viridis) <span class="do">## install viridis package if necassary</span></span></code></pre></div>
+<p>Let’s set up a basic plot from the previous examples shown above. The default colors work fine but could be better and the plot background could also be cleaner and more improved.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="data-vizualization-and-review-of-linear-models.html#cb21-1" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>iris, <span class="fu">aes</span>(<span class="at">x=</span>Sepal.Width, </span>
+<span id="cb21-2"><a href="data-vizualization-and-review-of-linear-models.html#cb21-2" tabindex="-1"></a>                      <span class="at">y=</span>Sepal.Length, <span class="at">color=</span>Species)) <span class="sc">+</span></span>
+<span id="cb21-3"><a href="data-vizualization-and-review-of-linear-models.html#cb21-3" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb21-4"><a href="data-vizualization-and-review-of-linear-models.html#cb21-4" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&#39;lm&#39;</span>)</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-19"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-19-1.png" alt="Sepal.Length by Sepal.Width made using ggplot with trendline for each species" width="960" />
+<p class="caption">
+Figure 2.14: Sepal.Length by Sepal.Width made using ggplot with trendline for each species
+</p>
+</div>
+<p>We can change the background elements of the plot (a.k.a the “theme”) with preset defaults such as <code>theme_bw()</code>. These defaults are a quick way to improve the general plot appearance and to also remove possibly distracting plot elements.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="data-vizualization-and-review-of-linear-models.html#cb22-1" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>iris, </span>
+<span id="cb22-2"><a href="data-vizualization-and-review-of-linear-models.html#cb22-2" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x=</span>Sepal.Width, </span>
+<span id="cb22-3"><a href="data-vizualization-and-review-of-linear-models.html#cb22-3" tabindex="-1"></a>           <span class="at">y=</span>Sepal.Length, </span>
+<span id="cb22-4"><a href="data-vizualization-and-review-of-linear-models.html#cb22-4" tabindex="-1"></a>           <span class="at">color=</span>Species)) <span class="sc">+</span></span>
+<span id="cb22-5"><a href="data-vizualization-and-review-of-linear-models.html#cb22-5" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb22-6"><a href="data-vizualization-and-review-of-linear-models.html#cb22-6" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&#39;lm&#39;</span>) <span class="sc">+</span></span>
+<span id="cb22-7"><a href="data-vizualization-and-review-of-linear-models.html#cb22-7" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-20"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-20-1.png" alt="Sepal.Length by Sepal.Width made using ggplot with trendline for each species and a black and white theme" width="960" />
+<p class="caption">
+Figure 2.15: Sepal.Length by Sepal.Width made using ggplot with trendline for each species and a black and white theme
+</p>
+</div>
+<p>We can change the size of the points by adding a “size =” argument in the geom_point(). But what about colors? To change the colors and make the visualization more accessible to people (e.g. making them more color-blind friendly) using the scale_color_virdis(). Within the virdis function, we specify that we want a discrete color scale with “discreet = TRUE”. This is because we want to split our regressions and show differences between species which is a categorical variable. If we were hoping to use viridis for continuous variables we would use “discreet = FALSE”.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="data-vizualization-and-review-of-linear-models.html#cb23-1" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>iris, <span class="fu">aes</span>(<span class="at">x=</span>Sepal.Width, </span>
+<span id="cb23-2"><a href="data-vizualization-and-review-of-linear-models.html#cb23-2" tabindex="-1"></a>                      <span class="at">y=</span>Sepal.Length, <span class="at">color=</span>Species)) <span class="sc">+</span></span>
+<span id="cb23-3"><a href="data-vizualization-and-review-of-linear-models.html#cb23-3" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size=</span><span class="dv">3</span>) <span class="sc">+</span> <span class="co"># change point size to make them bigger</span></span>
+<span id="cb23-4"><a href="data-vizualization-and-review-of-linear-models.html#cb23-4" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&#39;lm&#39;</span>) <span class="sc">+</span> </span>
+<span id="cb23-5"><a href="data-vizualization-and-review-of-linear-models.html#cb23-5" tabindex="-1"></a>  <span class="fu">scale_color_viridis</span>(<span class="at">discrete =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> <span class="co"># change points to a color-blind friendly palette. Can specify specific colors</span></span>
+<span id="cb23-6"><a href="data-vizualization-and-review-of-linear-models.html#cb23-6" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="co"># new theme</span></span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-21"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-21-1.png" alt="Sepal.Length by Sepal.Width made using ggplot with trendline for each species, a black and white theme, and an accessible color palette" width="960" />
+<p class="caption">
+Figure 2.16: Sepal.Length by Sepal.Width made using ggplot with trendline for each species, a black and white theme, and an accessible color palette
+</p>
+</div>
+<p>We can change the shapes of the points based on species with the “shape =” argument in the first ggplot() line. We specify that this argument equals “Species” which basically means, set different shapes for different species. We can further specify which shapes we want for the three species with the scale_shape_manual().</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="data-vizualization-and-review-of-linear-models.html#cb24-1" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>iris, <span class="fu">aes</span>(<span class="at">x=</span>Sepal.Width,</span>
+<span id="cb24-2"><a href="data-vizualization-and-review-of-linear-models.html#cb24-2" tabindex="-1"></a>                      <span class="at">y=</span>Sepal.Length,</span>
+<span id="cb24-3"><a href="data-vizualization-and-review-of-linear-models.html#cb24-3" tabindex="-1"></a>                      <span class="at">shape=</span>Species)) <span class="sc">+</span></span>
+<span id="cb24-4"><a href="data-vizualization-and-review-of-linear-models.html#cb24-4" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size=</span><span class="dv">3</span>) <span class="sc">+</span> </span>
+<span id="cb24-5"><a href="data-vizualization-and-review-of-linear-models.html#cb24-5" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&#39;lm&#39;</span>) <span class="sc">+</span>                               </span>
+<span id="cb24-6"><a href="data-vizualization-and-review-of-linear-models.html#cb24-6" tabindex="-1"></a>  <span class="fu">scale_shape_manual</span>(<span class="at">values=</span><span class="fu">c</span>(<span class="st">&quot;circle&quot;</span>,<span class="st">&quot;square&quot;</span>,<span class="st">&quot;triangle&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb24-7"><a href="data-vizualization-and-review-of-linear-models.html#cb24-7" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-22"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-22-1.png" alt="Sepal.Length by Sepal.Width made using ggplot with trendline and shapes for each species and a black and white theme" width="960" />
+<p class="caption">
+Figure 2.17: Sepal.Length by Sepal.Width made using ggplot with trendline and shapes for each species and a black and white theme
+</p>
+</div>
+<p>Let’s specify with colors and shapes. Here’s an annotated code chunk to show exactly what components are being specified for the plot.</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="data-vizualization-and-review-of-linear-models.html#cb25-1" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>iris, <span class="fu">aes</span>(<span class="at">x=</span>Sepal.Width, <span class="co">#Sets x axis variable</span></span>
+<span id="cb25-2"><a href="data-vizualization-and-review-of-linear-models.html#cb25-2" tabindex="-1"></a>                      <span class="at">y=</span>Sepal.Length, <span class="co">#Sets y axis variable</span></span>
+<span id="cb25-3"><a href="data-vizualization-and-review-of-linear-models.html#cb25-3" tabindex="-1"></a>                      <span class="at">shape=</span>Species, <span class="co">#use different shapes for species</span></span>
+<span id="cb25-4"><a href="data-vizualization-and-review-of-linear-models.html#cb25-4" tabindex="-1"></a>                      <span class="at">color=</span>Species <span class="co">#use different colors for species</span></span>
+<span id="cb25-5"><a href="data-vizualization-and-review-of-linear-models.html#cb25-5" tabindex="-1"></a>                      )) <span class="sc">+</span>          </span>
+<span id="cb25-6"><a href="data-vizualization-and-review-of-linear-models.html#cb25-6" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size=</span><span class="dv">3</span>) <span class="sc">+</span> <span class="co">#set size if points</span></span>
+<span id="cb25-7"><a href="data-vizualization-and-review-of-linear-models.html#cb25-7" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&#39;lm&#39;</span>) <span class="sc">+</span>  <span class="co">#set a linear model trendline           </span></span>
+<span id="cb25-8"><a href="data-vizualization-and-review-of-linear-models.html#cb25-8" tabindex="-1"></a>  <span class="fu">scale_color_viridis</span>(<span class="at">discrete=</span>T) <span class="sc">+</span> <span class="co">#color palette</span></span>
+<span id="cb25-9"><a href="data-vizualization-and-review-of-linear-models.html#cb25-9" tabindex="-1"></a>  <span class="fu">scale_shape_manual</span>(<span class="at">values=</span><span class="fu">c</span>(<span class="st">&quot;circle&quot;</span>,<span class="st">&quot;square&quot;</span>,<span class="st">&quot;triangle&quot;</span>)) <span class="sc">+</span> <span class="co">#specify which shapes       </span></span>
+<span id="cb25-10"><a href="data-vizualization-and-review-of-linear-models.html#cb25-10" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="co">#different more black and white theme</span></span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-23"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-23-1.png" alt="Sepal.Length by Sepal.Width plot with many specialized features." width="960" />
+<p class="caption">
+Figure 2.18: Sepal.Length by Sepal.Width plot with many specialized features.
+</p>
+</div>
+<p>We can also facet the plot above and increase the font size</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="data-vizualization-and-review-of-linear-models.html#cb26-1" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>iris, <span class="fu">aes</span>(<span class="at">x=</span>Sepal.Width, </span>
+<span id="cb26-2"><a href="data-vizualization-and-review-of-linear-models.html#cb26-2" tabindex="-1"></a>                      <span class="at">y=</span>Sepal.Length,</span>
+<span id="cb26-3"><a href="data-vizualization-and-review-of-linear-models.html#cb26-3" tabindex="-1"></a>                      <span class="at">shape=</span>Species,</span>
+<span id="cb26-4"><a href="data-vizualization-and-review-of-linear-models.html#cb26-4" tabindex="-1"></a>                      <span class="at">color=</span>Species)) <span class="sc">+</span> </span>
+<span id="cb26-5"><a href="data-vizualization-and-review-of-linear-models.html#cb26-5" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size=</span><span class="dv">3</span>) <span class="sc">+</span> </span>
+<span id="cb26-6"><a href="data-vizualization-and-review-of-linear-models.html#cb26-6" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&#39;lm&#39;</span>) <span class="sc">+</span>    </span>
+<span id="cb26-7"><a href="data-vizualization-and-review-of-linear-models.html#cb26-7" tabindex="-1"></a>  <span class="fu">scale_color_viridis</span>(<span class="at">discrete=</span>T) <span class="sc">+</span>  </span>
+<span id="cb26-8"><a href="data-vizualization-and-review-of-linear-models.html#cb26-8" tabindex="-1"></a>  <span class="fu">scale_shape_manual</span>(<span class="at">values=</span><span class="fu">c</span>(<span class="st">&quot;circle&quot;</span>,<span class="st">&quot;square&quot;</span>,<span class="st">&quot;triangle&quot;</span>)) <span class="sc">+</span>      </span>
+<span id="cb26-9"><a href="data-vizualization-and-review-of-linear-models.html#cb26-9" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Species) <span class="sc">+</span> <span class="co">#facet by species</span></span>
+<span id="cb26-10"><a href="data-vizualization-and-review-of-linear-models.html#cb26-10" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">14</span>) <span class="co"># increase font size for the entire plot</span></span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-24"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-24-1.png" alt="Sepal.Length by Sepal.Width plot with many specialized features, facet-wrapped." width="960" />
+<p class="caption">
+Figure 2.19: Sepal.Length by Sepal.Width plot with many specialized features, facet-wrapped.
+</p>
+</div>
+<p>Some people have to render multiple plots and retyping your theme settings can be a pain! So this is where the beauty of working in R and RStudio come into play. You can set your own theme as a object in R:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="data-vizualization-and-review-of-linear-models.html#cb27-1" tabindex="-1"></a>my_theme<span class="ot">&lt;-</span><span class="fu">theme</span>(<span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">&quot;bold&quot;</span>,<span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb27-2"><a href="data-vizualization-and-review-of-linear-models.html#cb27-2" tabindex="-1"></a>                <span class="at">legend.position =</span> <span class="st">&quot;top&quot;</span>,</span>
+<span id="cb27-3"><a href="data-vizualization-and-review-of-linear-models.html#cb27-3" tabindex="-1"></a>                <span class="at">axis.ticks =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb27-4"><a href="data-vizualization-and-review-of-linear-models.html#cb27-4" tabindex="-1"></a>                <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">color =</span> <span class="st">&quot;blue&quot;</span>, <span class="at">size =</span> <span class="dv">11</span>),</span>
+<span id="cb27-5"><a href="data-vizualization-and-review-of-linear-models.html#cb27-5" tabindex="-1"></a>                <span class="at">title =</span> <span class="fu">element_text</span>(<span class="at">color =</span> <span class="st">&quot;dodgerblue&quot;</span>, <span class="at">size =</span> <span class="dv">15</span>))</span></code></pre></div>
+<p>Now you can call on this object <code>my_theme</code> any time when making a plot and avoid typing out the several lines of code over and over again:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="data-vizualization-and-review-of-linear-models.html#cb28-1" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>iris, <span class="fu">aes</span>(<span class="at">x=</span>Sepal.Width, </span>
+<span id="cb28-2"><a href="data-vizualization-and-review-of-linear-models.html#cb28-2" tabindex="-1"></a>                      <span class="at">y=</span>Sepal.Length,</span>
+<span id="cb28-3"><a href="data-vizualization-and-review-of-linear-models.html#cb28-3" tabindex="-1"></a>                      <span class="at">shape=</span>Species,</span>
+<span id="cb28-4"><a href="data-vizualization-and-review-of-linear-models.html#cb28-4" tabindex="-1"></a>                      <span class="at">color=</span>Species)) <span class="sc">+</span> </span>
+<span id="cb28-5"><a href="data-vizualization-and-review-of-linear-models.html#cb28-5" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size=</span><span class="dv">3</span>) <span class="sc">+</span> </span>
+<span id="cb28-6"><a href="data-vizualization-and-review-of-linear-models.html#cb28-6" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&#39;lm&#39;</span>) <span class="sc">+</span>    </span>
+<span id="cb28-7"><a href="data-vizualization-and-review-of-linear-models.html#cb28-7" tabindex="-1"></a>  <span class="fu">scale_color_viridis</span>(<span class="at">discrete=</span>T) <span class="sc">+</span></span>
+<span id="cb28-8"><a href="data-vizualization-and-review-of-linear-models.html#cb28-8" tabindex="-1"></a>  my_theme</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-26"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-26-1.png" alt="Sepal.Length by Sepal.Width plot with specialized features from my theme." width="960" />
+<p class="caption">
+Figure 2.20: Sepal.Length by Sepal.Width plot with specialized features from my theme.
+</p>
+</div>
+</div>
+<div id="categorical-variables" class="section level3 hasAnchor" number="2.1.3">
+<h3><span class="header-section-number">2.1.3</span> Categorical Variables<a href="data-vizualization-and-review-of-linear-models.html#categorical-variables" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Categorical variables are usually things with names. In the iris dataset, <strong>Species</strong> is a factor, or a categorical, variable. When plotting with categorical variables, we can no longer use scatterplots, so here we will go through a few different types of plots.</p>
+<div id="boxplots-with-base-r" class="section level4 hasAnchor" number="2.1.3.1">
+<h4><span class="header-section-number">2.1.3.1</span> Boxplots with base R<a href="data-vizualization-and-review-of-linear-models.html#boxplots-with-base-r" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>This line of code will make a simple boxplot. Notice the usage of <code>~</code>. To avoid errors, make sure your continuous variable comes before <code>~</code> and your categorical variable comes after.</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="data-vizualization-and-review-of-linear-models.html#cb29-1" tabindex="-1"></a><span class="fu">plot</span>(Sepal.Length<span class="sc">~</span>Species, <span class="at">data=</span>iris) <span class="co">#make boxplot</span></span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-27"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-27-1.png" alt="Boxplot showing Sepal.Length by the three Species." width="960" />
+<p class="caption">
+Figure 2.21: Boxplot showing Sepal.Length by the three Species.
+</p>
+</div>
+<p>We can add colors to the different boxplots.</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="data-vizualization-and-review-of-linear-models.html#cb30-1" tabindex="-1"></a><span class="fu">plot</span>(Sepal.Length<span class="sc">~</span>Species, <span class="at">data=</span>iris, <span class="at">col=</span><span class="fu">c</span>(<span class="st">&quot;red&quot;</span>,<span class="st">&quot;blue&quot;</span>,<span class="st">&quot;purple&quot;</span>)) <span class="co">#make boxplot with color</span></span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-28"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-28-1.png" alt="Boxplot showing Sepal.Length by the three Species with colors." width="960" />
+<p class="caption">
+Figure 2.22: Boxplot showing Sepal.Length by the three Species with colors.
+</p>
+</div>
+</div>
+</div>
+<div id="plots-for-categorical-data-with-ggplot2" class="section level3 hasAnchor" number="2.1.4">
+<h3><span class="header-section-number">2.1.4</span> Plots for categorical data with ggplot2<a href="data-vizualization-and-review-of-linear-models.html#plots-for-categorical-data-with-ggplot2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>ggplot2 is also a great tool for plotting categorical data. Boxplots show the distribution of data based on the median and interquartile ranges. To make a boxplot with ggplot we use ‘geom_boxplot()’.</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="data-vizualization-and-review-of-linear-models.html#cb31-1" tabindex="-1"></a><span class="fu">ggplot</span>(iris, <span class="fu">aes</span>(<span class="at">x=</span>Species, <span class="co">#variable on x axis</span></span>
+<span id="cb31-2"><a href="data-vizualization-and-review-of-linear-models.html#cb31-2" tabindex="-1"></a>                 <span class="at">y=</span>Sepal.Length <span class="co">#variable on y axis</span></span>
+<span id="cb31-3"><a href="data-vizualization-and-review-of-linear-models.html#cb31-3" tabindex="-1"></a>                 )) <span class="sc">+</span> </span>
+<span id="cb31-4"><a href="data-vizualization-and-review-of-linear-models.html#cb31-4" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="co">#specify boxplot option</span></span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-29"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-29-1.png" alt="Boxplot showing Sepal.Length by the three Species using ggplot." width="960" />
+<p class="caption">
+Figure 2.23: Boxplot showing Sepal.Length by the three Species using ggplot.
+</p>
+</div>
+<p>If the width of the boxplots are too wide, this can be changed with the “width =” argument:</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="data-vizualization-and-review-of-linear-models.html#cb32-1" tabindex="-1"></a><span class="fu">ggplot</span>(iris, <span class="fu">aes</span>(<span class="at">x=</span>Species, <span class="co">#variable on x axis</span></span>
+<span id="cb32-2"><a href="data-vizualization-and-review-of-linear-models.html#cb32-2" tabindex="-1"></a>                 <span class="at">y=</span>Sepal.Length <span class="co">#variable on y axis</span></span>
+<span id="cb32-3"><a href="data-vizualization-and-review-of-linear-models.html#cb32-3" tabindex="-1"></a>                 )) <span class="sc">+</span> </span>
+<span id="cb32-4"><a href="data-vizualization-and-review-of-linear-models.html#cb32-4" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">width =</span> <span class="fl">0.5</span>) <span class="co">#specify boxplot option</span></span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-30"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-30-1.png" alt="Boxplot showing Sepal.Length by the three Species in ggplot." width="960" />
+<p class="caption">
+Figure 2.24: Boxplot showing Sepal.Length by the three Species in ggplot.
+</p>
+</div>
+<p>We can also overlay points on the boxplots.</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="data-vizualization-and-review-of-linear-models.html#cb33-1" tabindex="-1"></a><span class="fu">ggplot</span>(iris, <span class="fu">aes</span>(<span class="at">x=</span>Species,</span>
+<span id="cb33-2"><a href="data-vizualization-and-review-of-linear-models.html#cb33-2" tabindex="-1"></a>                 <span class="at">y=</span>Sepal.Length</span>
+<span id="cb33-3"><a href="data-vizualization-and-review-of-linear-models.html#cb33-3" tabindex="-1"></a>                 )) <span class="sc">+</span> </span>
+<span id="cb33-4"><a href="data-vizualization-and-review-of-linear-models.html#cb33-4" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span> </span>
+<span id="cb33-5"><a href="data-vizualization-and-review-of-linear-models.html#cb33-5" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-31"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-31-1.png" alt="Boxplot showing Sepal.Length by the three Species in ggplot with points added." width="960" />
+<p class="caption">
+Figure 2.25: Boxplot showing Sepal.Length by the three Species in ggplot with points added.
+</p>
+</div>
+<p>If there are many overlapping points then the plot above could be misleading i.e. 100 points with the same value would still appear to be one single data point. To clearly assess the scatter of the points we can jitter their position with geom_jitter():</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="data-vizualization-and-review-of-linear-models.html#cb34-1" tabindex="-1"></a><span class="fu">ggplot</span>(iris, <span class="fu">aes</span>(<span class="at">x=</span>Species, <span class="at">y=</span>Sepal.Length)) <span class="sc">+</span> </span>
+<span id="cb34-2"><a href="data-vizualization-and-review-of-linear-models.html#cb34-2" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span> </span>
+<span id="cb34-3"><a href="data-vizualization-and-review-of-linear-models.html#cb34-3" tabindex="-1"></a>  <span class="fu">geom_jitter</span>()</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-32"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-32-1.png" alt="Boxplot showing Sepal.Length by the three Species in ggplot with points jittered." width="960" />
+<p class="caption">
+Figure 2.26: Boxplot showing Sepal.Length by the three Species in ggplot with points jittered.
+</p>
+</div>
+<p>We may want to adjust how much jitter we give the points. This can be done with the “height =” and “width =” arguments.</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="data-vizualization-and-review-of-linear-models.html#cb35-1" tabindex="-1"></a><span class="fu">ggplot</span>(iris, <span class="fu">aes</span>(<span class="at">x=</span>Species, </span>
+<span id="cb35-2"><a href="data-vizualization-and-review-of-linear-models.html#cb35-2" tabindex="-1"></a>                 <span class="at">y=</span>Sepal.Length)) <span class="sc">+</span></span>
+<span id="cb35-3"><a href="data-vizualization-and-review-of-linear-models.html#cb35-3" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">outlier.shape=</span><span class="cn">NA</span>) <span class="sc">+</span> </span>
+<span id="cb35-4"><a href="data-vizualization-and-review-of-linear-models.html#cb35-4" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">height=</span><span class="dv">0</span>, <span class="at">width=</span>.<span class="dv">15</span>)</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-33"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-33-1.png" alt="Boxplot showing Sepal.Length by the three Species in ggplot with points jittered." width="960" />
+<p class="caption">
+Figure 2.27: Boxplot showing Sepal.Length by the three Species in ggplot with points jittered.
+</p>
+</div>
+<p>We can also make dot plots for the data using geom_dotplot().</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="data-vizualization-and-review-of-linear-models.html#cb36-1" tabindex="-1"></a><span class="fu">ggplot</span>(iris, <span class="fu">aes</span>(<span class="at">x=</span>Species, </span>
+<span id="cb36-2"><a href="data-vizualization-and-review-of-linear-models.html#cb36-2" tabindex="-1"></a>                 <span class="at">y=</span>Sepal.Length)) <span class="sc">+</span> </span>
+<span id="cb36-3"><a href="data-vizualization-and-review-of-linear-models.html#cb36-3" tabindex="-1"></a>  <span class="fu">geom_dotplot</span>(<span class="at">binaxis =</span> <span class="st">&quot;y&quot;</span>, <span class="at">stackdir =</span> <span class="st">&quot;center&quot;</span>) </span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-34"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-34-1.png" alt="Dotplot showing Sepal.Length by the three Species in ggplot." width="960" />
+<p class="caption">
+Figure 2.28: Dotplot showing Sepal.Length by the three Species in ggplot.
+</p>
+</div>
+<p>There are also violin plots with geom_violin(). Violin plots are useful because they show a more user-friendly visual of the distribution of data.</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="data-vizualization-and-review-of-linear-models.html#cb37-1" tabindex="-1"></a><span class="fu">ggplot</span>(iris, <span class="fu">aes</span>(<span class="at">x=</span>Species, <span class="at">y=</span>Sepal.Length)) <span class="sc">+</span> </span>
+<span id="cb37-2"><a href="data-vizualization-and-review-of-linear-models.html#cb37-2" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="at">trim=</span>F)  </span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-35"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-35-1.png" alt="Violin plot showing Sepal.Length by the three Species in ggplot." width="960" />
+<p class="caption">
+Figure 2.29: Violin plot showing Sepal.Length by the three Species in ggplot.
+</p>
+</div>
+<p>A combination of violin plots with dot plots is also possible.</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="data-vizualization-and-review-of-linear-models.html#cb38-1" tabindex="-1"></a><span class="fu">ggplot</span>(iris, <span class="fu">aes</span>(<span class="at">x=</span>Species, <span class="at">y=</span>Sepal.Length)) <span class="sc">+</span> </span>
+<span id="cb38-2"><a href="data-vizualization-and-review-of-linear-models.html#cb38-2" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="at">trim=</span>F) <span class="sc">+</span> </span>
+<span id="cb38-3"><a href="data-vizualization-and-review-of-linear-models.html#cb38-3" tabindex="-1"></a>  <span class="fu">geom_dotplot</span>(<span class="at">binaxis =</span> <span class="st">&quot;y&quot;</span>, <span class="at">stackdir =</span> <span class="st">&quot;center&quot;</span>) </span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-36"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-36-1.png" alt="Violin plot showing Sepal.Length by the three Species in ggplot with dotplot added." width="960" />
+<p class="caption">
+Figure 2.30: Violin plot showing Sepal.Length by the three Species in ggplot with dotplot added.
+</p>
+</div>
+<p>Finally, we can also plot violin plots with boxplots! This is very useful because we not only get distribution information from both but we can also roughly see the median values and the inter-quartile ranges!</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="data-vizualization-and-review-of-linear-models.html#cb39-1" tabindex="-1"></a><span class="fu">ggplot</span>(iris, <span class="fu">aes</span>(<span class="at">x=</span>Species, <span class="at">y=</span>Sepal.Length)) <span class="sc">+</span> </span>
+<span id="cb39-2"><a href="data-vizualization-and-review-of-linear-models.html#cb39-2" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="at">trim=</span>F, <span class="at">bw=</span>.<span class="dv">5</span>) <span class="sc">+</span> </span>
+<span id="cb39-3"><a href="data-vizualization-and-review-of-linear-models.html#cb39-3" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">width=</span>.<span class="dv">1</span>)</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-37"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-37-1.png" alt="Boxplot showing Sepal.Length by the three Species in ggplot with violin plot added." width="960" />
+<p class="caption">
+Figure 2.31: Boxplot showing Sepal.Length by the three Species in ggplot with violin plot added.
+</p>
+</div>
+<div id="adding-colors-and-summary-statistics-e.g.-averages-to-plots" class="section level4 hasAnchor" number="2.1.4.1">
+<h4><span class="header-section-number">2.1.4.1</span> Adding colors and summary statistics (e.g. averages) to plots<a href="data-vizualization-and-review-of-linear-models.html#adding-colors-and-summary-statistics-e.g.-averages-to-plots" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Let’s change the color of the boxes. Note we don’t use the “color =” argument but instead use the “fill =” argument. This is because fill will affect the fill color inside the box while color will affect the color of the border of the box. Given this, when we use the viridis function for the nicer colors, we specify scale_fill_virdis rather than scale_color_virdis.</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="data-vizualization-and-review-of-linear-models.html#cb40-1" tabindex="-1"></a><span class="fu">ggplot</span>(iris, <span class="fu">aes</span>(<span class="at">x=</span>Species, </span>
+<span id="cb40-2"><a href="data-vizualization-and-review-of-linear-models.html#cb40-2" tabindex="-1"></a>                 <span class="at">y=</span>Sepal.Length, </span>
+<span id="cb40-3"><a href="data-vizualization-and-review-of-linear-models.html#cb40-3" tabindex="-1"></a>                 <span class="at">fill=</span>Species)) <span class="sc">+</span> </span>
+<span id="cb40-4"><a href="data-vizualization-and-review-of-linear-models.html#cb40-4" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">outlier.shape=</span><span class="cn">NA</span>) <span class="sc">+</span> </span>
+<span id="cb40-5"><a href="data-vizualization-and-review-of-linear-models.html#cb40-5" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">height=</span><span class="dv">0</span>, <span class="at">width=</span>.<span class="dv">15</span>) <span class="sc">+</span> </span>
+<span id="cb40-6"><a href="data-vizualization-and-review-of-linear-models.html#cb40-6" tabindex="-1"></a>  <span class="fu">scale_fill_viridis</span>(<span class="at">discrete=</span>T) </span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-38"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-38-1.png" alt="Boxplot showing Sepal.Length by the three Species in ggplot with viridis colors." width="960" />
+<p class="caption">
+Figure 2.32: Boxplot showing Sepal.Length by the three Species in ggplot with viridis colors.
+</p>
+</div>
+<p>If we want to see the averages or means per species we can do this by using stat_summary() and specifying “mean” with the “fun =” argument. Let’s also change the viridis color palette to something different. To do this we can enter the “options=” argument in the viridis function. The options span from A to H but for a details on specific palette options see this <a href="https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html">website</a>.</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="data-vizualization-and-review-of-linear-models.html#cb41-1" tabindex="-1"></a><span class="fu">ggplot</span>(iris, <span class="fu">aes</span>(<span class="at">x=</span>Species, <span class="at">y=</span>Sepal.Length, <span class="at">fill=</span>Species)) <span class="sc">+</span> </span>
+<span id="cb41-2"><a href="data-vizualization-and-review-of-linear-models.html#cb41-2" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">outlier.shape=</span><span class="cn">NA</span>) <span class="sc">+</span> </span>
+<span id="cb41-3"><a href="data-vizualization-and-review-of-linear-models.html#cb41-3" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">height=</span><span class="dv">0</span>, <span class="at">width=</span>.<span class="dv">15</span>) <span class="sc">+</span> </span>
+<span id="cb41-4"><a href="data-vizualization-and-review-of-linear-models.html#cb41-4" tabindex="-1"></a>  <span class="fu">scale_fill_viridis</span>(<span class="at">discrete=</span>T, <span class="at">option =</span> <span class="st">&quot;A&quot;</span>)  <span class="sc">+</span>             </span>
+<span id="cb41-5"><a href="data-vizualization-and-review-of-linear-models.html#cb41-5" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun=</span>mean, <span class="at">geom=</span><span class="st">&quot;point&quot;</span>, <span class="at">size=</span><span class="dv">4</span>, <span class="at">color=</span><span class="st">&quot;red&quot;</span>) <span class="do">## add point for mean</span></span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-39"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-39-1.png" alt="Boxplot showing Sepal.Length by the three Species in ggplot with means added." width="960" />
+<p class="caption">
+Figure 2.33: Boxplot showing Sepal.Length by the three Species in ggplot with means added.
+</p>
+</div>
+<p>Let’s edit the theme of the plot above</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="data-vizualization-and-review-of-linear-models.html#cb42-1" tabindex="-1"></a><span class="fu">ggplot</span>(iris, <span class="fu">aes</span>(<span class="at">x=</span>Species, <span class="at">y=</span>Sepal.Length, <span class="at">fill=</span>Species)) <span class="sc">+</span> </span>
+<span id="cb42-2"><a href="data-vizualization-and-review-of-linear-models.html#cb42-2" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">outlier.shape=</span><span class="cn">NA</span>) <span class="sc">+</span> </span>
+<span id="cb42-3"><a href="data-vizualization-and-review-of-linear-models.html#cb42-3" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">height=</span><span class="dv">0</span>, <span class="at">width=</span>.<span class="dv">15</span>) <span class="sc">+</span> </span>
+<span id="cb42-4"><a href="data-vizualization-and-review-of-linear-models.html#cb42-4" tabindex="-1"></a>  <span class="fu">scale_fill_viridis</span>(<span class="at">discrete=</span>T, <span class="at">option =</span> <span class="st">&quot;D&quot;</span>)  <span class="sc">+</span>             </span>
+<span id="cb42-5"><a href="data-vizualization-and-review-of-linear-models.html#cb42-5" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun=</span>mean, <span class="at">geom=</span><span class="st">&quot;point&quot;</span>, <span class="at">size=</span><span class="dv">4</span>, <span class="at">color=</span><span class="st">&quot;red&quot;</span>) <span class="sc">+</span></span>
+<span id="cb42-6"><a href="data-vizualization-and-review-of-linear-models.html#cb42-6" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">16</span>) <span class="co">#theme change</span></span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-40"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-40-1.png" alt="Boxplot showing Sepal.Length by the three Species in ggplot with means added." width="960" />
+<p class="caption">
+Figure 2.34: Boxplot showing Sepal.Length by the three Species in ggplot with means added.
+</p>
+</div>
+<p>To save a plot like this as a .tiff we should first assign the plot as an object in the environment. In the example below we assign is as an object called “plot1” using the “&lt;-” or “=”.</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="data-vizualization-and-review-of-linear-models.html#cb43-1" tabindex="-1"></a>plot1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(iris, <span class="fu">aes</span>(<span class="at">x=</span>Species, </span>
+<span id="cb43-2"><a href="data-vizualization-and-review-of-linear-models.html#cb43-2" tabindex="-1"></a>                          <span class="at">y=</span>Sepal.Length, </span>
+<span id="cb43-3"><a href="data-vizualization-and-review-of-linear-models.html#cb43-3" tabindex="-1"></a>                          <span class="at">fill=</span>Species)) <span class="sc">+</span>  <span class="do">## plot now saved as object called &#39;plot1&#39;</span></span>
+<span id="cb43-4"><a href="data-vizualization-and-review-of-linear-models.html#cb43-4" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">outlier.shape=</span><span class="cn">NA</span>) <span class="sc">+</span> </span>
+<span id="cb43-5"><a href="data-vizualization-and-review-of-linear-models.html#cb43-5" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">height=</span><span class="dv">0</span>, <span class="at">width=</span>.<span class="dv">15</span>) <span class="sc">+</span> </span>
+<span id="cb43-6"><a href="data-vizualization-and-review-of-linear-models.html#cb43-6" tabindex="-1"></a>  <span class="fu">scale_fill_viridis</span>(<span class="at">discrete=</span>T)  <span class="sc">+</span>             </span>
+<span id="cb43-7"><a href="data-vizualization-and-review-of-linear-models.html#cb43-7" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun=</span>mean, <span class="at">geom=</span><span class="st">&quot;point&quot;</span>, <span class="at">size=</span><span class="dv">3</span>, <span class="at">color=</span><span class="st">&quot;red&quot;</span>) <span class="sc">+</span></span>
+<span id="cb43-8"><a href="data-vizualization-and-review-of-linear-models.html#cb43-8" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">16</span>) </span></code></pre></div>
+<p>Then we use ggsave() function to save the plot into whatever working directory you are using. We can set the dimensions of the image and we specify the plot we want to save using “plot1”.</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="data-vizualization-and-review-of-linear-models.html#cb44-1" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="st">&quot;ExamplePlot.tiff&quot;</span>, <span class="co">#file name to be used</span></span>
+<span id="cb44-2"><a href="data-vizualization-and-review-of-linear-models.html#cb44-2" tabindex="-1"></a>       plot1, <span class="co">#what plot being saved</span></span>
+<span id="cb44-3"><a href="data-vizualization-and-review-of-linear-models.html#cb44-3" tabindex="-1"></a>       <span class="at">width=</span><span class="dv">4</span>, <span class="co">#width</span></span>
+<span id="cb44-4"><a href="data-vizualization-and-review-of-linear-models.html#cb44-4" tabindex="-1"></a>       <span class="at">height=</span><span class="dv">3</span>, <span class="co">#height</span></span>
+<span id="cb44-5"><a href="data-vizualization-and-review-of-linear-models.html#cb44-5" tabindex="-1"></a>       <span class="at">units=</span><span class="st">&quot;in&quot;</span>, <span class="co">#units being used for width and height</span></span>
+<span id="cb44-6"><a href="data-vizualization-and-review-of-linear-models.html#cb44-6" tabindex="-1"></a>       <span class="at">dpi=</span><span class="dv">300</span>) <span class="co">#resolution of photo, higher number = higher res</span></span></code></pre></div>
+<p>Note that tiff files can often take up a lot of space. This can be a problem when sending quick emails to collaborators. I recommend using the <strong>portable network graphic</strong> format also known as <strong>.png</strong> files. These files are smaller and retain much of the quality of the visualizations.</p>
+</div>
+</div>
+<div id="breakout-group-challenge" class="section level3 hasAnchor" number="2.1.5">
+<h3><span class="header-section-number">2.1.5</span> Breakout group challenge<a href="data-vizualization-and-review-of-linear-models.html#breakout-group-challenge" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>For this challenge use the mtcars dataset:</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="data-vizualization-and-review-of-linear-models.html#cb45-1" tabindex="-1"></a><span class="fu">data</span>(mtcars)</span>
+<span id="cb45-2"><a href="data-vizualization-and-review-of-linear-models.html#cb45-2" tabindex="-1"></a><span class="fu">head</span>(mtcars)</span></code></pre></div>
+<pre><code>##                    mpg cyl disp  hp drat    wt  qsec vs am gear carb
+## Mazda RX4         21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
+## Mazda RX4 Wag     21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
+## Datsun 710        22.8   4  108  93 3.85 2.320 18.61  1  1    4    1
+## Hornet 4 Drive    21.4   6  258 110 3.08 3.215 19.44  1  0    3    1
+## Hornet Sportabout 18.7   8  360 175 3.15 3.440 17.02  0  0    3    2
+## Valiant           18.1   6  225 105 2.76 3.460 20.22  1  0    3    1</code></pre>
+<ol style="list-style-type: decimal">
+<li>Plot x=mpg by y=hp<br />
+</li>
+<li>Color code points by wt</li>
+<li>Add trend line. Make the background white. theme_bw is okay, if time try playing around with other themes.</li>
+<li>Make a boxplot of mpg for the three cyl groups. You should have three boxes. If only one, why?</li>
+<li>Change colors, themes, add data points, etc.</li>
+</ol>
+<p>If data visualization is an interest to you then be sure to check out the following resources for useful code, information, and methods!</p>
+<p><a href="https://r-graph-gallery.com/ggplot2-package.html">R graph gallery</a></p>
+<p><a href="https://www.cedricscherer.com/">Cedric Sherer</a>, an amazing ggplot2 user who frequently posts his newest projects and the code</p>
+<p><a href="https://www.rayshader.com/">3-Dimensional Plots</a></p>
+</div>
+</div>
+<div id="regression-as-a-linear-model" class="section level2 hasAnchor" number="2.2">
+<h2><span class="header-section-number">2.2</span> Regression as a linear model<a href="data-vizualization-and-review-of-linear-models.html#regression-as-a-linear-model" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Regression analysis is a form of analysis that allows the user to evaluate a response variable as a function of predictor variable in a quantitative and statistical manner. Most people are accustomed to seeing regressions in the form of simple linear regressions, also known as ordinary least squares (OLS) regression. The equation <span class="math display">\[y = \beta_{0} + \beta_{1}*x + \varepsilon\]</span> is the basic linear regression equation, where the terms mean the following:<br />
+<span class="math inline">\(y\)</span> is the <strong>response variable</strong><br />
+<span class="math inline">\(\beta_{0}\)</span> is the <strong>intercept</strong><br />
+<span class="math inline">\(\beta_{1}\)</span> is the <strong>slope</strong><br />
+<span class="math inline">\(x\)</span> is the <strong>predictor variable</strong> and<br />
+<span class="math inline">\(\varepsilon\)</span> are the residuals.</p>
+<p>The key features that make this type of linear model a <em>regression</em> are that the response variable and predictor variables are both continuous variables. We will use different versions of this linear model throughout the book.</p>
+<div id="an-example-of-linear-regression-in-r" class="section level3 hasAnchor" number="2.2.1">
+<h3><span class="header-section-number">2.2.1</span> An Example of Linear Regression in R<a href="data-vizualization-and-review-of-linear-models.html#an-example-of-linear-regression-in-r" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>For this section we will use the tidyverse, car, and glmmTMB packages. For constructing the linear model we will use the function <code>glmmTMB()</code>. There are simpler alternatives to <code>glmmTMB</code> but we will start with this because it is very flexible and we will use it throughout the course for more complex models. The more simple alternative to run a linear regression is the function <code>lm()</code>, which is built into the base R libraries. The results from <code>lm()</code> and <code>glmmTMB()</code> should be nearly identical. The limitation of <code>lm()</code> is that is can only run a linear regression and not more complex models. Starting with <code>glmmTMB()</code> will allow us to use this throughout the course without switching functions for different types of linear models. More later, but let’s get started.</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="data-vizualization-and-review-of-linear-models.html#cb47-1" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb47-2"><a href="data-vizualization-and-review-of-linear-models.html#cb47-2" tabindex="-1"></a><span class="fu">library</span>(car)</span>
+<span id="cb47-3"><a href="data-vizualization-and-review-of-linear-models.html#cb47-3" tabindex="-1"></a><span class="fu">library</span>(glmmTMB)</span></code></pre></div>
+<p>For this example, we will generate random numbers to create a data set that we can use to apply a linear model to. To make things reproducible (ie. so everyone gets the same results from the random numbers) we will need to set a seed. To do this we use the function <code>set.seed()</code>. If everyone uses the same seed they will get the same random numbers that are generated from the following code. Setting seeds is an important practice for scientific reproducibility and will be more common as your analyses become more complex.</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="data-vizualization-and-review-of-linear-models.html#cb48-1" tabindex="-1"></a><span class="co">#Set Seed</span></span>
+<span id="cb48-2"><a href="data-vizualization-and-review-of-linear-models.html#cb48-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">21</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="data-vizualization-and-review-of-linear-models.html#cb49-1" tabindex="-1"></a><span class="co"># Generate random data</span></span>
+<span id="cb49-2"><a href="data-vizualization-and-review-of-linear-models.html#cb49-2" tabindex="-1"></a>temp <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">runif</span>(<span class="dv">20</span>,<span class="dv">12</span>,<span class="dv">30</span>), <span class="dv">2</span>)            </span>
+<span id="cb49-3"><a href="data-vizualization-and-review-of-linear-models.html#cb49-3" tabindex="-1"></a>mass <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">rnorm</span>(<span class="dv">20</span>,<span class="dv">5</span><span class="sc">*</span>temp,<span class="dv">25</span>), <span class="dv">2</span>)</span>
+<span id="cb49-4"><a href="data-vizualization-and-review-of-linear-models.html#cb49-4" tabindex="-1"></a>r1 <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">cbind</span>(temp,mass)) </span></code></pre></div>
+<p>This is the data set we will now use for the example:</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="data-vizualization-and-review-of-linear-models.html#cb50-1" tabindex="-1"></a><span class="fu">head</span>(r1)</span></code></pre></div>
+<pre><code>##    temp   mass
+## 1 26.15  73.83
+## 2 16.54 101.64
+## 3 24.59 109.24
+## 4 15.32  80.91
+## 5 29.27 160.42
+## 6 28.54 180.50</code></pre>
+<p>In this dataset, <strong>temp</strong> represent rearing temperature in Celsius and <strong>mass</strong> is the mass of adults in milligrams. Basically, we want to know if adult mass increases with warmer temperatures. Let’s plot this data:</p>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="data-vizualization-and-review-of-linear-models.html#cb52-1" tabindex="-1"></a><span class="fu">ggplot</span>(r1, <span class="fu">aes</span>(<span class="at">x=</span>temp, <span class="at">y=</span>mass))<span class="sc">+</span></span>
+<span id="cb52-2"><a href="data-vizualization-and-review-of-linear-models.html#cb52-2" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">5</span>, </span>
+<span id="cb52-3"><a href="data-vizualization-and-review-of-linear-models.html#cb52-3" tabindex="-1"></a>             <span class="at">pch =</span> <span class="dv">21</span>, </span>
+<span id="cb52-4"><a href="data-vizualization-and-review-of-linear-models.html#cb52-4" tabindex="-1"></a>             <span class="at">fill =</span> <span class="st">&quot;gray&quot;</span>, </span>
+<span id="cb52-5"><a href="data-vizualization-and-review-of-linear-models.html#cb52-5" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">&quot;black&quot;</span>, <span class="at">width =</span> <span class="dv">2</span>)<span class="sc">+</span></span>
+<span id="cb52-6"><a href="data-vizualization-and-review-of-linear-models.html#cb52-6" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">14</span>)</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-48"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-48-1.png" alt="temp by mass." width="960" />
+<p class="caption">
+Figure 2.35: temp by mass.
+</p>
+</div>
+<p>Definitely looks like a positive correlation. Now let’s construct a linear model to estimate the change in average adult mass per degree Celsius of temperature increase. For a continuous variable (temperature in Celsius), we are interested in estimating the slope (<span class="math inline">\(\beta_{1}\)</span>) between mass and temperature.</p>
+<p>We can set up the model using the <code>lm()</code> function. The variable specified before (ie. left-hand size) “~” is your response (mass in this case) and the variable specified after (ie. right-hand side) is your predictor (temperature in this case).</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="data-vizualization-and-review-of-linear-models.html#cb53-1" tabindex="-1"></a>lm1 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(mass<span class="sc">~</span>temp, <span class="at">data=</span>r1) <span class="co"># all  &quot;calculations&quot; are saved in an object we called &#39;lm1&#39;</span></span></code></pre></div>
+<p>We can construct an ANOVA table of this model. The ANOVA table tests the null hypothesis that the slope is different than zero. It’s not not as useful for regressions compared to actual categorical variable analyses but still worth to look at.</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="data-vizualization-and-review-of-linear-models.html#cb54-1" tabindex="-1"></a><span class="fu">Anova</span>(lm1, <span class="at">type=</span><span class="dv">2</span>)  </span></code></pre></div>
+<pre><code>## Analysis of Deviance Table (Type II Wald chisquare tests)
+## 
+## Response: mass
+##       Chisq Df Pr(&gt;Chisq)    
+## temp 25.707  1  3.973e-07 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>To see the summary of the model coefficients we use <code>summary()</code>.</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="data-vizualization-and-review-of-linear-models.html#cb56-1" tabindex="-1"></a><span class="fu">summary</span>(lm1)</span></code></pre></div>
+<pre><code>##  Family: gaussian  ( identity )
+## Formula:          mass ~ temp
+## Data: r1
+## 
+##      AIC      BIC   logLik deviance df.resid 
+##    187.3    190.3    -90.6    181.3       17 
+## 
+## 
+## Dispersion estimate for gaussian family (sigma^2):  506 
+## 
+## Conditional model:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)   9.8625    19.0484   0.518    0.605    
+## temp          4.3716     0.8622   5.070 3.97e-07 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>The coefficients allow you rebuild the means from the linear model equation (same as above): <span class="math display">\[y = \beta_{0} + \beta_{1}*x + \varepsilon\]</span>
+In this case, the intercept (<span class="math inline">\(\beta_{0}\)</span>) is conveniently labeled <em>(Intercept)</em> and the slope (<span class="math inline">\(\beta_{1}\)</span>) is labeled <em>temp</em>. The estimated coefficients are displayed under <em>Estimate</em>, along with the standard error and tests of significance.</p>
+<p>We can also look at the model coefficients with <code>fixef()</code>.</p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="data-vizualization-and-review-of-linear-models.html#cb58-1" tabindex="-1"></a><span class="fu">fixef</span>(lm1)</span></code></pre></div>
+<pre><code>## 
+## Conditional model:
+## (Intercept)         temp  
+##       9.862        4.372</code></pre>
+<p>We can take these coefficients and plug them into our linear model equation, like this:</p>
+<p><span class="math display">\[y = 9.86 + 4.37*x + \varepsilon\]</span></p>
+<p>We can make a plot with the best-fit regression line and intercept.</p>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="data-vizualization-and-review-of-linear-models.html#cb60-1" tabindex="-1"></a><span class="fu">ggplot</span>(r1, <span class="fu">aes</span>(<span class="at">x=</span>temp, <span class="at">y=</span>mass))<span class="sc">+</span></span>
+<span id="cb60-2"><a href="data-vizualization-and-review-of-linear-models.html#cb60-2" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size=</span><span class="dv">3</span>)<span class="sc">+</span></span>
+<span id="cb60-3"><a href="data-vizualization-and-review-of-linear-models.html#cb60-3" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&quot;lm&quot;</span>)<span class="sc">+</span></span>
+<span id="cb60-4"><a href="data-vizualization-and-review-of-linear-models.html#cb60-4" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-53"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-53-1.png" alt="mass plotted against temp with linear regression line." width="960" />
+<p class="caption">
+Figure 2.36: mass plotted against temp with linear regression line.
+</p>
+</div>
+<p>The intercept value of 9.86 is where the prediction line cross the y-intercept when x=0. We can’t quite see that on the figure above, but you can imagine it. The slope value of 4.37 is perhaps a little more interesting. It means that for each 1 degree C increase in temp, the average adult mass increases by 4.37mg. With those two parameters, we can make predictions about the average adult mass at any temperature. These predictions of average mass is what is represented by the blue line in the figure above.</p>
+<p>To check assumptions of the model, we examine residuals.</p>
+<table>
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><p><strong>Box 2. Residuals.</strong></p>
+<p>A quick note on residuals. Many people assume the normality assumption can be assessed by assessing the normality of the response variables. This is a common mistake as the assumption of normality rests on the residuals or the error term of the model, essentially what is not explained by the model. Therefore, to assess normality in a model you assess the normality of the residuals/</p></td>
+</tr>
+</tbody>
+</table>
+<p>We can check normality of residuals with a histogram. Note others sometimes use a Shapiro-Wilkes test on the residuals to statistically test for significance in the normality of residuals, which can be problematic (we will return to those problems in Module 3). Visual assessment of the residuals is almost always sufficient to assess model fit.</p>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="data-vizualization-and-review-of-linear-models.html#cb61-1" tabindex="-1"></a><span class="fu">hist</span>(<span class="fu">resid</span>(lm1))</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-54"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-54-1.png" alt="Histogram of residuals." width="960" />
+<p class="caption">
+Figure 2.37: Histogram of residuals.
+</p>
+</div>
+<p>We can check the homogeneity of the residuals by plotting the residuals against the model’s fitted values. The residuals should be evenly dispersed around 0 across the range of x values. Funnel shapes or curvature in the dispersion would indicate violations.</p>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="data-vizualization-and-review-of-linear-models.html#cb62-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">resid</span>(lm1)<span class="sc">~</span><span class="fu">fitted</span>(lm1)) </span>
+<span id="cb62-2"><a href="data-vizualization-and-review-of-linear-models.html#cb62-2" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h=</span><span class="dv">0</span>)  </span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-55"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-55-1.png" alt="Residuals plotted against fitted values." width="960" />
+<p class="caption">
+Figure 2.38: Residuals plotted against fitted values.
+</p>
+</div>
+<p>Using the car package we can also make a qqplot (quantile-quantile plot). Residuals should line up pretty closely to the blue line and points that drift from line may be outlier points.</p>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="data-vizualization-and-review-of-linear-models.html#cb63-1" tabindex="-1"></a><span class="fu">qqPlot</span>(<span class="fu">resid</span>(lm1))</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-56"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-56-1.png" alt="QQplot of residuals." width="960" />
+<p class="caption">
+Figure 2.39: QQplot of residuals.
+</p>
+</div>
+<pre><code>## [1] 1 6</code></pre>
+<p>In our example, the residuals look fine; no problems. Problems with residuals indicate assumptions of the linear model are violated and may cause problems with coefficients and p-values. These problems can span a variety of examples such as: inaccurate model estimates, high errors in model predictions, false-positive statistical significance etc. To alleviate potential issues applying transformations to the data may help. It’s useful to note that assumptions can be slightly violated without causing problems. For more reading check this <a href="https://pubmed.ncbi.nlm.nih.gov/33963496/">paper</a> out!</p>
+<p>Finally, we can now make a fancy plot of this model.</p>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="data-vizualization-and-review-of-linear-models.html#cb65-1" tabindex="-1"></a><span class="fu">ggplot</span>(r1, <span class="fu">aes</span>(<span class="at">x=</span>temp,</span>
+<span id="cb65-2"><a href="data-vizualization-and-review-of-linear-models.html#cb65-2" tabindex="-1"></a>               <span class="at">y=</span>mass)) <span class="sc">+</span></span>
+<span id="cb65-3"><a href="data-vizualization-and-review-of-linear-models.html#cb65-3" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size=</span><span class="dv">3</span>,<span class="at">color=</span><span class="st">&#39;blue&#39;</span>) <span class="sc">+</span></span>
+<span id="cb65-4"><a href="data-vizualization-and-review-of-linear-models.html#cb65-4" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&#39;lm&#39;</span>, <span class="at">fill=</span><span class="st">&quot;blue&quot;</span>, <span class="at">alpha=</span>.<span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb65-5"><a href="data-vizualization-and-review-of-linear-models.html#cb65-5" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Temperature&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Mass&quot;</span>) <span class="sc">+</span></span>
+<span id="cb65-6"><a href="data-vizualization-and-review-of-linear-models.html#cb65-6" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb65-7"><a href="data-vizualization-and-review-of-linear-models.html#cb65-7" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">&quot;bold&quot;</span>, <span class="at">size =</span> <span class="dv">14</span>)) </span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-57"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-57-1.png" alt="Nice looking plot of mass by temp." width="960" />
+<p class="caption">
+Figure 2.40: Nice looking plot of mass by temp.
+</p>
+</div>
+</div>
+<div id="regression-challenge" class="section level3 hasAnchor" number="2.2.2">
+<h3><span class="header-section-number">2.2.2</span> Regression Challenge<a href="data-vizualization-and-review-of-linear-models.html#regression-challenge" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Run the code shown below to answer questions regarding the orange data set. The data set has measurements of circumference on five trees at seven time points.</p>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="data-vizualization-and-review-of-linear-models.html#cb66-1" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;Orange&quot;</span>)  <span class="do">## load Orange dataset from base R</span></span>
+<span id="cb66-2"><a href="data-vizualization-and-review-of-linear-models.html#cb66-2" tabindex="-1"></a><span class="fu">head</span>(Orange)  </span></code></pre></div>
+<pre><code>## Grouped Data: circumference ~ age | Tree
+##   Tree  age circumference
+## 1    1  118            30
+## 2    1  484            58
+## 3    1  664            87
+## 4    1 1004           115
+## 5    1 1231           120
+## 6    1 1372           142</code></pre>
+<p>Healthy orange trees typically produce fruit at 100 cm in circumference. A homeowner calls and says their orange tree is 3 years old (1095 days), but isn’t fruiting. They didn’t measure it. They also said their are some white spots on the leaves.</p>
+<p>Build a linear model (and make plot) to answer the following questions.</p>
+<ol style="list-style-type: decimal">
+<li>What circumference should their tree be, on average?</li>
+<li>Should their tree be fruiting by now?</li>
+<li>What advice would you give the grower?</li>
+<li>Are the model assumptions met?</li>
+<li>Make a nice figure.</li>
+</ol>
+</div>
+</div>
+<div id="anova-as-a-linear-model" class="section level2 hasAnchor" number="2.3">
+<h2><span class="header-section-number">2.3</span> ANOVA as a linear model<a href="data-vizualization-and-review-of-linear-models.html#anova-as-a-linear-model" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Let’s load the necessary packages for an introduction to ANOVAs (Analysis of Variance).</p>
+<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb68-1"><a href="data-vizualization-and-review-of-linear-models.html#cb68-1" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb68-2"><a href="data-vizualization-and-review-of-linear-models.html#cb68-2" tabindex="-1"></a><span class="fu">library</span>(car) </span>
+<span id="cb68-3"><a href="data-vizualization-and-review-of-linear-models.html#cb68-3" tabindex="-1"></a><span class="fu">library</span>(glmmTMB)</span>
+<span id="cb68-4"><a href="data-vizualization-and-review-of-linear-models.html#cb68-4" tabindex="-1"></a><span class="fu">library</span>(emmeans)     <span class="co"># emmeans package, helpful for getting means from linear models</span></span></code></pre></div>
+<div id="example-of-a-one-way-anova-in-r" class="section level3 hasAnchor" number="2.3.1">
+<h3><span class="header-section-number">2.3.1</span> Example of a one-way ANOVA in R<a href="data-vizualization-and-review-of-linear-models.html#example-of-a-one-way-anova-in-r" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>For this section we will use the insect spray data set. The dataset contains counts of insects in plots with different insecticides applied. We want to know which insecticides, if any, are effective at reducing insect counts. Each insecticide treatment is replicated in eight plots.</p>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="data-vizualization-and-review-of-linear-models.html#cb69-1" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;InsectSprays&quot;</span>)</span>
+<span id="cb69-2"><a href="data-vizualization-and-review-of-linear-models.html#cb69-2" tabindex="-1"></a><span class="fu">str</span>(InsectSprays)</span></code></pre></div>
+<pre><code>## &#39;data.frame&#39;:    72 obs. of  2 variables:
+##  $ count: num  10 7 20 14 14 12 10 23 17 20 ...
+##  $ spray: Factor w/ 6 levels &quot;A&quot;,&quot;B&quot;,&quot;C&quot;,&quot;D&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
+<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb71-1"><a href="data-vizualization-and-review-of-linear-models.html#cb71-1" tabindex="-1"></a><span class="fu">head</span>(InsectSprays)</span></code></pre></div>
+<pre><code>##   count spray
+## 1    10     A
+## 2     7     A
+## 3    20     A
+## 4    14     A
+## 5    14     A
+## 6    12     A</code></pre>
+<p>Let’s filter the data to just 4 treatments using some ‘dplyr’ functions. We filter <em>InsectSprays</em> and create a new dataframe called <em>d</em>. Spray <em>F</em> if the the control and the other three are experimental sprays.</p>
+<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb73-1"><a href="data-vizualization-and-review-of-linear-models.html#cb73-1" tabindex="-1"></a>d <span class="ot">&lt;-</span> InsectSprays <span class="sc">%&gt;%</span> <span class="fu">filter</span>(spray<span class="sc">==</span><span class="st">&#39;A&#39;</span><span class="sc">|</span>spray<span class="sc">==</span><span class="st">&#39;B&#39;</span><span class="sc">|</span>spray<span class="sc">==</span><span class="st">&#39;C&#39;</span><span class="sc">|</span>spray<span class="sc">==</span><span class="st">&#39;F&#39;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb73-2"><a href="data-vizualization-and-review-of-linear-models.html#cb73-2" tabindex="-1"></a>  <span class="fu">droplevels</span>()</span></code></pre></div>
+<p>After that, we can plot the data using boxplots.</p>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="data-vizualization-and-review-of-linear-models.html#cb74-1" tabindex="-1"></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x=</span>spray,<span class="at">y=</span>count)) <span class="sc">+</span> </span>
+<span id="cb74-2"><a href="data-vizualization-and-review-of-linear-models.html#cb74-2" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">outlier.shape =</span> <span class="cn">NA</span>) <span class="sc">+</span> <span class="co"># need to suppress outliers if you jitter plot points</span></span>
+<span id="cb74-3"><a href="data-vizualization-and-review-of-linear-models.html#cb74-3" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">height=</span><span class="dv">0</span>,<span class="at">width=</span>.<span class="dv">1</span>) </span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-62"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-62-1.png" alt="Boxplot showing counts of insects in the different treatments." width="960" />
+<p class="caption">
+Figure 2.41: Boxplot showing counts of insects in the different treatments.
+</p>
+</div>
+<p>Let’s construct linear model to examine the effect of the different sprays on insect counts. For a categorical variable (spray with four levels), we are interested in comparing group means. We use a model very similar to the regression we used in the previous section, but here our predictor variable is just different groups rather than a continuous <em>x</em> variable. Here is the modified model: <span class="math display">\[y = \beta_{0} + \beta_{i} + \varepsilon\]</span> is the basic linear regression equation, where the terms mean the following:<br />
+<span class="math inline">\(y\)</span> is the <strong>response variable</strong><br />
+<span class="math inline">\(\beta_{0}\)</span> is the <strong>intercept</strong><br />
+<span class="math inline">\(\beta_{i}\)</span> is the <strong>adjustment to the intercept</strong> for each group <span class="math inline">\(_{i}\)</span> and<br />
+<span class="math inline">\(\varepsilon\)</span> are the residuals.<br />
+For this example, we have four groups and so also four coefficients. The first alphabetical group (Spray <em>A</em>) will be assigned the intercept (<span class="math inline">\(\beta_{0}\)</span>) and the other three sprays will be adjustments to the intercept (<span class="math inline">\(\beta_{1:3}\)</span>). First lets setup the model:</p>
+<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb75-1"><a href="data-vizualization-and-review-of-linear-models.html#cb75-1" tabindex="-1"></a>lm2 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(count<span class="sc">~</span>spray, <span class="at">data=</span>d) </span></code></pre></div>
+<p>To compare group means we can use the <code>Anova()</code>.</p>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="data-vizualization-and-review-of-linear-models.html#cb76-1" tabindex="-1"></a><span class="fu">Anova</span>(lm2, <span class="at">type=</span><span class="dv">2</span>) </span></code></pre></div>
+<pre><code>## Analysis of Deviance Table (Type II Wald chisquare tests)
+## 
+## Response: count
+##        Chisq Df Pr(&gt;Chisq)    
+## spray 86.656  3  &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>In the above case, the null hypothesis is that all group means are equal (group means would be the means of treatment types). With the low p-value, we can say at least one of the sprays is different than one other spray. But which ones?</p>
+<table>
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>Box 3. Sums of Squares</strong> |
+|
+A quick note on Sums of Squares. Specifying the argument, “<code>type = 2</code>”, provides Type II sums of squares, which is usually better than the default Type I, especially for more complicated models. Note that Type II Sums of Squares is different than how they are calculated in SAS (in SAS, Type III is often preferred). In the car package in R Type II is usually preferred. Other functions (<code>anova()</code>, <code>aov()</code>, etc.) will provide similar ANOVA tables, but the <code>Anova()</code> is more flexible./</td>
+</tr>
+</tbody>
+</table>
+<p>Now let’s look at the summary of the model to examine the coefficients.</p>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="data-vizualization-and-review-of-linear-models.html#cb78-1" tabindex="-1"></a><span class="fu">summary</span>(lm2)</span></code></pre></div>
+<pre><code>##  Family: gaussian  ( identity )
+## Formula:          count ~ spray
+## Data: d
+## 
+##      AIC      BIC   logLik deviance df.resid 
+##    287.6    297.0   -138.8    277.6       43 
+## 
+## 
+## Dispersion estimate for gaussian family (sigma^2):   19 
+## 
+## Conditional model:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  14.5000     1.2592  11.516  &lt; 2e-16 ***
+## sprayB        0.8333     1.7807   0.468    0.640    
+## sprayC      -12.4167     1.7807  -6.973 3.11e-12 ***
+## sprayF        2.1667     1.7807   1.217    0.224    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>We can plug these coefficients into our equation above to get the means for each group. For example, the means for “<em>Spray A</em>” is the intercept, so 14.5. The mean for “<em>Spray B</em>” we have to calculate as 14.5 + 0.8333 = 15.333 and so on for the other sprays. In this example, rebuilding the model from the coefficients is not super helpful and the p-values aren’t very meaningful. To address this, we can use the package ‘emmeans’ and the function <code>emmeans()</code> which will rebuild the model for you. It will print off the means, SE, and confidence intervals for each treatment group! While this can be done with manual coding, the package allows this to be done across different types of models with just one function!</p>
+<div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb80-1"><a href="data-vizualization-and-review-of-linear-models.html#cb80-1" tabindex="-1"></a><span class="fu">emmeans</span>(lm2, <span class="sc">~</span>spray) </span></code></pre></div>
+<pre><code>##  spray emmean   SE df lower.CL upper.CL
+##  A      14.50 1.26 43   11.961    17.04
+##  B      15.33 1.26 43   12.794    17.87
+##  C       2.08 1.26 43   -0.456     4.62
+##  F      16.67 1.26 43   14.127    19.21
+## 
+## Confidence level used: 0.95</code></pre>
+<p>We can also look at pairwise differences between groups and automatically adjust p-values using “tukey” adjust. Pairwise comparisons are useful as they allow us to understand the full extent of differences in means between specific treatment types.</p>
+<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="data-vizualization-and-review-of-linear-models.html#cb82-1" tabindex="-1"></a><span class="fu">emmeans</span>(lm2, pairwise<span class="sc">~</span>spray) </span></code></pre></div>
+<pre><code>## $emmeans
+##  spray emmean   SE df lower.CL upper.CL
+##  A      14.50 1.26 43   11.961    17.04
+##  B      15.33 1.26 43   12.794    17.87
+##  C       2.08 1.26 43   -0.456     4.62
+##  F      16.67 1.26 43   14.127    19.21
+## 
+## Confidence level used: 0.95 
+## 
+## $contrasts
+##  contrast estimate   SE df t.ratio p.value
+##  A - B      -0.833 1.78 43  -0.468  0.9657
+##  A - C      12.417 1.78 43   6.973  &lt;.0001
+##  A - F      -2.167 1.78 43  -1.217  0.6198
+##  B - C      13.250 1.78 43   7.441  &lt;.0001
+##  B - F      -1.333 1.78 43  -0.749  0.8767
+##  C - F     -14.583 1.78 43  -8.190  &lt;.0001
+## 
+## P value adjustment: tukey method for comparing a family of 4 estimates</code></pre>
+<p>We should also check assumptions of the model.</p>
+<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="data-vizualization-and-review-of-linear-models.html#cb84-1" tabindex="-1"></a><span class="fu">hist</span>(<span class="fu">resid</span>(lm2)) <span class="do">## residuals should be normally distributed</span></span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-68-1"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-68-1.png" alt="Residual plots." width="960" />
+<p class="caption">
+Figure 2.42: Residual plots.
+</p>
+</div>
+<div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb85-1"><a href="data-vizualization-and-review-of-linear-models.html#cb85-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">resid</span>(lm2)<span class="sc">~</span><span class="fu">fitted</span>(lm2))  <span class="do">## residuals should be evenly dispersed</span></span>
+<span id="cb85-2"><a href="data-vizualization-and-review-of-linear-models.html#cb85-2" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h=</span><span class="dv">0</span>)                           </span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-68-2"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-68-2.png" alt="Residual plots." width="960" />
+<p class="caption">
+Figure 2.43: Residual plots.
+</p>
+</div>
+<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb86-1"><a href="data-vizualization-and-review-of-linear-models.html#cb86-1" tabindex="-1"></a><span class="fu">qqPlot</span>(<span class="fu">resid</span>(lm2))</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-69"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-69-1.png" alt="QQplot of residuals." width="960" />
+<p class="caption">
+Figure 2.44: QQplot of residuals.
+</p>
+</div>
+<pre><code>## [1] 45 46</code></pre>
+<p>Boxplots of residuals across treatment types should show that the variances should be homogeneous for each group.</p>
+<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb88-1"><a href="data-vizualization-and-review-of-linear-models.html#cb88-1" tabindex="-1"></a><span class="fu">boxplot</span>(<span class="fu">resid</span>(lm2) <span class="sc">~</span> d<span class="sc">$</span>spray)  </span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-70"></span>
+<img src="01-Module_2_files/figure-html/unnamed-chunk-70-1.png" alt="Boxplot of residuals." width="960" />
+<p class="caption">
+Figure 2.45: Boxplot of residuals.
+</p>
+</div>
+<p>Problems with residuals indicate assumptions of the linear model are violated and may cause problems with coefficients and p-values. Transforming the data or using a different type of model may help (we will return to this example later in the book to improve it). Again, assumptions can be slightly violated without causing problems, for example this model is totally fine but could be better. It is best practice to be transparent with residual diagnostics.</p>
+</div>
+<div id="anova-challenge" class="section level3 hasAnchor" number="2.3.2">
+<h3><span class="header-section-number">2.3.2</span> ANOVA Challenge<a href="data-vizualization-and-review-of-linear-models.html#anova-challenge" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Have a look at the dataset below. Baby chickens were fed different diets and they were weighed after 10 days. The variable ‘weight’ is the weight of a baby chicken (g); ‘feed’ is the type of type of diet the chicken was fed.</p>
+<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb89-1"><a href="data-vizualization-and-review-of-linear-models.html#cb89-1" tabindex="-1"></a>d1 <span class="ot">&lt;-</span> chickwts</span>
+<span id="cb89-2"><a href="data-vizualization-and-review-of-linear-models.html#cb89-2" tabindex="-1"></a><span class="fu">head</span>(d1)</span></code></pre></div>
+<pre><code>##   weight      feed
+## 1    179 horsebean
+## 2    160 horsebean
+## 3    136 horsebean
+## 4    227 horsebean
+## 5    217 horsebean
+## 6    168 horsebean</code></pre>
+<ol style="list-style-type: decimal">
+<li><p>Construct a linear model to analyze the data. Is there evidence at least one mean is different than another?</p></li>
+<li><p>How much variation in the data does the model explain?</p></li>
+<li><p>The feed ‘casein’ is the standard chicken diet. What types of feed are significantly worse than ‘casein’. By how much are they worse?</p></li>
+<li><p>Are the assumptions met?</p></li>
+<li><p>Make a nice looking figure. show all the data.</p></li>
+</ol>
+</div>
+</div>
+<div id="extra-data-visualization" class="section level2 hasAnchor" number="2.4">
+<h2><span class="header-section-number">2.4</span> Extra Data Visualization<a href="data-vizualization-and-review-of-linear-models.html#extra-data-visualization" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>This section covers some more advanced plotting with ggplots</p>
+<p>Let’s load the necessary libraries or packages</p>
+<div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb91-1"><a href="data-vizualization-and-review-of-linear-models.html#cb91-1" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb91-2"><a href="data-vizualization-and-review-of-linear-models.html#cb91-2" tabindex="-1"></a><span class="fu">library</span>(emmeans)</span></code></pre></div>
+<div id="adding-model-averages-to-plots" class="section level3 hasAnchor" number="2.4.1">
+<h3><span class="header-section-number">2.4.1</span> Adding Model Averages to Plots<a href="data-vizualization-and-review-of-linear-models.html#adding-model-averages-to-plots" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>In the previous section of data visualization we learned how to create a boxplot with averages based on species. Just like this:</p>
+<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb92-1"><a href="data-vizualization-and-review-of-linear-models.html#cb92-1" tabindex="-1"></a><span class="fu">ggplot</span>(iris, <span class="fu">aes</span>(<span class="at">x=</span>Species, <span class="at">y=</span>Sepal.Length, <span class="at">fill=</span>Species)) <span class="sc">+</span> <span class="fu">geom_boxplot</span>(<span class="at">outlier.shape=</span><span class="cn">NA</span>) <span class="sc">+</span> </span>
+<span id="cb92-2"><a href="data-vizualization-and-review-of-linear-models.html#cb92-2" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">height=</span><span class="dv">0</span>, <span class="at">width=</span>.<span class="dv">15</span>) <span class="sc">+</span> </span>
+<span id="cb92-3"><a href="data-vizualization-and-review-of-linear-models.html#cb92-3" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values=</span><span class="fu">c</span>(<span class="st">&quot;#E69F00&quot;</span>, <span class="st">&quot;#56B4E9&quot;</span>, <span class="st">&quot;#009E73&quot;</span>))  <span class="sc">+</span>     </span>
+<span id="cb92-4"><a href="data-vizualization-and-review-of-linear-models.html#cb92-4" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun=</span>mean, <span class="at">geom=</span><span class="st">&quot;point&quot;</span>, <span class="at">size=</span><span class="dv">5</span>, <span class="at">color=</span><span class="st">&quot;red&quot;</span>)</span></code></pre></div>
+<p><img src="01-Module_2_files/figure-html/unnamed-chunk-73-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>The <code>stat_summary</code> option doens’t allow a lot of flexibility. We can do better by calculating the means and SE ourself to use in the plot. We can do this by constructing a linear model to estimate means and standard errors of the means for plotting. First we construct the model.</p>
+<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb93-1"><a href="data-vizualization-and-review-of-linear-models.html#cb93-1" tabindex="-1"></a>sl1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Sepal.Length<span class="sc">~</span>Species, <span class="at">data=</span>iris)</span></code></pre></div>
+<p>Then we use <code>emmeans()</code> to calculate the means and also pipe it as a data.frame. Basically what this is doing if we were to verbally explain is: “We first calculate the averages and the errors of those averages from the model. We then turn this information into a data.frame so we can access individual values for plotting”.</p>
+<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb94-1"><a href="data-vizualization-and-review-of-linear-models.html#cb94-1" tabindex="-1"></a>sl_means <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(sl1, <span class="sc">~</span>Species) <span class="sc">%&gt;%</span> <span class="fu">as.data.frame</span>() <span class="do">## saves emmeans as dataframe</span></span>
+<span id="cb94-2"><a href="data-vizualization-and-review-of-linear-models.html#cb94-2" tabindex="-1"></a><span class="fu">head</span>(sl_means)</span></code></pre></div>
+<pre><code>##  Species    emmean         SE  df lower.CL upper.CL
+##  setosa      5.006 0.07280222 147 4.862126 5.149874
+##  versicolor  5.936 0.07280222 147 5.792126 6.079874
+##  virginica   6.588 0.07280222 147 6.444126 6.731874
+## 
+## Confidence level used: 0.95</code></pre>
+<p>With the object sl_means we can make bar plots with standard error bars.</p>
+<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb96-1"><a href="data-vizualization-and-review-of-linear-models.html#cb96-1" tabindex="-1"></a><span class="fu">ggplot</span>(sl_means, <span class="fu">aes</span>(<span class="at">x=</span>Species, <span class="at">y=</span>emmean)) <span class="sc">+</span> </span>
+<span id="cb96-2"><a href="data-vizualization-and-review-of-linear-models.html#cb96-2" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">&quot;identity&quot;</span>, <span class="at">color=</span><span class="st">&quot;black&quot;</span>, <span class="at">fill=</span><span class="st">&#39;grey&#39;</span>) <span class="sc">+</span> </span>
+<span id="cb96-3"><a href="data-vizualization-and-review-of-linear-models.html#cb96-3" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin=</span>(emmean<span class="sc">-</span>SE), <span class="at">ymax=</span>(emmean<span class="sc">+</span>SE)), <span class="at">width=</span>.<span class="dv">2</span>)</span></code></pre></div>
+<p><img src="01-Module_2_files/figure-html/unnamed-chunk-76-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>We can tidy up the plot.</p>
+<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb97-1"><a href="data-vizualization-and-review-of-linear-models.html#cb97-1" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> sl_means, </span>
+<span id="cb97-2"><a href="data-vizualization-and-review-of-linear-models.html#cb97-2" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x=</span>Species, <span class="at">y=</span>emmean)) <span class="sc">+</span></span>
+<span id="cb97-3"><a href="data-vizualization-and-review-of-linear-models.html#cb97-3" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">&quot;identity&quot;</span>, </span>
+<span id="cb97-4"><a href="data-vizualization-and-review-of-linear-models.html#cb97-4" tabindex="-1"></a>           <span class="at">color=</span><span class="st">&quot;black&quot;</span>, </span>
+<span id="cb97-5"><a href="data-vizualization-and-review-of-linear-models.html#cb97-5" tabindex="-1"></a>           <span class="at">fill=</span><span class="st">&#39;grey&#39;</span>, </span>
+<span id="cb97-6"><a href="data-vizualization-and-review-of-linear-models.html#cb97-6" tabindex="-1"></a>           <span class="at">width=</span>.<span class="dv">5</span>) <span class="sc">+</span> </span>
+<span id="cb97-7"><a href="data-vizualization-and-review-of-linear-models.html#cb97-7" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin=</span>(emmean<span class="sc">-</span>SE), </span>
+<span id="cb97-8"><a href="data-vizualization-and-review-of-linear-models.html#cb97-8" tabindex="-1"></a>                    <span class="at">ymax=</span>(emmean<span class="sc">+</span>SE)),</span>
+<span id="cb97-9"><a href="data-vizualization-and-review-of-linear-models.html#cb97-9" tabindex="-1"></a>                <span class="at">width=</span>.<span class="dv">2</span>) <span class="sc">+</span> <span class="do">## make bars thinner</span></span>
+<span id="cb97-10"><a href="data-vizualization-and-review-of-linear-models.html#cb97-10" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>) <span class="sc">+</span> </span>
+<span id="cb97-11"><a href="data-vizualization-and-review-of-linear-models.html#cb97-11" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.background =</span> <span class="fu">element_blank</span>(), </span>
+<span id="cb97-12"><a href="data-vizualization-and-review-of-linear-models.html#cb97-12" tabindex="-1"></a>        <span class="at">panel.border =</span> <span class="fu">element_rect</span>(<span class="at">color=</span><span class="st">&quot;black&quot;</span>,</span>
+<span id="cb97-13"><a href="data-vizualization-and-review-of-linear-models.html#cb97-13" tabindex="-1"></a>                                    <span class="at">fill=</span><span class="cn">NA</span>, </span>
+<span id="cb97-14"><a href="data-vizualization-and-review-of-linear-models.html#cb97-14" tabindex="-1"></a>                                    <span class="at">size=</span><span class="dv">2</span>)) <span class="sc">+</span>            <span class="do">## change &quot;theme&quot; so the background is blank and the border is thicker</span></span>
+<span id="cb97-15"><a href="data-vizualization-and-review-of-linear-models.html#cb97-15" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.ticks.length=</span><span class="fu">unit</span>(<span class="fl">0.3</span>, <span class="st">&quot;cm&quot;</span>),  </span>
+<span id="cb97-16"><a href="data-vizualization-and-review-of-linear-models.html#cb97-16" tabindex="-1"></a>        <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">margin=</span><span class="fu">margin</span>(<span class="dv">5</span>,<span class="dv">5</span>,<span class="dv">5</span>,<span class="dv">5</span>,<span class="st">&quot;pt&quot;</span>),<span class="at">colour=</span><span class="st">&quot;black&quot;</span>),</span>
+<span id="cb97-17"><a href="data-vizualization-and-review-of-linear-models.html#cb97-17" tabindex="-1"></a>        <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">margin=</span><span class="fu">margin</span>(<span class="dv">5</span>,<span class="dv">5</span>,<span class="dv">5</span>,<span class="dv">5</span>,<span class="st">&quot;pt&quot;</span>),<span class="at">colour=</span><span class="st">&quot;black&quot;</span>)) <span class="sc">+</span>  <span class="do">## change axis tick marks to make them a little longer</span></span>
+<span id="cb97-18"><a href="data-vizualization-and-review-of-linear-models.html#cb97-18" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">20</span>)) </span></code></pre></div>
+<p><img src="01-Module_2_files/figure-html/unnamed-chunk-77-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>We can also add points to the barplot.</p>
+<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb98-1"><a href="data-vizualization-and-review-of-linear-models.html#cb98-1" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb98-2"><a href="data-vizualization-and-review-of-linear-models.html#cb98-2" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">data=</span>sl_means, </span>
+<span id="cb98-3"><a href="data-vizualization-and-review-of-linear-models.html#cb98-3" tabindex="-1"></a>           <span class="fu">aes</span>(<span class="at">x=</span>Species, <span class="at">y=</span>emmean), </span>
+<span id="cb98-4"><a href="data-vizualization-and-review-of-linear-models.html#cb98-4" tabindex="-1"></a>           <span class="at">stat=</span><span class="st">&quot;identity&quot;</span>, </span>
+<span id="cb98-5"><a href="data-vizualization-and-review-of-linear-models.html#cb98-5" tabindex="-1"></a>           <span class="at">color=</span><span class="st">&quot;black&quot;</span>, </span>
+<span id="cb98-6"><a href="data-vizualization-and-review-of-linear-models.html#cb98-6" tabindex="-1"></a>           <span class="at">fill=</span><span class="st">&#39;grey&#39;</span>, </span>
+<span id="cb98-7"><a href="data-vizualization-and-review-of-linear-models.html#cb98-7" tabindex="-1"></a>           <span class="at">width=</span>.<span class="dv">5</span>) <span class="sc">+</span> </span>
+<span id="cb98-8"><a href="data-vizualization-and-review-of-linear-models.html#cb98-8" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="at">data=</span>sl_means ,</span>
+<span id="cb98-9"><a href="data-vizualization-and-review-of-linear-models.html#cb98-9" tabindex="-1"></a>                <span class="fu">aes</span>(<span class="at">x=</span>Species, </span>
+<span id="cb98-10"><a href="data-vizualization-and-review-of-linear-models.html#cb98-10" tabindex="-1"></a>                    <span class="at">y=</span>emmean, </span>
+<span id="cb98-11"><a href="data-vizualization-and-review-of-linear-models.html#cb98-11" tabindex="-1"></a>                    <span class="at">ymin=</span>(emmean<span class="sc">-</span>SE), </span>
+<span id="cb98-12"><a href="data-vizualization-and-review-of-linear-models.html#cb98-12" tabindex="-1"></a>                    <span class="at">ymax=</span>(emmean<span class="sc">+</span>SE)), </span>
+<span id="cb98-13"><a href="data-vizualization-and-review-of-linear-models.html#cb98-13" tabindex="-1"></a>                <span class="at">width=</span>.<span class="dv">2</span>) <span class="sc">+</span> <span class="do">## make bars thinner</span></span>
+<span id="cb98-14"><a href="data-vizualization-and-review-of-linear-models.html#cb98-14" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">data=</span>iris, </span>
+<span id="cb98-15"><a href="data-vizualization-and-review-of-linear-models.html#cb98-15" tabindex="-1"></a>              <span class="fu">aes</span>(<span class="at">x=</span>Species,</span>
+<span id="cb98-16"><a href="data-vizualization-and-review-of-linear-models.html#cb98-16" tabindex="-1"></a>                  <span class="at">y=</span>Sepal.Length), </span>
+<span id="cb98-17"><a href="data-vizualization-and-review-of-linear-models.html#cb98-17" tabindex="-1"></a>              <span class="at">height=</span><span class="dv">0</span>, </span>
+<span id="cb98-18"><a href="data-vizualization-and-review-of-linear-models.html#cb98-18" tabindex="-1"></a>              <span class="at">width=</span>.<span class="dv">15</span>) <span class="sc">+</span></span>
+<span id="cb98-19"><a href="data-vizualization-and-review-of-linear-models.html#cb98-19" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.background =</span> <span class="fu">element_blank</span>(),  </span>
+<span id="cb98-20"><a href="data-vizualization-and-review-of-linear-models.html#cb98-20" tabindex="-1"></a>        <span class="at">panel.border =</span> <span class="fu">element_rect</span>(<span class="at">color=</span><span class="st">&quot;black&quot;</span>, </span>
+<span id="cb98-21"><a href="data-vizualization-and-review-of-linear-models.html#cb98-21" tabindex="-1"></a>                                    <span class="at">fill=</span><span class="cn">NA</span>, </span>
+<span id="cb98-22"><a href="data-vizualization-and-review-of-linear-models.html#cb98-22" tabindex="-1"></a>                                    <span class="at">size=</span><span class="dv">2</span>)) <span class="sc">+</span>            <span class="do">## change &quot;theme&quot; so the background is blank and the border is thicker</span></span>
+<span id="cb98-23"><a href="data-vizualization-and-review-of-linear-models.html#cb98-23" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.ticks.length=</span><span class="fu">unit</span>(<span class="fl">0.3</span>, <span class="st">&quot;cm&quot;</span>),  </span>
+<span id="cb98-24"><a href="data-vizualization-and-review-of-linear-models.html#cb98-24" tabindex="-1"></a>        <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">margin=</span><span class="fu">margin</span>(<span class="dv">5</span>,<span class="dv">5</span>,<span class="dv">5</span>,<span class="dv">5</span>,<span class="st">&quot;pt&quot;</span>),</span>
+<span id="cb98-25"><a href="data-vizualization-and-review-of-linear-models.html#cb98-25" tabindex="-1"></a>                                   <span class="at">colour=</span><span class="st">&quot;black&quot;</span>),</span>
+<span id="cb98-26"><a href="data-vizualization-and-review-of-linear-models.html#cb98-26" tabindex="-1"></a>        <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">margin=</span><span class="fu">margin</span>(<span class="dv">5</span>,<span class="dv">5</span>,<span class="dv">5</span>,<span class="dv">5</span>,<span class="st">&quot;pt&quot;</span>),</span>
+<span id="cb98-27"><a href="data-vizualization-and-review-of-linear-models.html#cb98-27" tabindex="-1"></a>                                   <span class="at">colour=</span><span class="st">&quot;black&quot;</span>)) <span class="sc">+</span>  <span class="do">## change axis tick marks to make them a little longer</span></span>
+<span id="cb98-28"><a href="data-vizualization-and-review-of-linear-models.html#cb98-28" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">20</span>)) </span></code></pre></div>
+<p><img src="01-Module_2_files/figure-html/unnamed-chunk-78-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>We can also try a dot plot with standard error bars.</p>
+<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb99-1"><a href="data-vizualization-and-review-of-linear-models.html#cb99-1" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb99-2"><a href="data-vizualization-and-review-of-linear-models.html#cb99-2" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">data=</span>iris,</span>
+<span id="cb99-3"><a href="data-vizualization-and-review-of-linear-models.html#cb99-3" tabindex="-1"></a>              <span class="fu">aes</span>(<span class="at">x=</span>Species,</span>
+<span id="cb99-4"><a href="data-vizualization-and-review-of-linear-models.html#cb99-4" tabindex="-1"></a>                  <span class="at">y=</span>Sepal.Length), </span>
+<span id="cb99-5"><a href="data-vizualization-and-review-of-linear-models.html#cb99-5" tabindex="-1"></a>              <span class="at">height=</span><span class="dv">0</span>, </span>
+<span id="cb99-6"><a href="data-vizualization-and-review-of-linear-models.html#cb99-6" tabindex="-1"></a>              <span class="at">width=</span>.<span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb99-7"><a href="data-vizualization-and-review-of-linear-models.html#cb99-7" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data=</span>sl_means, </span>
+<span id="cb99-8"><a href="data-vizualization-and-review-of-linear-models.html#cb99-8" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">x=</span>Species, <span class="at">y=</span>emmean),</span>
+<span id="cb99-9"><a href="data-vizualization-and-review-of-linear-models.html#cb99-9" tabindex="-1"></a>             <span class="at">color=</span><span class="st">&quot;red&quot;</span>, </span>
+<span id="cb99-10"><a href="data-vizualization-and-review-of-linear-models.html#cb99-10" tabindex="-1"></a>             <span class="at">size=</span><span class="dv">5</span>) <span class="sc">+</span> </span>
+<span id="cb99-11"><a href="data-vizualization-and-review-of-linear-models.html#cb99-11" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="at">data=</span>sl_means,</span>
+<span id="cb99-12"><a href="data-vizualization-and-review-of-linear-models.html#cb99-12" tabindex="-1"></a>                <span class="fu">aes</span>(<span class="at">x=</span>Species,</span>
+<span id="cb99-13"><a href="data-vizualization-and-review-of-linear-models.html#cb99-13" tabindex="-1"></a>                    <span class="at">y=</span>emmean, </span>
+<span id="cb99-14"><a href="data-vizualization-and-review-of-linear-models.html#cb99-14" tabindex="-1"></a>                    <span class="at">ymin=</span>(emmean<span class="sc">-</span>SE), </span>
+<span id="cb99-15"><a href="data-vizualization-and-review-of-linear-models.html#cb99-15" tabindex="-1"></a>                    <span class="at">ymax=</span>(emmean<span class="sc">+</span>SE)), </span>
+<span id="cb99-16"><a href="data-vizualization-and-review-of-linear-models.html#cb99-16" tabindex="-1"></a>                <span class="at">width=</span>.<span class="dv">2</span>, </span>
+<span id="cb99-17"><a href="data-vizualization-and-review-of-linear-models.html#cb99-17" tabindex="-1"></a>                <span class="at">color=</span><span class="st">&quot;red&quot;</span>, </span>
+<span id="cb99-18"><a href="data-vizualization-and-review-of-linear-models.html#cb99-18" tabindex="-1"></a>                <span class="at">lwd=</span><span class="dv">2</span>) <span class="sc">+</span> <span class="do">## make bars thinner</span></span>
+<span id="cb99-19"><a href="data-vizualization-and-review-of-linear-models.html#cb99-19" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.background =</span> <span class="fu">element_blank</span>(), </span>
+<span id="cb99-20"><a href="data-vizualization-and-review-of-linear-models.html#cb99-20" tabindex="-1"></a>        <span class="at">panel.border =</span> <span class="fu">element_rect</span>(<span class="at">color=</span><span class="st">&quot;black&quot;</span>, </span>
+<span id="cb99-21"><a href="data-vizualization-and-review-of-linear-models.html#cb99-21" tabindex="-1"></a>                                    <span class="at">fill=</span><span class="cn">NA</span>, </span>
+<span id="cb99-22"><a href="data-vizualization-and-review-of-linear-models.html#cb99-22" tabindex="-1"></a>                                    <span class="at">size=</span><span class="dv">2</span>)) <span class="sc">+</span>            <span class="do">## change &quot;theme&quot; so the background is blank and the border is thicker</span></span>
+<span id="cb99-23"><a href="data-vizualization-and-review-of-linear-models.html#cb99-23" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.ticks.length=</span><span class="fu">unit</span>(<span class="fl">0.3</span>, <span class="st">&quot;cm&quot;</span>),  </span>
+<span id="cb99-24"><a href="data-vizualization-and-review-of-linear-models.html#cb99-24" tabindex="-1"></a>        <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">margin=</span><span class="fu">margin</span>(<span class="dv">5</span>,<span class="dv">5</span>,<span class="dv">5</span>,<span class="dv">5</span>,<span class="st">&quot;pt&quot;</span>),<span class="at">colour=</span><span class="st">&quot;black&quot;</span>),</span>
+<span id="cb99-25"><a href="data-vizualization-and-review-of-linear-models.html#cb99-25" tabindex="-1"></a>        <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">margin=</span><span class="fu">margin</span>(<span class="dv">5</span>,<span class="dv">5</span>,<span class="dv">5</span>,<span class="dv">5</span>,<span class="st">&quot;pt&quot;</span>),<span class="at">colour=</span><span class="st">&quot;black&quot;</span>)) <span class="sc">+</span>  <span class="do">## change axis tick marks to make them a little longer</span></span>
+<span id="cb99-26"><a href="data-vizualization-and-review-of-linear-models.html#cb99-26" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">20</span>)) </span></code></pre></div>
+<p><img src="01-Module_2_files/figure-html/unnamed-chunk-79-1.png" width="960" style="display: block; margin: auto;" /></p>
+</div>
+<div id="extra-r-challenge" class="section level3 hasAnchor" number="2.4.2">
+<h3><span class="header-section-number">2.4.2</span> Extra R Challenge<a href="data-vizualization-and-review-of-linear-models.html#extra-r-challenge" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ol style="list-style-type: decimal">
+<li>From R file 1c_R Intro_anova #5. Make a nice looking plot that includes the mean and SE of chick weight for the six feeds.</li>
+<li>Try making a boxplot with jittered points and then overlay the mean +/- SE in a large dot of a different color.</li>
+<li>Try changing the color of each box. Customize the colors, themes, etc. to make it look nice and readable.</li>
+</ol>
+</div>
+</div>
+<div id="ggplot2-app-via-shiny" class="section level2 hasAnchor" number="2.5">
+<h2><span class="header-section-number">2.5</span> ggplot2 app via Shiny<a href="data-vizualization-and-review-of-linear-models.html#ggplot2-app-via-shiny" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>This shinyapp will allow you to practice and implement ggplot2 commands. You can specify custom plot commands and view the actual product (the plot) as well as the code necessary to generate that plot.</p>
+<div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb100-1"><a href="data-vizualization-and-review-of-linear-models.html#cb100-1" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_app</span>(<span class="st">&quot;https://leoohyama.shinyapps.io/ggplot_practice/&quot;</span>,</span>
+<span id="cb100-2"><a href="data-vizualization-and-review-of-linear-models.html#cb100-2" tabindex="-1"></a>  <span class="at">height =</span> <span class="dv">800</span>)</span></code></pre></div>
+<iframe src="https://leoohyama.shinyapps.io/ggplot_practice/?showcase=0" width="100%" height="800" data-external="1">
+</iframe>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="data-management-and-exploration.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/01-Module_2.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["_main.pdf", "_main.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+},
+"smooth_scroll": false
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

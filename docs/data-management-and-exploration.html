@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>3 Data Management and Exploration | Linear models in Agriculture and Natural Resources</title>
+  <meta name="description" content="<p>This book contains code associated with ALS6502C.
+The HTML output format for this example is bookdown::gitbook,
+set in the _output.yml file.</p>" />
+  <meta name="generator" content="bookdown 0.42 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="3 Data Management and Exploration | Linear models in Agriculture and Natural Resources" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="<p>This book contains code associated with ALS6502C.
+The HTML output format for this example is bookdown::gitbook,
+set in the _output.yml file.</p>" />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="3 Data Management and Exploration | Linear models in Agriculture and Natural Resources" />
+  
+  <meta name="twitter:description" content="<p>This book contains code associated with ALS6502C.
+The HTML output format for this example is bookdown::gitbook,
+set in the _output.yml file.</p>" />
+  
+
+<meta name="author" content="Phil Hahn &amp; Leo Ohyama" />
+
+
+<meta name="date" content="2025-01-08" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="data-vizualization-and-review-of-linear-models.html"/>
+<link rel="next" href="generalized-linear-models.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Linear Models in Agriculture and Natural Resources</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Preface</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#learning-outcomes"><i class="fa fa-check"></i><b>1.1</b> Learning outcomes:</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#overview-of-statistical-analysis-workflow"><i class="fa fa-check"></i><b>1.2</b> Overview of statistical analysis workflow</a>
+<ul>
+<li class="chapter" data-level="1.2.1" data-path="index.html"><a href="index.html#workflow-pre-analysis"><i class="fa fa-check"></i><b>1.2.1</b> Workflow pre-analysis</a></li>
+<li class="chapter" data-level="1.2.2" data-path="index.html"><a href="index.html#workflow-for-analysis"><i class="fa fa-check"></i><b>1.2.2</b> Workflow for analysis</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html"><i class="fa fa-check"></i><b>2</b> Data vizualization and review of linear models</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#introduction-to-data-visualization"><i class="fa fa-check"></i><b>2.1</b> Introduction to Data Visualization</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#continuous-variables"><i class="fa fa-check"></i><b>2.1.1</b> Continuous Variables</a></li>
+<li class="chapter" data-level="2.1.2" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#fancy-scatter-plots"><i class="fa fa-check"></i><b>2.1.2</b> Fancy Scatter plots</a></li>
+<li class="chapter" data-level="2.1.3" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#categorical-variables"><i class="fa fa-check"></i><b>2.1.3</b> Categorical Variables</a></li>
+<li class="chapter" data-level="2.1.4" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#plots-for-categorical-data-with-ggplot2"><i class="fa fa-check"></i><b>2.1.4</b> Plots for categorical data with ggplot2</a></li>
+<li class="chapter" data-level="2.1.5" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#breakout-group-challenge"><i class="fa fa-check"></i><b>2.1.5</b> Breakout group challenge</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#regression-as-a-linear-model"><i class="fa fa-check"></i><b>2.2</b> Regression as a linear model</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#an-example-of-linear-regression-in-r"><i class="fa fa-check"></i><b>2.2.1</b> An Example of Linear Regression in R</a></li>
+<li class="chapter" data-level="2.2.2" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#regression-challenge"><i class="fa fa-check"></i><b>2.2.2</b> Regression Challenge</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#anova-as-a-linear-model"><i class="fa fa-check"></i><b>2.3</b> ANOVA as a linear model</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#example-of-a-one-way-anova-in-r"><i class="fa fa-check"></i><b>2.3.1</b> Example of a one-way ANOVA in R</a></li>
+<li class="chapter" data-level="2.3.2" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#anova-challenge"><i class="fa fa-check"></i><b>2.3.2</b> ANOVA Challenge</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#extra-data-visualization"><i class="fa fa-check"></i><b>2.4</b> Extra Data Visualization</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#adding-model-averages-to-plots"><i class="fa fa-check"></i><b>2.4.1</b> Adding Model Averages to Plots</a></li>
+<li class="chapter" data-level="2.4.2" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#extra-r-challenge"><i class="fa fa-check"></i><b>2.4.2</b> Extra R Challenge</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#ggplot2-app-via-shiny"><i class="fa fa-check"></i><b>2.5</b> ggplot2 app via Shiny</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html"><i class="fa fa-check"></i><b>3</b> Data Management and Exploration</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#data-management"><i class="fa fa-check"></i><b>3.1</b> Data Management</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#making-and-modifying-variables"><i class="fa fa-check"></i><b>3.1.1</b> Making and modifying variables</a></li>
+<li class="chapter" data-level="3.1.2" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#variables-with-the-tidyverse"><i class="fa fa-check"></i><b>3.1.2</b> Variables with the tidyverse</a></li>
+<li class="chapter" data-level="3.1.3" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#reshape-data-for-better-usability"><i class="fa fa-check"></i><b>3.1.3</b> Reshape data for better usability</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#data-exploration"><i class="fa fa-check"></i><b>3.2</b> Data Exploration</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#distributions-summary-statistics"><i class="fa fa-check"></i><b>3.2.1</b> Distributions &amp; summary statistics</a></li>
+<li class="chapter" data-level="3.2.2" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#examining-for-outliers"><i class="fa fa-check"></i><b>3.2.2</b> Examining for outliers</a></li>
+<li class="chapter" data-level="3.2.3" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#exploring-relationships-in-data"><i class="fa fa-check"></i><b>3.2.3</b> Exploring relationships in data</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#model-selection"><i class="fa fa-check"></i><b>3.3</b> Model Selection</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#quick-introduction"><i class="fa fa-check"></i><b>3.3.1</b> Quick introduction</a></li>
+<li class="chapter" data-level="3.3.2" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#basic-calculations"><i class="fa fa-check"></i><b>3.3.2</b> Basic calculations</a></li>
+<li class="chapter" data-level="3.3.3" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#aicc"><i class="fa fa-check"></i><b>3.3.3</b> AICc</a></li>
+<li class="chapter" data-level="3.3.4" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#case-study-with-aic"><i class="fa fa-check"></i><b>3.3.4</b> Case study with AIC</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html"><i class="fa fa-check"></i><b>4</b> Generalized Linear Models</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#overview-of-generalized-linear-models"><i class="fa fa-check"></i><b>4.1</b> Overview of Generalized Linear Models</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#example-one-way-anova-with-non-normal-data"><i class="fa fa-check"></i><b>4.1.1</b> Example: One-way ANOVA with non-normal data</a></li>
+<li class="chapter" data-level="4.1.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#log-linear-model"><i class="fa fa-check"></i><b>4.1.2</b> Log-linear model</a></li>
+<li class="chapter" data-level="4.1.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#generalized-linear-models-glms"><i class="fa fa-check"></i><b>4.1.3</b> Generalized linear models (GLMs)</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#overdispersion"><i class="fa fa-check"></i><b>4.2</b> Overdispersion</a></li>
+<li class="chapter" data-level="4.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#binomial-glm"><i class="fa fa-check"></i><b>4.3</b> Binomial GLM</a></li>
+<li class="chapter" data-level="4.4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#gamma-glm"><i class="fa fa-check"></i><b>4.4</b> Gamma GLM</a>
+<ul>
+<li class="chapter" data-level="4.4.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#example-1"><i class="fa fa-check"></i><b>4.4.1</b> Example 1</a></li>
+<li class="chapter" data-level="4.4.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#example-2"><i class="fa fa-check"></i><b>4.4.2</b> Example 2</a></li>
+<li class="chapter" data-level="4.4.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#example-3"><i class="fa fa-check"></i><b>4.4.3</b> Example 3</a></li>
+<li class="chapter" data-level="4.4.4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#example-4"><i class="fa fa-check"></i><b>4.4.4</b> Example 4</a></li>
+</ul></li>
+<li class="chapter" data-level="4.5" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#briefly-running-gamma-glms"><i class="fa fa-check"></i><b>4.5</b> Briefly running Gamma GLMs</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html"><i class="fa fa-check"></i><b>5</b> Mixed-effect models</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#interactions-in-statistical-models"><i class="fa fa-check"></i><b>5.1</b> Interactions in statistical models</a>
+<ul>
+<li class="chapter" data-level="5.1.1" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#ancova-multiple-intercept-model"><i class="fa fa-check"></i><b>5.1.1</b> ANCOVA: multiple intercept model</a></li>
+<li class="chapter" data-level="5.1.2" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#ancova-multiple-intercept-and-slope-model"><i class="fa fa-check"></i><b>5.1.2</b> ANCOVA: multiple intercept AND slope model</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#block-designs"><i class="fa fa-check"></i><b>5.2</b> Block Designs</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#data-prep-and-plotting"><i class="fa fa-check"></i><b>5.2.1</b> Data prep and Plotting</a></li>
+<li class="chapter" data-level="5.2.2" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#models-with-block-designs"><i class="fa fa-check"></i><b>5.2.2</b> Models with block designs</a></li>
+<li class="chapter" data-level="5.2.3" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#blocks-as-random-effects"><i class="fa fa-check"></i><b>5.2.3</b> Blocks as random effects</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#variance-components"><i class="fa fa-check"></i><b>5.3</b> Variance components</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#r2"><i class="fa fa-check"></i><b>5.3.1</b> R2</a></li>
+<li class="chapter" data-level="5.3.2" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#chick-weight-example"><i class="fa fa-check"></i><b>5.3.2</b> Chick weight example</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#split-plot-and-nested-designs"><i class="fa fa-check"></i><b>5.4</b> Split-plot and nested designs</a>
+<ul>
+<li class="chapter" data-level="5.4.1" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#additional-nesting"><i class="fa fa-check"></i><b>5.4.1</b> Additional nesting</a></li>
+<li class="chapter" data-level="5.4.2" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#r-challenge"><i class="fa fa-check"></i><b>5.4.2</b> R CHALLENGE</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#repeated-measures"><i class="fa fa-check"></i><b>5.5</b> Repeated Measures</a>
+<ul>
+<li class="chapter" data-level="5.5.1" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#r-challange---repeated-measures"><i class="fa fa-check"></i><b>5.5.1</b> R CHALLANGE - REPEATED MEASURES</a></li>
+</ul></li>
+<li class="chapter" data-level="5.6" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#additional-lmm-reading"><i class="fa fa-check"></i><b>5.6</b> Additional LMM reading</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="generalized-linear-mixed-models.html"><a href="generalized-linear-mixed-models.html"><i class="fa fa-check"></i><b>6</b> Generalized linear mixed models</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="generalized-linear-mixed-models.html"><a href="generalized-linear-mixed-models.html#poisson-and-nb-glmms"><i class="fa fa-check"></i><b>6.1</b> Poisson and NB GLMMs</a>
+<ul>
+<li class="chapter" data-level="6.1.1" data-path="generalized-linear-mixed-models.html"><a href="generalized-linear-mixed-models.html#improving-the-models-whats-next"><i class="fa fa-check"></i><b>6.1.1</b> Improving the models: What’s next?</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="generalized-linear-mixed-models.html"><a href="generalized-linear-mixed-models.html#binomial-glmms"><i class="fa fa-check"></i><b>6.2</b> Binomial GLMMs</a></li>
+<li class="chapter" data-level="6.3" data-path="generalized-linear-mixed-models.html"><a href="generalized-linear-mixed-models.html#beta-distributions"><i class="fa fa-check"></i><b>6.3</b> Beta Distributions</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="generalized-linear-mixed-models.html"><a href="generalized-linear-mixed-models.html#r-challenge-1"><i class="fa fa-check"></i><b>6.3.1</b> R CHALLENGE</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="generalized-linear-mixed-models.html"><a href="generalized-linear-mixed-models.html#zero-inflated-models"><i class="fa fa-check"></i><b>6.4</b> Zero-Inflated Models</a></li>
+<li class="chapter" data-level="6.5" data-path="generalized-linear-mixed-models.html"><a href="generalized-linear-mixed-models.html#model-app-exercise"><i class="fa fa-check"></i><b>6.5</b> Model App exercise</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Linear models in Agriculture and Natural Resources</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="data-management-and-exploration" class="section level1 hasAnchor" number="3">
+<h1><span class="header-section-number">3</span> Data Management and Exploration<a href="data-management-and-exploration.html#data-management-and-exploration" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>After completing this module, students will be able to:</p>
+<ul>
+<li><p>3.1 Describe the structure of data set and variables</p></li>
+<li><p>3.2 Summarize variables in a dataset</p></li>
+<li><p>3.3 Conduct exploratory analyses using tidyverse in R</p></li>
+<li><p>3.4 Compare AIC scores to select among competing models</p></li>
+</ul>
+<div id="data-management" class="section level2 hasAnchor" number="3.1">
+<h2><span class="header-section-number">3.1</span> Data Management<a href="data-management-and-exploration.html#data-management" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>A key element to managing data in the RStudio GUI (graphic user interface) is to understand the structure of the data set(s) you are working with. While there are plenty of ways to do this, the basic and important functions will be explained in this section. First, we will go over examining your data set at a very basic level.</p>
+<p>We will practice using the iris dataset, which we used in the previous chapter.</p>
+<div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb101-1"><a href="data-management-and-exploration.html#cb101-1" tabindex="-1"></a><span class="fu">data</span>(iris) <span class="co"># load data (already exists in base R)</span></span></code></pre></div>
+<p>Sometimes, we want to see the data that make up our data set. The best way may be to simply just skim the top or bottom rows of the data set or dataframe. To do this we can use the <code>head()</code> and <code>tail()</code> function in R. These functions will print out the first or last several lines of the data set.</p>
+<div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb102-1"><a href="data-management-and-exploration.html#cb102-1" tabindex="-1"></a><span class="fu">head</span>(iris) <span class="co"># print first 6 lines of dataset</span></span></code></pre></div>
+<pre><code>##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+## 1          5.1         3.5          1.4         0.2  setosa
+## 2          4.9         3.0          1.4         0.2  setosa
+## 3          4.7         3.2          1.3         0.2  setosa
+## 4          4.6         3.1          1.5         0.2  setosa
+## 5          5.0         3.6          1.4         0.2  setosa
+## 6          5.4         3.9          1.7         0.4  setosa</code></pre>
+<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="data-management-and-exploration.html#cb104-1" tabindex="-1"></a><span class="fu">tail</span>(iris) <span class="co"># print last 6 lines of dataset</span></span></code></pre></div>
+<pre><code>##     Sepal.Length Sepal.Width Petal.Length Petal.Width   Species
+## 145          6.7         3.3          5.7         2.5 virginica
+## 146          6.7         3.0          5.2         2.3 virginica
+## 147          6.3         2.5          5.0         1.9 virginica
+## 148          6.5         3.0          5.2         2.0 virginica
+## 149          6.2         3.4          5.4         2.3 virginica
+## 150          5.9         3.0          5.1         1.8 virginica</code></pre>
+<p>But perhaps we want to examine the type of data we have in each column. Do we have numerical data? Do we have count data that are only integers? What about categories? For large data sets, getting this information can be difficult through scanning the first or last several rows. So instead we can implement the <code>str()</code> function to look at the structure of the data set. When this function is used, R will print out a summary of each variable (column) in your dataframe along with its variable designation.</p>
+<div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="data-management-and-exploration.html#cb106-1" tabindex="-1"></a><span class="fu">str</span>(iris) <span class="co"># print &#39;structure&#39; of dataset giving you info about each column</span></span></code></pre></div>
+<pre><code>## &#39;data.frame&#39;:    150 obs. of  5 variables:
+##  $ Sepal.Length: num  5.1 4.9 4.7 4.6 5 5.4 4.6 5 4.4 4.9 ...
+##  $ Sepal.Width : num  3.5 3 3.2 3.1 3.6 3.9 3.4 3.4 2.9 3.1 ...
+##  $ Petal.Length: num  1.4 1.4 1.3 1.5 1.4 1.7 1.4 1.5 1.4 1.5 ...
+##  $ Petal.Width : num  0.2 0.2 0.2 0.2 0.2 0.4 0.3 0.2 0.2 0.1 ...
+##  $ Species     : Factor w/ 3 levels &quot;setosa&quot;,&quot;versicolor&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
+<div id="making-and-modifying-variables" class="section level3 hasAnchor" number="3.1.1">
+<h3><span class="header-section-number">3.1.1</span> Making and modifying variables<a href="data-management-and-exploration.html#making-and-modifying-variables" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>We can also quickly add new variables (columns) or exist pre-existing variables in a dataframe. Here’s how we make a new column that is a unique number.</p>
+<div class="sourceCode" id="cb108"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb108-1"><a href="data-management-and-exploration.html#cb108-1" tabindex="-1"></a>iris<span class="sc">$</span>Plant <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(iris)</span></code></pre></div>
+<p>The <code>&lt;-</code> is the assignment command; anything on the left-hand side of the <code>&lt;-</code> will be created and everything on the right-hand side is what we will command R to create. In this example we are creating a new column in the ‘iris’ dataset called ‘Plant’. The <code>"$"</code> is how we tell R the dataset (before <code>"$"</code> is the data set) and the column within that dataset (after <code>"$"</code>). So, the bit of code <code>iris$Plant</code> you can read as “within the data.frame ‘iris’ create a new column called ‘Plant’. Then, on the right-hand side of the <code>&lt;-</code> we are assigning this column values from 1 to the total number of rows in the data (150 rows).</p>
+<p>We can also create columns based on other columns. Here’s how we make a new column that is total petal and sepal length:</p>
+<div class="sourceCode" id="cb109"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb109-1"><a href="data-management-and-exploration.html#cb109-1" tabindex="-1"></a>iris<span class="sc">$</span>PetSep.Length <span class="ot">&lt;-</span> iris<span class="sc">$</span>Petal.Length<span class="sc">+</span>iris<span class="sc">$</span>Sepal.Length</span></code></pre></div>
+<p>Modifying columns is also another aspect of working with data. Here’s how to make a new column called ‘lnPS.Len’ that log-transforms PetSep.Length:</p>
+<div class="sourceCode" id="cb110"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb110-1"><a href="data-management-and-exploration.html#cb110-1" tabindex="-1"></a>iris<span class="sc">$</span>lnPS.Len <span class="ot">&lt;-</span> <span class="fu">log</span>(iris<span class="sc">$</span>PetSep.Length)</span></code></pre></div>
+<p>Here’s how to make a new column for “genus”. The only values you want is “Iris”:</p>
+<div class="sourceCode" id="cb111"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb111-1"><a href="data-management-and-exploration.html#cb111-1" tabindex="-1"></a>iris<span class="sc">$</span>Genus <span class="ot">&lt;-</span> <span class="st">&#39;Iris&#39;</span></span></code></pre></div>
+<p>Here’s how to combine two columns:</p>
+<div class="sourceCode" id="cb112"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb112-1"><a href="data-management-and-exploration.html#cb112-1" tabindex="-1"></a>iris<span class="sc">$</span>GenSpp <span class="ot">&lt;-</span> <span class="fu">paste</span>(iris<span class="sc">$</span>Genus, iris<span class="sc">$</span>Species, <span class="at">sep=</span><span class="st">&quot;_&quot;</span>)</span></code></pre></div>
+<p>Here’s how to change Species ‘versicolor’ to ‘versi’ in the GenSpp column using <code>gsub</code>:</p>
+<div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb113-1"><a href="data-management-and-exploration.html#cb113-1" tabindex="-1"></a>iris<span class="sc">$</span>GenSpp <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&#39;versicolor&#39;</span>, <span class="st">&#39;versi&#39;</span>, iris<span class="sc">$</span>GenSpp )  <span class="do">## looks for &#39;versicolor&#39; and replaces it with &#39;versi&#39; in the column iris$GenSpp</span></span></code></pre></div>
+<p><code>sub()</code> can be used for replacement but will only do 1 replacement and <code>gsub()</code> can also be used for replacement but with all matching instances.</p>
+<p>You can use <code>gsub()</code> to add genus name to species column (alternative to making new column and then pasting together).</p>
+<div class="sourceCode" id="cb114"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb114-1"><a href="data-management-and-exploration.html#cb114-1" tabindex="-1"></a>iris<span class="sc">$</span>GenSpp1 <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&#39;.*^&#39;</span>, <span class="st">&#39;Iris_&#39;</span>, iris<span class="sc">$</span>Species)</span></code></pre></div>
+</div>
+<div id="variables-with-the-tidyverse" class="section level3 hasAnchor" number="3.1.2">
+<h3><span class="header-section-number">3.1.2</span> Variables with the tidyverse<a href="data-management-and-exploration.html#variables-with-the-tidyverse" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Everything so far in terms of modifying or making variables have been done with base R functions. However, sometimes these functions are not very intuitive. Take for example this new variable I created from the iris dataset:</p>
+<div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb115-1"><a href="data-management-and-exploration.html#cb115-1" tabindex="-1"></a>iris<span class="sc">$</span>new_var <span class="ot">&lt;-</span><span class="fu">unique</span>(<span class="fu">mean</span>(<span class="fu">c</span>(<span class="fu">log10</span>(iris<span class="sc">$</span>Petal.Width), <span class="fu">sqrt</span>(iris<span class="sc">$</span>Petal.Width<span class="sc">+</span><span class="dv">5</span>)), <span class="at">na.rm =</span>T))</span></code></pre></div>
+<p>While the new variable is random mess, the more important issue is whether or not you understand what I did? If you know what the functions do you may be able to figure it out but nonetheless it takes a longer time because you are forced to read the code inside out. This is where the ‘tidyverse’ metapackage comes in. This metapackage offers a variety of ways to modify and create new variables.</p>
+<p>One thing to note is that the functions that are used here are often slow to process when working with extremely large and complicated data. For the purpose of this class, we do not deal with such large high dimensional data and therefore tidyverse is more than capable of providing what we need at reliable and consistent speeds. However, if one were to start working with large data or what we call “big data” (e.g. ‘omics’ data, sequence data, large ecological monitoring datasets) then we advise you to get comfortable with base R functions as they are extremely fast but not as intuitive.</p>
+<div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb116-1"><a href="data-management-and-exploration.html#cb116-1" tabindex="-1"></a><span class="fu">library</span>(tidyverse)      <span class="co"># load package tidyverse (install if needed)</span></span></code></pre></div>
+<pre><code>## Warning: package &#39;ggplot2&#39; was built under R version 4.3.3</code></pre>
+<pre><code>## Warning: package &#39;tidyr&#39; was built under R version 4.3.3</code></pre>
+<pre><code>## Warning: package &#39;readr&#39; was built under R version 4.3.3</code></pre>
+<pre><code>## Warning: package &#39;lubridate&#39; was built under R version 4.3.3</code></pre>
+<pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+## ✔ dplyr     1.1.4     ✔ readr     2.1.5
+## ✔ forcats   1.0.0     ✔ stringr   1.5.1
+## ✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+## ✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+## ✔ purrr     1.0.2     
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+<div class="sourceCode" id="cb122"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb122-1"><a href="data-management-and-exploration.html#cb122-1" tabindex="-1"></a><span class="fu">library</span>(viridis)        <span class="co"># viridis package for color palates</span></span></code></pre></div>
+<pre><code>## Warning: package &#39;viridis&#39; was built under R version 4.3.3</code></pre>
+<pre><code>## Loading required package: viridisLite</code></pre>
+<div class="sourceCode" id="cb125"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb125-1"><a href="data-management-and-exploration.html#cb125-1" tabindex="-1"></a><span class="fu">data</span>(iris)               <span class="co"># reload iris to clear changes from above</span></span>
+<span id="cb125-2"><a href="data-management-and-exploration.html#cb125-2" tabindex="-1"></a>iris1 <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(iris) <span class="co"># load iris and convert to tibble</span></span></code></pre></div>
+<div class="sourceCode" id="cb126"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb126-1"><a href="data-management-and-exploration.html#cb126-1" tabindex="-1"></a><span class="fu">glimpse</span>(iris1)     <span class="do">## similar to str(), just glimpses data</span></span></code></pre></div>
+<pre><code>## Rows: 150
+## Columns: 5
+## $ Sepal.Length &lt;dbl&gt; 5.1, 4.9, 4.7, 4.6, 5.0, 5.4, 4.6, 5.0, 4.4, 4.9, 5.4, 4.…
+## $ Sepal.Width  &lt;dbl&gt; 3.5, 3.0, 3.2, 3.1, 3.6, 3.9, 3.4, 3.4, 2.9, 3.1, 3.7, 3.…
+## $ Petal.Length &lt;dbl&gt; 1.4, 1.4, 1.3, 1.5, 1.4, 1.7, 1.4, 1.5, 1.4, 1.5, 1.5, 1.…
+## $ Petal.Width  &lt;dbl&gt; 0.2, 0.2, 0.2, 0.2, 0.2, 0.4, 0.3, 0.2, 0.2, 0.1, 0.2, 0.…
+## $ Species      &lt;fct&gt; setosa, setosa, setosa, setosa, setosa, setosa, setosa, s…</code></pre>
+<p>The <code>mutate()</code> function will allow you create and modify variables. Notice in this example we create all the new variables we had made in the previous section all within one chunk of code:</p>
+<div class="sourceCode" id="cb128"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb128-1"><a href="data-management-and-exploration.html#cb128-1" tabindex="-1"></a>iris1 <span class="ot">&lt;-</span> iris1 <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">Plant =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(Species), </span>
+<span id="cb128-2"><a href="data-management-and-exploration.html#cb128-2" tabindex="-1"></a>                          <span class="at">PetSep.Length =</span> Petal.Length<span class="sc">+</span>Sepal.Length,</span>
+<span id="cb128-3"><a href="data-management-and-exploration.html#cb128-3" tabindex="-1"></a>                          <span class="at">lnPS.Len =</span><span class="fu">log</span>(PetSep.Length), </span>
+<span id="cb128-4"><a href="data-management-and-exploration.html#cb128-4" tabindex="-1"></a>                          <span class="at">Genus=</span><span class="st">&#39;Iris&#39;</span>, </span>
+<span id="cb128-5"><a href="data-management-and-exploration.html#cb128-5" tabindex="-1"></a>                          <span class="at">GenSpp=</span><span class="fu">gsub</span>(<span class="st">&#39;.*^&#39;</span>, <span class="st">&#39;Iris_&#39;</span>, Species)) </span>
+<span id="cb128-6"><a href="data-management-and-exploration.html#cb128-6" tabindex="-1"></a>        <span class="do">## note that I am overwriting iris1. Overwrite data.frames/tibbles with caution</span></span></code></pre></div>
+<p>The ‘summarize()’ function can calculate means, sd, min, max, etc. of a dataset:</p>
+<div class="sourceCode" id="cb129"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb129-1"><a href="data-management-and-exploration.html#cb129-1" tabindex="-1"></a>iris1 <span class="sc">%&gt;%</span> <span class="fu">summarize</span>(<span class="fu">mean</span>(Petal.Length))  <span class="do">## mean of Petal.Length in dplyr</span></span></code></pre></div>
+<pre><code>## # A tibble: 1 × 1
+##   `mean(Petal.Length)`
+##                  &lt;dbl&gt;
+## 1                 3.76</code></pre>
+<div class="sourceCode" id="cb131"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb131-1"><a href="data-management-and-exploration.html#cb131-1" tabindex="-1"></a><span class="fu">mean</span>(iris1<span class="sc">$</span>Petal.Length) <span class="do">## mean of Petal.Length in base R</span></span></code></pre></div>
+<pre><code>## [1] 3.758</code></pre>
+<p>Producing one mean is fine, but often we want to summarize by groups to get means for different groups or categories. <code>summarize()</code> can do this no problem, with a few other commands. Here we summarize ‘Petal.Length’ by Species with both Tidyverse and base R:</p>
+<div class="sourceCode" id="cb133"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb133-1"><a href="data-management-and-exploration.html#cb133-1" tabindex="-1"></a>means_PetLen1 <span class="ot">&lt;-</span> iris1 <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(Species) <span class="sc">%&gt;%</span></span>
+<span id="cb133-2"><a href="data-management-and-exploration.html#cb133-2" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">Petal.Length=</span><span class="fu">mean</span>(Petal.Length)) <span class="do">## tidy code</span></span>
+<span id="cb133-3"><a href="data-management-and-exploration.html#cb133-3" tabindex="-1"></a>means_PetLen1 <span class="do">## means are saved in this new tibble</span></span></code></pre></div>
+<pre><code>## # A tibble: 3 × 2
+##   Species    Petal.Length
+##   &lt;fct&gt;             &lt;dbl&gt;
+## 1 setosa             1.46
+## 2 versicolor         4.26
+## 3 virginica          5.55</code></pre>
+<div class="sourceCode" id="cb135"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb135-1"><a href="data-management-and-exploration.html#cb135-1" tabindex="-1"></a>means_PetLen2 <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(Petal.Length<span class="sc">~</span>Species, <span class="at">FUN=</span><span class="st">&quot;mean&quot;</span>, <span class="at">data=</span>iris1) <span class="do">## base R</span></span>
+<span id="cb135-2"><a href="data-management-and-exploration.html#cb135-2" tabindex="-1"></a>means_PetLen2  <span class="do">## means are saved in this data.frame</span></span></code></pre></div>
+<pre><code>##      Species Petal.Length
+## 1     setosa        1.462
+## 2 versicolor        4.260
+## 3  virginica        5.552</code></pre>
+<p>Here we summarize multiple variables by species use <code>summarize_all()</code>:</p>
+<div class="sourceCode" id="cb137"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb137-1"><a href="data-management-and-exploration.html#cb137-1" tabindex="-1"></a>means1 <span class="ot">&lt;-</span> iris1 <span class="sc">%&gt;%</span> </span>
+<span id="cb137-2"><a href="data-management-and-exploration.html#cb137-2" tabindex="-1"></a>  <span class="fu">select</span>(Sepal.Length, Sepal.Width, Petal.Length,</span>
+<span id="cb137-3"><a href="data-management-and-exploration.html#cb137-3" tabindex="-1"></a>         Petal.Width, lnPS.Len, Species) <span class="sc">%&gt;%</span>  </span>
+<span id="cb137-4"><a href="data-management-and-exploration.html#cb137-4" tabindex="-1"></a>  <span class="fu">group_by</span>(Species) <span class="sc">%&gt;%</span> </span>
+<span id="cb137-5"><a href="data-management-and-exploration.html#cb137-5" tabindex="-1"></a>  <span class="fu">summarize_all</span>(<span class="fu">list</span>(<span class="at">mean=</span>mean,<span class="at">sd=</span>sd,<span class="at">n=</span>length))</span>
+<span id="cb137-6"><a href="data-management-and-exploration.html#cb137-6" tabindex="-1"></a>means1</span></code></pre></div>
+<pre><code>## # A tibble: 3 × 16
+##   Species  Sepal.Length_mean Sepal.Width_mean Petal.Length_mean Petal.Width_mean
+##   &lt;fct&gt;                &lt;dbl&gt;            &lt;dbl&gt;             &lt;dbl&gt;            &lt;dbl&gt;
+## 1 setosa                5.01             3.43              1.46            0.246
+## 2 versico…              5.94             2.77              4.26            1.33 
+## 3 virgini…              6.59             2.97              5.55            2.03 
+## # ℹ 11 more variables: lnPS.Len_mean &lt;dbl&gt;, Sepal.Length_sd &lt;dbl&gt;,
+## #   Sepal.Width_sd &lt;dbl&gt;, Petal.Length_sd &lt;dbl&gt;, Petal.Width_sd &lt;dbl&gt;,
+## #   lnPS.Len_sd &lt;dbl&gt;, Sepal.Length_n &lt;int&gt;, Sepal.Width_n &lt;int&gt;,
+## #   Petal.Length_n &lt;int&gt;, Petal.Width_n &lt;int&gt;, lnPS.Len_n &lt;int&gt;</code></pre>
+</div>
+<div id="reshape-data-for-better-usability" class="section level3 hasAnchor" number="3.1.3">
+<h3><span class="header-section-number">3.1.3</span> Reshape data for better usability<a href="data-management-and-exploration.html#reshape-data-for-better-usability" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Sometimes the data we are working with needs to be completely reorganized. For example you may have a dataframe containing ecological community data where you have different plots as rows and different species as columns. Within this hypothetical dataframe you have different abundances of species by site. Something like this:</p>
+<div class="sourceCode" id="cb139"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb139-1"><a href="data-management-and-exploration.html#cb139-1" tabindex="-1"></a>spxsite<span class="ot">&lt;-</span><span class="fu">data.frame</span>(<span class="at">Site_ID =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>, <span class="at">sp1 =</span> <span class="fu">round</span>(<span class="fu">runif</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>)), <span class="at">sp2 =</span> <span class="fu">round</span>(<span class="fu">runif</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>)),<span class="at">sp3 =</span> <span class="fu">round</span>(<span class="fu">runif</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>)))</span>
+<span id="cb139-2"><a href="data-management-and-exploration.html#cb139-2" tabindex="-1"></a><span class="fu">head</span>(spxsite)</span></code></pre></div>
+<pre><code>##   Site_ID sp1 sp2 sp3
+## 1       1   1   1   1
+## 2       2   1   0   1
+## 3       3   0   1   0
+## 4       4   1   1   1
+## 5       5   1   0   1
+## 6       6   1   0   0</code></pre>
+<p>But you may want to reorganize the data so that you had a total count of species for each site in one column. In other words, we want to reshape from “wide” format to “long” format. We can do this using the <code>pivot_longer</code> function:</p>
+<div class="sourceCode" id="cb141"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb141-1"><a href="data-management-and-exploration.html#cb141-1" tabindex="-1"></a>spxsite <span class="sc">%&gt;%</span> <span class="fu">pivot_longer</span>( </span>
+<span id="cb141-2"><a href="data-management-and-exploration.html#cb141-2" tabindex="-1"></a>             <span class="at">cols =</span> <span class="fu">c</span>(sp1, sp2, sp3),</span>
+<span id="cb141-3"><a href="data-management-and-exploration.html#cb141-3" tabindex="-1"></a>             <span class="at">names_to =</span> <span class="st">&quot;Species&quot;</span>,</span>
+<span id="cb141-4"><a href="data-management-and-exploration.html#cb141-4" tabindex="-1"></a>             <span class="at">values_to =</span> <span class="st">&quot;Occurrence&quot;</span>)</span></code></pre></div>
+<pre><code>## # A tibble: 60 × 3
+##    Site_ID Species Occurrence
+##      &lt;int&gt; &lt;chr&gt;        &lt;dbl&gt;
+##  1       1 sp1              1
+##  2       1 sp2              1
+##  3       1 sp3              1
+##  4       2 sp1              1
+##  5       2 sp2              0
+##  6       2 sp3              1
+##  7       3 sp1              0
+##  8       3 sp2              1
+##  9       3 sp3              0
+## 10       4 sp1              1
+## # ℹ 50 more rows</code></pre>
+<p>Ta da! Very simple to reshape.
+Here is how we reshape the iris data from wide to long:</p>
+<div class="sourceCode" id="cb143"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb143-1"><a href="data-management-and-exploration.html#cb143-1" tabindex="-1"></a>iris_long <span class="ot">&lt;-</span> iris1 <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(Species) <span class="sc">%&gt;%</span> </span>
+<span id="cb143-2"><a href="data-management-and-exploration.html#cb143-2" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">c</span>(Sepal.Length, Sepal.Width, Petal.Length,</span>
+<span id="cb143-3"><a href="data-management-and-exploration.html#cb143-3" tabindex="-1"></a>                      Petal.Width, lnPS.Len), </span>
+<span id="cb143-4"><a href="data-management-and-exploration.html#cb143-4" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">&#39;Trait&#39;</span>, </span>
+<span id="cb143-5"><a href="data-management-and-exploration.html#cb143-5" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">&#39;value&#39;</span>)</span>
+<span id="cb143-6"><a href="data-management-and-exploration.html#cb143-6" tabindex="-1"></a><span class="fu">head</span>(iris_long)</span></code></pre></div>
+<pre><code>## # A tibble: 6 × 7
+## # Groups:   Species [1]
+##   Species Plant PetSep.Length Genus GenSpp      Trait        value
+##   &lt;fct&gt;   &lt;int&gt;         &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt;        &lt;dbl&gt;
+## 1 setosa      1           6.5 Iris  Iris_setosa Sepal.Length  5.1 
+## 2 setosa      1           6.5 Iris  Iris_setosa Sepal.Width   3.5 
+## 3 setosa      1           6.5 Iris  Iris_setosa Petal.Length  1.4 
+## 4 setosa      1           6.5 Iris  Iris_setosa Petal.Width   0.2 
+## 5 setosa      1           6.5 Iris  Iris_setosa lnPS.Len      1.87
+## 6 setosa      2           6.3 Iris  Iris_setosa Sepal.Length  4.9</code></pre>
+<p>With this new form of data we can calculate the mean, sd, and n (sample size) for each Species by trait combination and then calculate the standard error (se). Note that we need to use the <code>group_by()</code> function to tell R how we want the data to be grouped.</p>
+<div class="sourceCode" id="cb145"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb145-1"><a href="data-management-and-exploration.html#cb145-1" tabindex="-1"></a>means2 <span class="ot">&lt;-</span> iris_long <span class="sc">%&gt;%</span> </span>
+<span id="cb145-2"><a href="data-management-and-exploration.html#cb145-2" tabindex="-1"></a>  <span class="fu">group_by</span>(Species,Trait) <span class="sc">%&gt;%</span> </span>
+<span id="cb145-3"><a href="data-management-and-exploration.html#cb145-3" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">mean=</span><span class="fu">mean</span>(value), </span>
+<span id="cb145-4"><a href="data-management-and-exploration.html#cb145-4" tabindex="-1"></a>            <span class="at">sd=</span><span class="fu">sd</span>(value), </span>
+<span id="cb145-5"><a href="data-management-and-exploration.html#cb145-5" tabindex="-1"></a>            <span class="at">n=</span><span class="fu">length</span>(value)) <span class="sc">%&gt;%</span> </span>
+<span id="cb145-6"><a href="data-management-and-exploration.html#cb145-6" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">se=</span>sd<span class="sc">/</span><span class="fu">sqrt</span>(n)) <span class="sc">%&gt;%</span></span>
+<span id="cb145-7"><a href="data-management-and-exploration.html#cb145-7" tabindex="-1"></a>  <span class="fu">filter</span>(Trait<span class="sc">!=</span><span class="st">&#39;lnPS.Len&#39;</span>)</span></code></pre></div>
+<pre><code>## `summarise()` has grouped output by &#39;Species&#39;. You can override using the
+## `.groups` argument.</code></pre>
+<div class="sourceCode" id="cb147"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb147-1"><a href="data-management-and-exploration.html#cb147-1" tabindex="-1"></a><span class="fu">head</span>(means2)</span></code></pre></div>
+<pre><code>## # A tibble: 6 × 6
+## # Groups:   Species [2]
+##   Species    Trait         mean    sd     n     se
+##   &lt;fct&gt;      &lt;chr&gt;        &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt;  &lt;dbl&gt;
+## 1 setosa     Petal.Length 1.46  0.174    50 0.0246
+## 2 setosa     Petal.Width  0.246 0.105    50 0.0149
+## 3 setosa     Sepal.Length 5.01  0.352    50 0.0498
+## 4 setosa     Sepal.Width  3.43  0.379    50 0.0536
+## 5 versicolor Petal.Length 4.26  0.470    50 0.0665
+## 6 versicolor Petal.Width  1.33  0.198    50 0.0280</code></pre>
+<p>Note that all the previous code could all be done in one piped command:</p>
+<div class="sourceCode" id="cb149"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb149-1"><a href="data-management-and-exploration.html#cb149-1" tabindex="-1"></a>means2a <span class="ot">&lt;-</span> iris1 <span class="sc">%&gt;%</span> </span>
+<span id="cb149-2"><a href="data-management-and-exploration.html#cb149-2" tabindex="-1"></a>  <span class="fu">group_by</span>(Species) <span class="sc">%&gt;%</span> </span>
+<span id="cb149-3"><a href="data-management-and-exploration.html#cb149-3" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">c</span>(Sepal.Length, Sepal.Width, Petal.Length,</span>
+<span id="cb149-4"><a href="data-management-and-exploration.html#cb149-4" tabindex="-1"></a>                      Petal.Width, lnPS.Len), <span class="at">names_to =</span> <span class="st">&#39;Trait&#39;</span>,</span>
+<span id="cb149-5"><a href="data-management-and-exploration.html#cb149-5" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">&#39;value&#39;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb149-6"><a href="data-management-and-exploration.html#cb149-6" tabindex="-1"></a>  <span class="fu">group_by</span>(Species,Trait) <span class="sc">%&gt;%</span> </span>
+<span id="cb149-7"><a href="data-management-and-exploration.html#cb149-7" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">mean=</span><span class="fu">mean</span>(value), </span>
+<span id="cb149-8"><a href="data-management-and-exploration.html#cb149-8" tabindex="-1"></a>            <span class="at">sd=</span><span class="fu">sd</span>(value),</span>
+<span id="cb149-9"><a href="data-management-and-exploration.html#cb149-9" tabindex="-1"></a>            <span class="at">n=</span><span class="fu">length</span>(value)) <span class="sc">%&gt;%</span> </span>
+<span id="cb149-10"><a href="data-management-and-exploration.html#cb149-10" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">se=</span>sd<span class="sc">/</span><span class="fu">sqrt</span>(n)) <span class="sc">%&gt;%</span></span>
+<span id="cb149-11"><a href="data-management-and-exploration.html#cb149-11" tabindex="-1"></a>  <span class="fu">filter</span>(Trait<span class="sc">!=</span><span class="st">&#39;lnPS.Len&#39;</span>)</span></code></pre></div>
+<pre><code>## `summarise()` has grouped output by &#39;Species&#39;. You can override using the
+## `.groups` argument.</code></pre>
+<div class="sourceCode" id="cb151"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb151-1"><a href="data-management-and-exploration.html#cb151-1" tabindex="-1"></a>means2a</span></code></pre></div>
+<pre><code>## # A tibble: 12 × 6
+## # Groups:   Species [3]
+##    Species    Trait         mean    sd     n     se
+##    &lt;fct&gt;      &lt;chr&gt;        &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt;  &lt;dbl&gt;
+##  1 setosa     Petal.Length 1.46  0.174    50 0.0246
+##  2 setosa     Petal.Width  0.246 0.105    50 0.0149
+##  3 setosa     Sepal.Length 5.01  0.352    50 0.0498
+##  4 setosa     Sepal.Width  3.43  0.379    50 0.0536
+##  5 versicolor Petal.Length 4.26  0.470    50 0.0665
+##  6 versicolor Petal.Width  1.33  0.198    50 0.0280
+##  7 versicolor Sepal.Length 5.94  0.516    50 0.0730
+##  8 versicolor Sepal.Width  2.77  0.314    50 0.0444
+##  9 virginica  Petal.Length 5.55  0.552    50 0.0780
+## 10 virginica  Petal.Width  2.03  0.275    50 0.0388
+## 11 virginica  Sepal.Length 6.59  0.636    50 0.0899
+## 12 virginica  Sepal.Width  2.97  0.322    50 0.0456</code></pre>
+<p>Before getting further into this, notice the code written above. It is by far easier to read and understand what is being done to the data compared to base R functions that are wrapped within one another! This improves our ability to communicate code and more importantly develop REPRODUCIBLE analytical pipelines. It’s important that your code is not only legible to you but to others as well.</p>
+<p>We can make plots (and do other things) not possible without reshaping and summarizing the data. Below are two plots to start with. Note that one is more effective than the other, but demonstrate two ways you can plot the data using the summarized and long-format data, respectively.</p>
+<div class="sourceCode" id="cb153"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb153-1"><a href="data-management-and-exploration.html#cb153-1" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>means2, <span class="fu">aes</span>(<span class="at">x=</span>Species, <span class="at">y=</span>mean, <span class="at">fill=</span>Trait)) <span class="sc">+</span> </span>
+<span id="cb153-2"><a href="data-management-and-exploration.html#cb153-2" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size=</span><span class="dv">5</span>, <span class="at">position=</span><span class="fu">position_dodge</span>(<span class="at">width=</span><span class="fl">0.25</span>), <span class="at">pch=</span><span class="dv">22</span>) <span class="sc">+</span></span>
+<span id="cb153-3"><a href="data-management-and-exploration.html#cb153-3" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y=</span><span class="st">&quot;Floral part measurement (mm)&quot;</span>) <span class="sc">+</span></span>
+<span id="cb153-4"><a href="data-management-and-exploration.html#cb153-4" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin=</span>(mean<span class="sc">-</span>sd), <span class="at">ymax=</span>(mean<span class="sc">+</span>sd)), <span class="at">width=</span>.<span class="dv">2</span>,</span>
+<span id="cb153-5"><a href="data-management-and-exploration.html#cb153-5" tabindex="-1"></a>                <span class="at">position=</span><span class="fu">position_dodge</span>(<span class="at">width=</span><span class="fl">0.25</span>), <span class="at">lwd=</span><span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb153-6"><a href="data-management-and-exploration.html#cb153-6" tabindex="-1"></a>  <span class="fu">scale_fill_viridis</span>(<span class="at">discrete =</span> T, </span>
+<span id="cb153-7"><a href="data-management-and-exploration.html#cb153-7" tabindex="-1"></a>                     <span class="at">labels=</span><span class="fu">c</span>(<span class="st">&quot;Petal Length&quot;</span>,<span class="st">&quot;Petal Width&quot;</span>,</span>
+<span id="cb153-8"><a href="data-management-and-exploration.html#cb153-8" tabindex="-1"></a>                              <span class="st">&quot;Sepal Length&quot;</span>, <span class="st">&quot;Sepal Width&quot;</span>),</span>
+<span id="cb153-9"><a href="data-management-and-exploration.html#cb153-9" tabindex="-1"></a>                     <span class="at">option=</span><span class="st">&quot;magma&quot;</span>) <span class="sc">+</span></span>
+<span id="cb153-10"><a href="data-management-and-exploration.html#cb153-10" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.border=</span><span class="fu">element_rect</span>(<span class="at">color=</span><span class="st">&quot;black&quot;</span>,<span class="at">size=</span><span class="dv">2</span>, <span class="at">fill=</span><span class="cn">NA</span>)) <span class="sc">+</span></span>
+<span id="cb153-11"><a href="data-management-and-exploration.html#cb153-11" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">&quot;Species&quot;</span>)</span></code></pre></div>
+<pre><code>## Warning: The `size` argument of `element_rect()` is deprecated as of ggplot2 3.4.0.
+## ℹ Please use the `linewidth` argument instead.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+## generated.</code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-25"></span>
+<img src="02-Module_3_files/figure-html/unnamed-chunk-25-1.png" alt="Means and SE for species and floral traits made with ggplot" width="672" />
+<p class="caption">
+Figure 3.1: Means and SE for species and floral traits made with ggplot
+</p>
+</div>
+<div class="sourceCode" id="cb155"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb155-1"><a href="data-management-and-exploration.html#cb155-1" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>iris_long <span class="sc">%&gt;%</span> </span>
+<span id="cb155-2"><a href="data-management-and-exploration.html#cb155-2" tabindex="-1"></a>         <span class="fu">filter</span>(Trait<span class="sc">!=</span><span class="st">&#39;lnPS.Len&#39;</span>), <span class="fu">aes</span>(<span class="at">x=</span>Species, </span>
+<span id="cb155-3"><a href="data-management-and-exploration.html#cb155-3" tabindex="-1"></a>                                        <span class="at">y=</span>value, </span>
+<span id="cb155-4"><a href="data-management-and-exploration.html#cb155-4" tabindex="-1"></a>                                        <span class="at">fill=</span>Species)) <span class="sc">+</span> </span>
+<span id="cb155-5"><a href="data-management-and-exploration.html#cb155-5" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span> </span>
+<span id="cb155-6"><a href="data-management-and-exploration.html#cb155-6" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Trait, <span class="at">scales =</span> <span class="st">&#39;free_y&#39;</span>) <span class="sc">+</span></span>
+<span id="cb155-7"><a href="data-management-and-exploration.html#cb155-7" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y=</span><span class="st">&quot;Floral part measurement (mm)&quot;</span>) <span class="sc">+</span></span>
+<span id="cb155-8"><a href="data-management-and-exploration.html#cb155-8" tabindex="-1"></a>  <span class="fu">scale_fill_viridis</span>(<span class="at">discrete =</span> T, </span>
+<span id="cb155-9"><a href="data-management-and-exploration.html#cb155-9" tabindex="-1"></a>                     <span class="at">option =</span> <span class="st">&quot;plasma&quot;</span>, </span>
+<span id="cb155-10"><a href="data-management-and-exploration.html#cb155-10" tabindex="-1"></a>                     <span class="at">direction =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">begin=</span>.<span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb155-11"><a href="data-management-and-exploration.html#cb155-11" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-26"></span>
+<img src="02-Module_3_files/figure-html/unnamed-chunk-26-1.png" alt="Means and SE for species and floral traits made with ggplot" width="672" />
+<p class="caption">
+Figure 2.20: Means and SE for species and floral traits made with ggplot
+</p>
+</div>
+<p>Which of the above plots do you think is more effective in conveying data and summary statistics?</p>
+</div>
+</div>
+<div id="data-exploration" class="section level2 hasAnchor" number="3.2">
+<h2><span class="header-section-number">3.2</span> Data Exploration<a href="data-management-and-exploration.html#data-exploration" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>For data exploration we need to load the following libraries:</p>
+<div class="sourceCode" id="cb156"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb156-1"><a href="data-management-and-exploration.html#cb156-1" tabindex="-1"></a><span class="fu">library</span>(tidyverse) </span>
+<span id="cb156-2"><a href="data-management-and-exploration.html#cb156-2" tabindex="-1"></a><span class="fu">library</span>(agridat)</span></code></pre></div>
+<pre><code>## Warning: package &#39;agridat&#39; was built under R version 4.3.3</code></pre>
+<div class="sourceCode" id="cb158"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb158-1"><a href="data-management-and-exploration.html#cb158-1" tabindex="-1"></a><span class="fu">library</span>(corrplot) </span></code></pre></div>
+<pre><code>## Warning: package &#39;corrplot&#39; was built under R version 4.3.3</code></pre>
+<pre><code>## corrplot 0.95 loaded</code></pre>
+<div class="sourceCode" id="cb161"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb161-1"><a href="data-management-and-exploration.html#cb161-1" tabindex="-1"></a><span class="fu">library</span>(EnvStats) </span></code></pre></div>
+<pre><code>## Warning: package &#39;EnvStats&#39; was built under R version 4.3.3</code></pre>
+<pre><code>## 
+## Attaching package: &#39;EnvStats&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     predict, predict.lm</code></pre>
+<p>Data exploration is an important part of cleaning, understanding, and dealing with your data. Data exploration encompasses a variety of processes that often revolve around visualization and bigger picture perspectives of the data you are working with. It’s also a useful time to identify key patterns in your dataset that may be interesting in later analyses or highlight bias in your dataset.</p>
+<p>We will still use the Iris dataset for our data exploration.</p>
+<div class="sourceCode" id="cb165"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb165-1"><a href="data-management-and-exploration.html#cb165-1" tabindex="-1"></a><span class="fu">data</span>(iris) <span class="co"># load data (already exists in base R)</span></span>
+<span id="cb165-2"><a href="data-management-and-exploration.html#cb165-2" tabindex="-1"></a>iris[<span class="dv">8</span>,<span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="dv">7</span> <span class="co"># plant data point for demo</span></span>
+<span id="cb165-3"><a href="data-management-and-exploration.html#cb165-3" tabindex="-1"></a><span class="fu">head</span>(iris) <span class="co"># print first 6 lines of dataset</span></span></code></pre></div>
+<pre><code>##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+## 1          5.1         3.5          1.4         0.2  setosa
+## 2          4.9         3.0          1.4         0.2  setosa
+## 3          4.7         3.2          1.3         0.2  setosa
+## 4          4.6         3.1          1.5         0.2  setosa
+## 5          5.0         3.6          1.4         0.2  setosa
+## 6          5.4         3.9          1.7         0.4  setosa</code></pre>
+<div class="sourceCode" id="cb167"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb167-1"><a href="data-management-and-exploration.html#cb167-1" tabindex="-1"></a><span class="fu">tail</span>(iris) <span class="co"># print last 6 lines of dataset</span></span></code></pre></div>
+<pre><code>##     Sepal.Length Sepal.Width Petal.Length Petal.Width   Species
+## 145          6.7         3.3          5.7         2.5 virginica
+## 146          6.7         3.0          5.2         2.3 virginica
+## 147          6.3         2.5          5.0         1.9 virginica
+## 148          6.5         3.0          5.2         2.0 virginica
+## 149          6.2         3.4          5.4         2.3 virginica
+## 150          5.9         3.0          5.1         1.8 virginica</code></pre>
+<p>Here we use <code>str()</code> to print the ‘structure’ of dataset giving you info about each column as shown earlier. There is also another function, <code>glimpse()</code> that is the tidyverse equivalent of <code>str()</code>.</p>
+<div class="sourceCode" id="cb169"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb169-1"><a href="data-management-and-exploration.html#cb169-1" tabindex="-1"></a><span class="fu">str</span>(iris)</span></code></pre></div>
+<pre><code>## &#39;data.frame&#39;:    150 obs. of  5 variables:
+##  $ Sepal.Length: num  5.1 4.9 4.7 4.6 5 5.4 4.6 5 4.4 4.9 ...
+##  $ Sepal.Width : num  3.5 3 3.2 3.1 3.6 3.9 3.4 3.4 2.9 3.1 ...
+##  $ Petal.Length: num  1.4 1.4 1.3 1.5 1.4 1.7 1.4 7 1.4 1.5 ...
+##  $ Petal.Width : num  0.2 0.2 0.2 0.2 0.2 0.4 0.3 0.2 0.2 0.1 ...
+##  $ Species     : Factor w/ 3 levels &quot;setosa&quot;,&quot;versicolor&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
+<div class="sourceCode" id="cb171"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb171-1"><a href="data-management-and-exploration.html#cb171-1" tabindex="-1"></a><span class="fu">glimpse</span>(iris) <span class="co"># glimpse is similar to str() in tidyverse</span></span></code></pre></div>
+<pre><code>## Rows: 150
+## Columns: 5
+## $ Sepal.Length &lt;dbl&gt; 5.1, 4.9, 4.7, 4.6, 5.0, 5.4, 4.6, 5.0, 4.4, 4.9, 5.4, 4.…
+## $ Sepal.Width  &lt;dbl&gt; 3.5, 3.0, 3.2, 3.1, 3.6, 3.9, 3.4, 3.4, 2.9, 3.1, 3.7, 3.…
+## $ Petal.Length &lt;dbl&gt; 1.4, 1.4, 1.3, 1.5, 1.4, 1.7, 1.4, 7.0, 1.4, 1.5, 1.5, 1.…
+## $ Petal.Width  &lt;dbl&gt; 0.2, 0.2, 0.2, 0.2, 0.2, 0.4, 0.3, 0.2, 0.2, 0.1, 0.2, 0.…
+## $ Species      &lt;fct&gt; setosa, setosa, setosa, setosa, setosa, setosa, setosa, s…</code></pre>
+<div id="distributions-summary-statistics" class="section level3 hasAnchor" number="3.2.1">
+<h3><span class="header-section-number">3.2.1</span> Distributions &amp; summary statistics<a href="data-management-and-exploration.html#distributions-summary-statistics" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Distribution of data are important to visualize and understand in your data sets. For example, these distributions can help inform the types of models you may need to rely on or can also help identify distinct clustering of different values based on different categories.</p>
+<p>We can view histograms of petal lengths and also calculate where the mean and median of this distribution are:</p>
+<div class="sourceCode" id="cb173"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb173-1"><a href="data-management-and-exploration.html#cb173-1" tabindex="-1"></a><span class="fu">ggplot</span>(iris, <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length)) <span class="sc">+</span> </span>
+<span id="cb173-2"><a href="data-management-and-exploration.html#cb173-2" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">12</span>, <span class="at">color=</span><span class="st">&quot;white&quot;</span>) <span class="sc">+</span></span>
+<span id="cb173-3"><a href="data-management-and-exploration.html#cb173-3" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">16</span>) <span class="sc">+</span></span>
+<span id="cb173-4"><a href="data-management-and-exploration.html#cb173-4" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="fu">aes</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(Petal.Length)),</span>
+<span id="cb173-5"><a href="data-management-and-exploration.html#cb173-5" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">&quot;blue&quot;</span>,</span>
+<span id="cb173-6"><a href="data-management-and-exploration.html#cb173-6" tabindex="-1"></a>             <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb173-7"><a href="data-management-and-exploration.html#cb173-7" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="fu">aes</span>(<span class="at">xintercept=</span> <span class="fu">median</span>(Petal.Length)), </span>
+<span id="cb173-8"><a href="data-management-and-exploration.html#cb173-8" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">&quot;orange&quot;</span>, </span>
+<span id="cb173-9"><a href="data-management-and-exploration.html#cb173-9" tabindex="-1"></a>             <span class="at">size =</span> <span class="dv">2</span>)</span></code></pre></div>
+<pre><code>## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+## ℹ Please use `linewidth` instead.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+## generated.</code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-31"></span>
+<img src="02-Module_3_files/figure-html/unnamed-chunk-31-1.png" alt="Histogram of petal length with mean and median shown" width="672" />
+<p class="caption">
+Figure 2.25: Histogram of petal length with mean and median shown
+</p>
+</div>
+<p>We can also facet the histograms:</p>
+<div class="sourceCode" id="cb175"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb175-1"><a href="data-management-and-exploration.html#cb175-1" tabindex="-1"></a><span class="fu">ggplot</span>(iris, <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length)) <span class="sc">+</span> </span>
+<span id="cb175-2"><a href="data-management-and-exploration.html#cb175-2" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">12</span>, <span class="at">color=</span><span class="st">&quot;white&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb175-3"><a href="data-management-and-exploration.html#cb175-3" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Species, <span class="at">scales=</span><span class="st">&quot;free&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb175-4"><a href="data-management-and-exploration.html#cb175-4" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">16</span>) <span class="sc">+</span></span>
+<span id="cb175-5"><a href="data-management-and-exploration.html#cb175-5" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Petal Length&quot;</span>, </span>
+<span id="cb175-6"><a href="data-management-and-exploration.html#cb175-6" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;Count&quot;</span>)</span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-32"></span>
+<img src="02-Module_3_files/figure-html/unnamed-chunk-32-1.png" alt="Histogram of petal length with mean and median shown" width="672" />
+<p class="caption">
+Figure 2.26: Histogram of petal length with mean and median shown
+</p>
+</div>
+<p>Or we can put them all in one plot and split them by color, this would allow for a more easier and quicker evaluation of how the different species stack up to one another.</p>
+<div class="sourceCode" id="cb176"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb176-1"><a href="data-management-and-exploration.html#cb176-1" tabindex="-1"></a><span class="fu">ggplot</span>(iris, <span class="fu">aes</span>(<span class="at">x =</span> Petal.Length)) <span class="sc">+</span> </span>
+<span id="cb176-2"><a href="data-management-and-exploration.html#cb176-2" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">12</span>, <span class="at">color=</span><span class="st">&quot;white&quot;</span>,</span>
+<span id="cb176-3"><a href="data-management-and-exploration.html#cb176-3" tabindex="-1"></a>                 <span class="fu">aes</span>(<span class="at">fill =</span> Species, <span class="at">color =</span> Species)) <span class="sc">+</span> </span>
+<span id="cb176-4"><a href="data-management-and-exploration.html#cb176-4" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">16</span>) <span class="sc">+</span></span>
+<span id="cb176-5"><a href="data-management-and-exploration.html#cb176-5" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Petal Length&quot;</span>, </span>
+<span id="cb176-6"><a href="data-management-and-exploration.html#cb176-6" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;Count&quot;</span>)</span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-33"></span>
+<img src="02-Module_3_files/figure-html/unnamed-chunk-33-1.png" alt="Histogram of petal length with mean and median shown" width="672" />
+<p class="caption">
+Figure 2.27: Histogram of petal length with mean and median shown
+</p>
+</div>
+<p>We can use <code>summary()</code> to examine mean, median, and ranges of each of the columns:</p>
+<div class="sourceCode" id="cb177"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb177-1"><a href="data-management-and-exploration.html#cb177-1" tabindex="-1"></a><span class="fu">summary</span>(iris)</span></code></pre></div>
+<pre><code>##   Sepal.Length    Sepal.Width     Petal.Length    Petal.Width   
+##  Min.   :4.300   Min.   :2.000   Min.   :1.000   Min.   :0.100  
+##  1st Qu.:5.100   1st Qu.:2.800   1st Qu.:1.600   1st Qu.:0.300  
+##  Median :5.800   Median :3.000   Median :4.400   Median :1.300  
+##  Mean   :5.843   Mean   :3.057   Mean   :3.795   Mean   :1.199  
+##  3rd Qu.:6.400   3rd Qu.:3.300   3rd Qu.:5.100   3rd Qu.:1.800  
+##  Max.   :7.900   Max.   :4.400   Max.   :7.000   Max.   :2.500  
+##        Species  
+##  setosa    :50  
+##  versicolor:50  
+##  virginica :50  
+##                 
+##                 
+## </code></pre>
+<p>If we need a table of these summary stats then we can also get a table of means and medians with this tidyverse code:</p>
+<div class="sourceCode" id="cb179"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb179-1"><a href="data-management-and-exploration.html#cb179-1" tabindex="-1"></a>iris <span class="sc">%&gt;%</span></span>
+<span id="cb179-2"><a href="data-management-and-exploration.html#cb179-2" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb179-3"><a href="data-management-and-exploration.html#cb179-3" tabindex="-1"></a>  <span class="fu">group_by</span>(Species,name) <span class="sc">%&gt;%</span> </span>
+<span id="cb179-4"><a href="data-management-and-exploration.html#cb179-4" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">mean=</span><span class="fu">mean</span>(value),<span class="at">median=</span><span class="fu">median</span>(value)) </span></code></pre></div>
+<pre><code>## `summarise()` has grouped output by &#39;Species&#39;. You can override using the
+## `.groups` argument.</code></pre>
+<pre><code>## # A tibble: 12 × 4
+## # Groups:   Species [3]
+##    Species    name          mean median
+##    &lt;fct&gt;      &lt;chr&gt;        &lt;dbl&gt;  &lt;dbl&gt;
+##  1 setosa     Petal.Length 1.57    1.5 
+##  2 setosa     Petal.Width  0.246   0.2 
+##  3 setosa     Sepal.Length 5.01    5   
+##  4 setosa     Sepal.Width  3.43    3.4 
+##  5 versicolor Petal.Length 4.26    4.35
+##  6 versicolor Petal.Width  1.33    1.3 
+##  7 versicolor Sepal.Length 5.94    5.9 
+##  8 versicolor Sepal.Width  2.77    2.8 
+##  9 virginica  Petal.Length 5.55    5.55
+## 10 virginica  Petal.Width  2.03    2   
+## 11 virginica  Sepal.Length 6.59    6.5 
+## 12 virginica  Sepal.Width  2.97    3</code></pre>
+</div>
+<div id="examining-for-outliers" class="section level3 hasAnchor" number="3.2.2">
+<h3><span class="header-section-number">3.2.2</span> Examining for outliers<a href="data-management-and-exploration.html#examining-for-outliers" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Outliers can cause a lot of distortion in the data as well as any downstream analyses. Therefore, the ability to quickly identify and potentially remove outliers from a data set is important.</p>
+<p>Boxplots can be used to examine distribution and look for outliers:</p>
+<div class="sourceCode" id="cb182"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb182-1"><a href="data-management-and-exploration.html#cb182-1" tabindex="-1"></a><span class="fu">ggplot</span>(iris, <span class="fu">aes</span>(<span class="at">x=</span>Species, <span class="at">y =</span> Petal.Length)) <span class="sc">+</span> </span>
+<span id="cb182-2"><a href="data-management-and-exploration.html#cb182-2" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">fill=</span><span class="st">&quot;grey&quot;</span>, <span class="at">width=</span>.<span class="dv">5</span>) <span class="sc">+</span> </span>
+<span id="cb182-3"><a href="data-management-and-exploration.html#cb182-3" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Species, <span class="at">scales=</span><span class="st">&quot;free&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb182-4"><a href="data-management-and-exploration.html#cb182-4" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">16</span>)</span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-36"></span>
+<img src="02-Module_3_files/figure-html/unnamed-chunk-36-1.png" alt="Boxplot of petal length by species" width="672" />
+<p class="caption">
+Figure 2.30: Boxplot of petal length by species
+</p>
+</div>
+<p>We can use a Dixon test for outliers or other tests like the grubbs test or Rosner test (for multiple outliers):</p>
+<div class="sourceCode" id="cb183"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb183-1"><a href="data-management-and-exploration.html#cb183-1" tabindex="-1"></a><span class="fu">library</span>(outliers)</span></code></pre></div>
+<div class="sourceCode" id="cb184"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb184-1"><a href="data-management-and-exploration.html#cb184-1" tabindex="-1"></a><span class="do">## grubbs test for outliers, highest then lowest. Other functions EnvStats::rosnerTest() can test for multiple outliers</span></span>
+<span id="cb184-2"><a href="data-management-and-exploration.html#cb184-2" tabindex="-1"></a><span class="fu">grubbs.test</span>(iris<span class="sc">$</span>Petal.Length) <span class="do">## full dataset</span></span></code></pre></div>
+<pre><code>## 
+##  Grubbs test for one outlier
+## 
+## data:  iris$Petal.Length
+## G = 1.80564, U = 0.97797, p-value = 1
+## alternative hypothesis: highest value 7 is an outlier</code></pre>
+<div class="sourceCode" id="cb186"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb186-1"><a href="data-management-and-exploration.html#cb186-1" tabindex="-1"></a><span class="fu">grubbs.test</span>(iris<span class="sc">$</span>Petal.Length[iris<span class="sc">$</span>Species<span class="sc">==</span><span class="st">&#39;setosa&#39;</span>]) <span class="do">## just species setosa</span></span></code></pre></div>
+<pre><code>## 
+##  Grubbs test for one outlier
+## 
+## data:  iris$Petal.Length[iris$Species == &quot;setosa&quot;]
+## G = 6.765525, U = 0.046807, p-value &lt; 2.2e-16
+## alternative hypothesis: highest value 7 is an outlier</code></pre>
+<div class="sourceCode" id="cb188"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb188-1"><a href="data-management-and-exploration.html#cb188-1" tabindex="-1"></a><span class="fu">grubbs.test</span>(iris<span class="sc">$</span>Petal.Length[iris<span class="sc">$</span>Species<span class="sc">==</span><span class="st">&#39;setosa&#39;</span>], <span class="at">opposite=</span>T) <span class="do">## test lower outlier for species setosa</span></span></code></pre></div>
+<pre><code>## 
+##  Grubbs test for one outlier
+## 
+## data:  iris$Petal.Length[iris$Species == &quot;setosa&quot;]
+## G = 0.71295, U = 0.98941, p-value = 1
+## alternative hypothesis: lowest value 1 is an outlier</code></pre>
+<p>Here we can remove outliers and remake boxplots. We can remove data entries where the species was ‘setosa’ and the petal length was less than four. Filtering with <code>|</code> (OR) will select all observations where one condition is met but not the other.</p>
+<div class="sourceCode" id="cb190"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb190-1"><a href="data-management-and-exploration.html#cb190-1" tabindex="-1"></a>iris1 <span class="ot">&lt;-</span> iris <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Petal.Length<span class="sc">&lt;</span><span class="dv">4</span> <span class="sc">|</span> <span class="sc">!</span>Species<span class="sc">==</span><span class="st">&#39;setosa&#39;</span>)</span></code></pre></div>
+<p>Plotting data:</p>
+<div class="sourceCode" id="cb191"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb191-1"><a href="data-management-and-exploration.html#cb191-1" tabindex="-1"></a><span class="fu">ggplot</span>(iris1, <span class="fu">aes</span>(<span class="at">x=</span>Species, <span class="at">y =</span> Petal.Length)) <span class="sc">+</span> </span>
+<span id="cb191-2"><a href="data-management-and-exploration.html#cb191-2" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">fill=</span><span class="st">&quot;grey&quot;</span>, <span class="at">width=</span>.<span class="dv">5</span>) <span class="sc">+</span> </span>
+<span id="cb191-3"><a href="data-management-and-exploration.html#cb191-3" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Species, <span class="at">scales=</span><span class="st">&quot;free&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb191-4"><a href="data-management-and-exploration.html#cb191-4" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">16</span>)</span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-40"></span>
+<img src="02-Module_3_files/figure-html/unnamed-chunk-40-1.png" alt="Boxplot of petal length by species with outlier removed" width="672" />
+<p class="caption">
+Figure 2.34: Boxplot of petal length by species with outlier removed
+</p>
+</div>
+<p>Not the usage of <code>scales = 'free'</code> in the code above. What this does is it allows the scales to vary across the facetted variables, in this case the three different types of species. When we don’t call upon this in the code, all the species will be on the same scale, in this case y - axis. While this may make things more comparable across facets, it will make it more difficult to examine specific species’ distributions:</p>
+<div class="sourceCode" id="cb192"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb192-1"><a href="data-management-and-exploration.html#cb192-1" tabindex="-1"></a><span class="fu">ggplot</span>(iris1, <span class="fu">aes</span>(<span class="at">x=</span>Species, <span class="at">y =</span> Petal.Length)) <span class="sc">+</span> </span>
+<span id="cb192-2"><a href="data-management-and-exploration.html#cb192-2" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">fill=</span><span class="st">&quot;grey&quot;</span>, <span class="at">width=</span>.<span class="dv">5</span>) <span class="sc">+</span> </span>
+<span id="cb192-3"><a href="data-management-and-exploration.html#cb192-3" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Species) <span class="sc">+</span> </span>
+<span id="cb192-4"><a href="data-management-and-exploration.html#cb192-4" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">16</span>)</span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-41"></span>
+<img src="02-Module_3_files/figure-html/unnamed-chunk-41-1.png" alt="Boxplot of petal length by species with outlier removed" width="672" />
+<p class="caption">
+Figure 3.2: Boxplot of petal length by species with outlier removed
+</p>
+</div>
+</div>
+<div id="exploring-relationships-in-data" class="section level3 hasAnchor" number="3.2.3">
+<h3><span class="header-section-number">3.2.3</span> Exploring relationships in data<a href="data-management-and-exploration.html#exploring-relationships-in-data" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Correlations and trends across different variables in a data set are important to explore because they allow us to intuitively understand how our data is structured; e.g. which variables are so alike relative to other variables. Yet plotting multiple scatter plots of pairwise comparisons across all variables in a data set is exhausting. For example, below we plot three different pairwise comparisons with the iris data.</p>
+<div class="sourceCode" id="cb193"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb193-1"><a href="data-management-and-exploration.html#cb193-1" tabindex="-1"></a><span class="fu">data</span>(iris)</span>
+<span id="cb193-2"><a href="data-management-and-exploration.html#cb193-2" tabindex="-1"></a><span class="fu">plot</span>(iris<span class="sc">$</span>Sepal.Length, iris<span class="sc">$</span>Sepal.Width)</span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-42-1"></span>
+<img src="02-Module_3_files/figure-html/unnamed-chunk-42-1.png" alt="Three scatter plots" width="672" />
+<p class="caption">
+Figure 3.3: Three scatter plots
+</p>
+</div>
+<div class="sourceCode" id="cb194"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb194-1"><a href="data-management-and-exploration.html#cb194-1" tabindex="-1"></a><span class="fu">plot</span>(iris<span class="sc">$</span>Sepal.Length, iris<span class="sc">$</span>Petal.Length)</span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-42-2"></span>
+<img src="02-Module_3_files/figure-html/unnamed-chunk-42-2.png" alt="Three scatter plots" width="672" />
+<p class="caption">
+Figure 3.4: Three scatter plots
+</p>
+</div>
+<div class="sourceCode" id="cb195"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb195-1"><a href="data-management-and-exploration.html#cb195-1" tabindex="-1"></a><span class="fu">plot</span>(iris<span class="sc">$</span>Sepal.Length, iris<span class="sc">$</span>Petal.Width)</span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-42-3"></span>
+<img src="02-Module_3_files/figure-html/unnamed-chunk-42-3.png" alt="Three scatter plots" width="672" />
+<p class="caption">
+Figure 3.5: Three scatter plots
+</p>
+</div>
+<p>What if we could examine these plots with a few lines of code and what if we could get all the plots onto one plot panel? We can first use the GGally package. The <code>ggpairs()</code> code provides us with scatter plots that plot variables against one another in a pairwise fashion. We also see the distribution of the data and the correlation coefficients between a pair of variables.</p>
+<div class="sourceCode" id="cb196"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb196-1"><a href="data-management-and-exploration.html#cb196-1" tabindex="-1"></a><span class="fu">library</span>(GGally) <span class="do">## install and load GGally package, if necessary</span></span></code></pre></div>
+<pre><code>## Warning: package &#39;GGally&#39; was built under R version 4.3.3</code></pre>
+<pre><code>## Registered S3 method overwritten by &#39;GGally&#39;:
+##   method from   
+##   +.gg   ggplot2</code></pre>
+<div class="sourceCode" id="cb199"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb199-1"><a href="data-management-and-exploration.html#cb199-1" tabindex="-1"></a><span class="fu">ggpairs</span>(iris1)   <span class="do">## Make a big panel plot for exploration!!!</span></span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-44-1"></span>
+<img src="02-Module_3_files/figure-html/unnamed-chunk-44-1.png" alt="ggpairs plots" width="672" />
+<p class="caption">
+Figure 3.6: ggpairs plots
+</p>
+</div>
+<div class="sourceCode" id="cb200"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb200-1"><a href="data-management-and-exploration.html#cb200-1" tabindex="-1"></a><span class="fu">ggpairs</span>(iris1, <span class="fu">aes</span>(<span class="at">color=</span>Species, <span class="at">alpha=</span>.<span class="dv">75</span>)) <span class="do">## add color to seperate by species</span></span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-44-2"></span>
+<img src="02-Module_3_files/figure-html/unnamed-chunk-44-2.png" alt="ggpairs plots" width="672" />
+<p class="caption">
+Figure 3.7: ggpairs plots
+</p>
+</div>
+<p>Alternative to <code>ggpairs()</code> is the <code>cor()</code> function which can be even more effective for quickly scanning complex datasets:</p>
+<div class="sourceCode" id="cb201"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb201-1"><a href="data-management-and-exploration.html#cb201-1" tabindex="-1"></a><span class="fu">library</span>(corrplot)</span>
+<span id="cb201-2"><a href="data-management-and-exploration.html#cb201-2" tabindex="-1"></a>iris_cor <span class="ot">&lt;-</span> <span class="fu">cor</span>(iris1 <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>Species) <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>()) <span class="do">## first make correlation matrix</span></span>
+<span id="cb201-3"><a href="data-management-and-exploration.html#cb201-3" tabindex="-1"></a><span class="fu">corrplot</span>(iris_cor, <span class="at">method =</span> <span class="st">&quot;circle&quot;</span>, <span class="at">type =</span> <span class="st">&quot;upper&quot;</span>) <span class="do">## plots strength of correlation as color-coded circles</span></span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-45"></span>
+<img src="02-Module_3_files/figure-html/unnamed-chunk-45-1.png" alt="corrplot matrix" width="672" />
+<p class="caption">
+Figure 3.8: corrplot matrix
+</p>
+</div>
+</div>
+</div>
+<div id="model-selection" class="section level2 hasAnchor" number="3.3">
+<h2><span class="header-section-number">3.3</span> Model Selection<a href="data-management-and-exploration.html#model-selection" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>This section will include a quick overview on how to rank models based on AIC (Akaike Information Criterion). For this we need to load a few libraries:</p>
+<div class="sourceCode" id="cb202"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb202-1"><a href="data-management-and-exploration.html#cb202-1" tabindex="-1"></a><span class="fu">library</span>(glmmTMB)</span></code></pre></div>
+<pre><code>## Warning: package &#39;glmmTMB&#39; was built under R version 4.3.3</code></pre>
+<pre><code>## Warning in check_dep_version(): ABI version mismatch: 
+## lme4 was built with Matrix ABI version 1
+## Current Matrix ABI version is 0
+## Please re-install lme4 from source or restore original &#39;Matrix&#39; package</code></pre>
+<div class="sourceCode" id="cb205"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb205-1"><a href="data-management-and-exploration.html#cb205-1" tabindex="-1"></a><span class="fu">library</span>(bbmle)</span></code></pre></div>
+<pre><code>## Loading required package: stats4</code></pre>
+<pre><code>## 
+## Attaching package: &#39;bbmle&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     slice</code></pre>
+<div class="sourceCode" id="cb209"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb209-1"><a href="data-management-and-exploration.html#cb209-1" tabindex="-1"></a><span class="fu">library</span>(viridis)</span></code></pre></div>
+<div id="quick-introduction" class="section level3 hasAnchor" number="3.3.1">
+<h3><span class="header-section-number">3.3.1</span> Quick introduction<a href="data-management-and-exploration.html#quick-introduction" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Model selection is the process in choosing a statistical model from a set of models given your data. Keep in mind that model selection can get messy and its implementation (including approaches and methods) is often debated. Model selection can be used in the context of <strong>exploration</strong>, <strong>inference</strong>, and <strong>prediction</strong>. For today’s section we focus a widely-used inferential approach with AIC.</p>
+</div>
+<div id="basic-calculations" class="section level3 hasAnchor" number="3.3.2">
+<h3><span class="header-section-number">3.3.2</span> Basic calculations<a href="data-management-and-exploration.html#basic-calculations" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>AIC was developed by Hirotogu Akaike and is a metric of relative model quality for a given set of data.</p>
+<p>AIC is calculated using the following formula: <span class="math display">\[
+AIC = -2 * ln(model\ likelihood) + 2K
+\]</span> K = number of parameters in the model</p>
+<ul>
+<li>Note: your data and your response variable have to be the same for AIC selection!</li>
+</ul>
+<p>We can manually calculate AIC in R. Let’s do this with an example dataset. We will use the <code>mtcars</code> dataset, which is already loaded into base R:</p>
+<div class="sourceCode" id="cb210"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb210-1"><a href="data-management-and-exploration.html#cb210-1" tabindex="-1"></a><span class="fu">data</span>(mtcars)</span>
+<span id="cb210-2"><a href="data-management-and-exploration.html#cb210-2" tabindex="-1"></a>?mtcars</span></code></pre></div>
+<pre><code>## starting httpd help server ... done</code></pre>
+<p>Let’s run a regression between miles per gallon (mpg) and horsepower (hp):</p>
+<div class="sourceCode" id="cb212"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb212-1"><a href="data-management-and-exploration.html#cb212-1" tabindex="-1"></a>m1<span class="ot">&lt;-</span><span class="fu">glmmTMB</span>(<span class="at">data =</span> mtcars, mpg <span class="sc">~</span> hp)</span></code></pre></div>
+<p>Now that we ran the model, saved as <code>m1</code> let’s calculate the AIC by hand:</p>
+<div class="sourceCode" id="cb213"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb213-1"><a href="data-management-and-exploration.html#cb213-1" tabindex="-1"></a>AIC <span class="ot">=</span> <span class="dv">2</span><span class="sc">*</span><span class="dv">3</span> <span class="sc">-</span> <span class="dv">2</span><span class="sc">*</span><span class="fu">logLik</span>(m1)</span>
+<span id="cb213-2"><a href="data-management-and-exploration.html#cb213-2" tabindex="-1"></a>AIC[<span class="dv">1</span>]</span></code></pre></div>
+<pre><code>## [1] 181.2386</code></pre>
+<ul>
+<li>Note: K = 3 in this case because the model ‘m1’ has 3 degrees of freedom which can be checked when running the logLik() as seen here:</li>
+</ul>
+<div class="sourceCode" id="cb215"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb215-1"><a href="data-management-and-exploration.html#cb215-1" tabindex="-1"></a><span class="fu">logLik</span>(m1)</span></code></pre></div>
+<pre><code>## &#39;log Lik.&#39; -87.61931 (df=3)</code></pre>
+<p>Now let’s see what the regular AIC() gives us:</p>
+<div class="sourceCode" id="cb217"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb217-1"><a href="data-management-and-exploration.html#cb217-1" tabindex="-1"></a><span class="fu">AIC</span>(m1)</span></code></pre></div>
+<pre><code>## [1] 181.2386</code></pre>
+<p>Looks like our calculations are the same!</p>
+<p>So why use AIC? The lectures that follow along this section provides more detail but to quickly sum it up:</p>
+<ol style="list-style-type: decimal">
+<li><p>AIC is commonly used and accepted</p></li>
+<li><p>Works well within a multiple competing hypothesis framework</p></li>
+<li><p>A step forward in getting away from the p-value problem</p></li>
+</ol>
+</div>
+<div id="aicc" class="section level3 hasAnchor" number="3.3.3">
+<h3><span class="header-section-number">3.3.3</span> AICc<a href="data-management-and-exploration.html#aicc" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Small sample sizes can bias AIC to select for models with too many parameters. To account for this AICc (Akaike Information Criterion Corrected for Small Sample Sizes) was developed and the equation for that goes as follows:</p>
+<p><span class="math display">\[
+AICc = AIC + \frac{2K^2 + 2K}{n - K -1}
+\]</span> Where:</p>
+<p>n = sample size</p>
+<p>K = no. of parameters</p>
+</div>
+<div id="case-study-with-aic" class="section level3 hasAnchor" number="3.3.4">
+<h3><span class="header-section-number">3.3.4</span> Case study with AIC<a href="data-management-and-exploration.html#case-study-with-aic" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Let’s load in some beetle size data:</p>
+<div class="sourceCode" id="cb219"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb219-1"><a href="data-management-and-exploration.html#cb219-1" tabindex="-1"></a>df<span class="ot">&lt;-</span><span class="fu">readRDS</span>(<span class="st">&quot;size_data.rds&quot;</span>)</span></code></pre></div>
+<p>This data includes global coverage of average beetle sizes (geo_avg). The cell number represents an individual hexagonal bin and within each bin the average beetle size (based on species lists), species richness (SR), average temperature (MAT), temperature range (ATR), and net primary productivity (NPP_men) was calculated.</p>
+<div class="sourceCode" id="cb220"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb220-1"><a href="data-management-and-exploration.html#cb220-1" tabindex="-1"></a><span class="fu">glimpse</span>(df)</span></code></pre></div>
+<pre><code>## Rows: 309
+## Columns: 6
+## $ cell    &lt;chr&gt; &quot;1&quot;, &quot;9&quot;, &quot;10&quot;, &quot;12&quot;, &quot;13&quot;, &quot;22&quot;, &quot;23&quot;, &quot;31&quot;, &quot;32&quot;, &quot;33&quot;, &quot;41&quot;…
+## $ SR      &lt;int&gt; 56, 7, 50, 15, 22, 19, 18, 3, 90, 13, 66, 91, 5, 134, 160, 88,…
+## $ geo_avg &lt;dbl&gt; 1.0912129, 1.6880459, 1.2090465, 1.2123414, 1.0968534, 1.12845…
+## $ MAT     &lt;dbl&gt; 4.7616038, 1.1910487, 0.9827181, -0.6845881, -7.2203846, -3.78…
+## $ NPP_men &lt;dbl&gt; 550.4055, 332.4632, 420.8561, 418.0304, 287.1639, 330.6352, 36…
+## $ ATR     &lt;dbl&gt; 26.58891, 23.71292, 29.55614, 34.34307, 46.19601, 38.76278, 48…</code></pre>
+<p>If we wanted to plot the data to show the average beetle size across the planet it would like this:</p>
+<p><img src="Picture1.png" width="912" style="display: block; margin: auto;" /></p>
+<p>It seems like there’s a weak but detectable trend of larger sized assemblages in northern/temperate areas. Although the continent of Australia really pops up as well.</p>
+<p>What could be causing this pattern? Based on the literature there are several hypotheses we could test with models and AIC! They are as follows:</p>
+<ol style="list-style-type: decimal">
+<li>Larger assemblages are just an artifact of undersampling. Sampling is more extensive in North America and Europe and therefore, size is simply a function of sampling. A proxy to measure sampling could be species richness.</li>
+</ol>
+<div class="sourceCode" id="cb222"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb222-1"><a href="data-management-and-exploration.html#cb222-1" tabindex="-1"></a>sample<span class="ot">&lt;-</span><span class="fu">glmmTMB</span>(<span class="fu">log</span>(geo_avg) <span class="sc">~</span> SR, <span class="at">data =</span> df)</span></code></pre></div>
+<ol start="2" style="list-style-type: decimal">
+<li>Areas that experience harsher environments (larger ranges in temperature) likely have larger sized organisms that can weather such conditions.</li>
+</ol>
+<div class="sourceCode" id="cb223"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb223-1"><a href="data-management-and-exploration.html#cb223-1" tabindex="-1"></a>seasonality<span class="ot">&lt;-</span><span class="fu">glmmTMB</span>(<span class="fu">log</span>(geo_avg) <span class="sc">~</span> ATR, <span class="at">data =</span> df)</span></code></pre></div>
+<ol start="3" style="list-style-type: decimal">
+<li>Areas that are colder have larger organisms due to thermoregulatory properties where larger organisms are able to trap and effectively conserve heat.</li>
+</ol>
+<div class="sourceCode" id="cb224"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb224-1"><a href="data-management-and-exploration.html#cb224-1" tabindex="-1"></a>TEMP<span class="ot">&lt;-</span><span class="fu">glmmTMB</span>(<span class="fu">log</span>(geo_avg) <span class="sc">~</span> MAT, <span class="at">data =</span> df)</span></code></pre></div>
+<ol start="4" style="list-style-type: decimal">
+<li>Resource availability. Organisms can grow larger in resource rich areas.</li>
+</ol>
+<div class="sourceCode" id="cb225"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb225-1"><a href="data-management-and-exploration.html#cb225-1" tabindex="-1"></a>NPP<span class="ot">&lt;-</span><span class="fu">glmmTMB</span>(<span class="fu">log</span>(geo_avg) <span class="sc">~</span> NPP_men, <span class="at">data =</span> df)</span></code></pre></div>
+<ol start="5" style="list-style-type: decimal">
+<li>Finally, there could be no statistical pattern and therefore there is no effect on size i.e. a statistical null.</li>
+</ol>
+<div class="sourceCode" id="cb226"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb226-1"><a href="data-management-and-exploration.html#cb226-1" tabindex="-1"></a>nullm<span class="ot">&lt;-</span><span class="fu">glmmTMB</span>(<span class="fu">log</span>(geo_avg) <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> df)</span></code></pre></div>
+<p>Now let’s calculate the AIC scores of the models:</p>
+<div class="sourceCode" id="cb227"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb227-1"><a href="data-management-and-exploration.html#cb227-1" tabindex="-1"></a>bbmle<span class="sc">::</span><span class="fu">AICtab</span>(sample, seasonality, TEMP, NPP, nullm, <span class="at">weights =</span> T, </span>
+<span id="cb227-2"><a href="data-management-and-exploration.html#cb227-2" tabindex="-1"></a>              <span class="at">delta =</span> T, <span class="at">base =</span> T)</span></code></pre></div>
+<pre><code>##             AIC    dAIC   df weight
+## seasonality -124.1    0.0 3  1     
+## TEMP         -96.1   28.0 3  &lt;0.001
+## NPP          -89.4   34.7 3  &lt;0.001
+## sample       -89.3   34.8 3  &lt;0.001
+## nullm        -73.2   50.9 2  &lt;0.001</code></pre>
+<p>The seasonality hypothesis seems like the best or most likely model while the null and the sampling effect models show the least support. We also see that the next closest model is the temperature model but is beyond a <span class="math inline">\(\Delta\)</span> AIC difference of 2. All in all we show strong support for the seasonality hypothesis.</p>
+<p>We also see another metric labelled as “weight”. The AIC weight represents the probability that the model is best from the set of competing models and it’s another metric that can be used to assess models other than raw AIC scores.</p>
+<p>We can make a nice plot with this data along a seasonality axis:</p>
+<div class="sourceCode" id="cb229"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb229-1"><a href="data-management-and-exploration.html#cb229-1" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> df) <span class="sc">+</span></span>
+<span id="cb229-2"><a href="data-management-and-exploration.html#cb229-2" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> ATR, <span class="at">y =</span> geo_avg, <span class="at">fill =</span> <span class="fu">log</span>(SR)),</span>
+<span id="cb229-3"><a href="data-management-and-exploration.html#cb229-3" tabindex="-1"></a>             <span class="at">pch =</span> <span class="dv">21</span>,</span>
+<span id="cb229-4"><a href="data-management-and-exploration.html#cb229-4" tabindex="-1"></a>             <span class="at">size =</span> <span class="dv">5</span>,</span>
+<span id="cb229-5"><a href="data-management-and-exploration.html#cb229-5" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">&#39;grey&#39;</span>,</span>
+<span id="cb229-6"><a href="data-management-and-exploration.html#cb229-6" tabindex="-1"></a>             <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb229-7"><a href="data-management-and-exploration.html#cb229-7" tabindex="-1"></a>  <span class="fu">geom_rug</span>(<span class="fu">aes</span>(<span class="at">x =</span> ATR, <span class="at">y =</span> geo_avg)) <span class="sc">+</span></span>
+<span id="cb229-8"><a href="data-management-and-exploration.html#cb229-8" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>() <span class="sc">+</span></span>
+<span id="cb229-9"><a href="data-management-and-exploration.html#cb229-9" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>() <span class="sc">+</span></span>
+<span id="cb229-10"><a href="data-management-and-exploration.html#cb229-10" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Annual Temp. Range&quot;</span>,</span>
+<span id="cb229-11"><a href="data-management-and-exploration.html#cb229-11" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;Size&quot;</span>, <span class="at">fill =</span> <span class="st">&quot;Log(SR)&quot;</span>) <span class="sc">+</span></span>
+<span id="cb229-12"><a href="data-management-and-exploration.html#cb229-12" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="fu">aes</span>(<span class="at">x =</span> ATR, <span class="at">y =</span> geo_avg), <span class="at">method =</span> <span class="st">&quot;lm&quot;</span>,</span>
+<span id="cb229-13"><a href="data-management-and-exploration.html#cb229-13" tabindex="-1"></a>              <span class="at">color =</span> <span class="st">&quot;black&quot;</span>) <span class="sc">+</span></span>
+<span id="cb229-14"><a href="data-management-and-exploration.html#cb229-14" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">2</span>)) <span class="sc">+</span></span>
+<span id="cb229-15"><a href="data-management-and-exploration.html#cb229-15" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb229-16"><a href="data-management-and-exploration.html#cb229-16" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">22</span>, <span class="at">face =</span> <span class="st">&#39;bold&#39;</span>),</span>
+<span id="cb229-17"><a href="data-management-and-exploration.html#cb229-17" tabindex="-1"></a>        <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">15</span>, <span class="at">face =</span> <span class="st">&#39;bold&#39;</span>),</span>
+<span id="cb229-18"><a href="data-management-and-exploration.html#cb229-18" tabindex="-1"></a>        <span class="at">legend.position =</span> <span class="st">&quot;top&quot;</span>) </span></code></pre></div>
+<pre><code>## Scale for y is already present.
+## Adding another scale for y, which will replace the existing scale.
+## `geom_smooth()` using formula = &#39;y ~ x&#39;</code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-61"></span>
+<img src="02-Module_3_files/figure-html/unnamed-chunk-61-1.png" alt="Average beetle size plotted against annual temperature range" width="672" />
+<p class="caption">
+Figure 3.9: Average beetle size plotted against annual temperature range
+</p>
+</div>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="data-vizualization-and-review-of-linear-models.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="generalized-linear-models.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/02-Module_3.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["_main.pdf", "_main.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+},
+"smooth_scroll": false
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

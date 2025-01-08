@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>6 Generalized linear mixed models | Linear models in Agriculture and Natural Resources</title>
+  <meta name="description" content="<p>This book contains code associated with ALS6502C.
+The HTML output format for this example is bookdown::gitbook,
+set in the _output.yml file.</p>" />
+  <meta name="generator" content="bookdown 0.42 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="6 Generalized linear mixed models | Linear models in Agriculture and Natural Resources" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="<p>This book contains code associated with ALS6502C.
+The HTML output format for this example is bookdown::gitbook,
+set in the _output.yml file.</p>" />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="6 Generalized linear mixed models | Linear models in Agriculture and Natural Resources" />
+  
+  <meta name="twitter:description" content="<p>This book contains code associated with ALS6502C.
+The HTML output format for this example is bookdown::gitbook,
+set in the _output.yml file.</p>" />
+  
+
+<meta name="author" content="Phil Hahn &amp; Leo Ohyama" />
+
+
+<meta name="date" content="2025-01-08" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="mixed-effect-models.html"/>
+
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Linear Models in Agriculture and Natural Resources</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Preface</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#learning-outcomes"><i class="fa fa-check"></i><b>1.1</b> Learning outcomes:</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#overview-of-statistical-analysis-workflow"><i class="fa fa-check"></i><b>1.2</b> Overview of statistical analysis workflow</a>
+<ul>
+<li class="chapter" data-level="1.2.1" data-path="index.html"><a href="index.html#workflow-pre-analysis"><i class="fa fa-check"></i><b>1.2.1</b> Workflow pre-analysis</a></li>
+<li class="chapter" data-level="1.2.2" data-path="index.html"><a href="index.html#workflow-for-analysis"><i class="fa fa-check"></i><b>1.2.2</b> Workflow for analysis</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html"><i class="fa fa-check"></i><b>2</b> Data vizualization and review of linear models</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#introduction-to-data-visualization"><i class="fa fa-check"></i><b>2.1</b> Introduction to Data Visualization</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#continuous-variables"><i class="fa fa-check"></i><b>2.1.1</b> Continuous Variables</a></li>
+<li class="chapter" data-level="2.1.2" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#fancy-scatter-plots"><i class="fa fa-check"></i><b>2.1.2</b> Fancy Scatter plots</a></li>
+<li class="chapter" data-level="2.1.3" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#categorical-variables"><i class="fa fa-check"></i><b>2.1.3</b> Categorical Variables</a></li>
+<li class="chapter" data-level="2.1.4" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#plots-for-categorical-data-with-ggplot2"><i class="fa fa-check"></i><b>2.1.4</b> Plots for categorical data with ggplot2</a></li>
+<li class="chapter" data-level="2.1.5" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#breakout-group-challenge"><i class="fa fa-check"></i><b>2.1.5</b> Breakout group challenge</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#regression-as-a-linear-model"><i class="fa fa-check"></i><b>2.2</b> Regression as a linear model</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#an-example-of-linear-regression-in-r"><i class="fa fa-check"></i><b>2.2.1</b> An Example of Linear Regression in R</a></li>
+<li class="chapter" data-level="2.2.2" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#regression-challenge"><i class="fa fa-check"></i><b>2.2.2</b> Regression Challenge</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#anova-as-a-linear-model"><i class="fa fa-check"></i><b>2.3</b> ANOVA as a linear model</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#example-of-a-one-way-anova-in-r"><i class="fa fa-check"></i><b>2.3.1</b> Example of a one-way ANOVA in R</a></li>
+<li class="chapter" data-level="2.3.2" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#anova-challenge"><i class="fa fa-check"></i><b>2.3.2</b> ANOVA Challenge</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#extra-data-visualization"><i class="fa fa-check"></i><b>2.4</b> Extra Data Visualization</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#adding-model-averages-to-plots"><i class="fa fa-check"></i><b>2.4.1</b> Adding Model Averages to Plots</a></li>
+<li class="chapter" data-level="2.4.2" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#extra-r-challenge"><i class="fa fa-check"></i><b>2.4.2</b> Extra R Challenge</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#ggplot2-app-via-shiny"><i class="fa fa-check"></i><b>2.5</b> ggplot2 app via Shiny</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html"><i class="fa fa-check"></i><b>3</b> Data Management and Exploration</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#data-management"><i class="fa fa-check"></i><b>3.1</b> Data Management</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#making-and-modifying-variables"><i class="fa fa-check"></i><b>3.1.1</b> Making and modifying variables</a></li>
+<li class="chapter" data-level="3.1.2" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#variables-with-the-tidyverse"><i class="fa fa-check"></i><b>3.1.2</b> Variables with the tidyverse</a></li>
+<li class="chapter" data-level="3.1.3" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#reshape-data-for-better-usability"><i class="fa fa-check"></i><b>3.1.3</b> Reshape data for better usability</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#data-exploration"><i class="fa fa-check"></i><b>3.2</b> Data Exploration</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#distributions-summary-statistics"><i class="fa fa-check"></i><b>3.2.1</b> Distributions &amp; summary statistics</a></li>
+<li class="chapter" data-level="3.2.2" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#examining-for-outliers"><i class="fa fa-check"></i><b>3.2.2</b> Examining for outliers</a></li>
+<li class="chapter" data-level="3.2.3" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#exploring-relationships-in-data"><i class="fa fa-check"></i><b>3.2.3</b> Exploring relationships in data</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#model-selection"><i class="fa fa-check"></i><b>3.3</b> Model Selection</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#quick-introduction"><i class="fa fa-check"></i><b>3.3.1</b> Quick introduction</a></li>
+<li class="chapter" data-level="3.3.2" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#basic-calculations"><i class="fa fa-check"></i><b>3.3.2</b> Basic calculations</a></li>
+<li class="chapter" data-level="3.3.3" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#aicc"><i class="fa fa-check"></i><b>3.3.3</b> AICc</a></li>
+<li class="chapter" data-level="3.3.4" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#case-study-with-aic"><i class="fa fa-check"></i><b>3.3.4</b> Case study with AIC</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html"><i class="fa fa-check"></i><b>4</b> Generalized Linear Models</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#overview-of-generalized-linear-models"><i class="fa fa-check"></i><b>4.1</b> Overview of Generalized Linear Models</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#example-one-way-anova-with-non-normal-data"><i class="fa fa-check"></i><b>4.1.1</b> Example: One-way ANOVA with non-normal data</a></li>
+<li class="chapter" data-level="4.1.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#log-linear-model"><i class="fa fa-check"></i><b>4.1.2</b> Log-linear model</a></li>
+<li class="chapter" data-level="4.1.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#generalized-linear-models-glms"><i class="fa fa-check"></i><b>4.1.3</b> Generalized linear models (GLMs)</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#overdispersion"><i class="fa fa-check"></i><b>4.2</b> Overdispersion</a></li>
+<li class="chapter" data-level="4.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#binomial-glm"><i class="fa fa-check"></i><b>4.3</b> Binomial GLM</a></li>
+<li class="chapter" data-level="4.4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#gamma-glm"><i class="fa fa-check"></i><b>4.4</b> Gamma GLM</a>
+<ul>
+<li class="chapter" data-level="4.4.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#example-1"><i class="fa fa-check"></i><b>4.4.1</b> Example 1</a></li>
+<li class="chapter" data-level="4.4.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#example-2"><i class="fa fa-check"></i><b>4.4.2</b> Example 2</a></li>
+<li class="chapter" data-level="4.4.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#example-3"><i class="fa fa-check"></i><b>4.4.3</b> Example 3</a></li>
+<li class="chapter" data-level="4.4.4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#example-4"><i class="fa fa-check"></i><b>4.4.4</b> Example 4</a></li>
+</ul></li>
+<li class="chapter" data-level="4.5" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#briefly-running-gamma-glms"><i class="fa fa-check"></i><b>4.5</b> Briefly running Gamma GLMs</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html"><i class="fa fa-check"></i><b>5</b> Mixed-effect models</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#interactions-in-statistical-models"><i class="fa fa-check"></i><b>5.1</b> Interactions in statistical models</a>
+<ul>
+<li class="chapter" data-level="5.1.1" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#ancova-multiple-intercept-model"><i class="fa fa-check"></i><b>5.1.1</b> ANCOVA: multiple intercept model</a></li>
+<li class="chapter" data-level="5.1.2" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#ancova-multiple-intercept-and-slope-model"><i class="fa fa-check"></i><b>5.1.2</b> ANCOVA: multiple intercept AND slope model</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#block-designs"><i class="fa fa-check"></i><b>5.2</b> Block Designs</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#data-prep-and-plotting"><i class="fa fa-check"></i><b>5.2.1</b> Data prep and Plotting</a></li>
+<li class="chapter" data-level="5.2.2" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#models-with-block-designs"><i class="fa fa-check"></i><b>5.2.2</b> Models with block designs</a></li>
+<li class="chapter" data-level="5.2.3" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#blocks-as-random-effects"><i class="fa fa-check"></i><b>5.2.3</b> Blocks as random effects</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#variance-components"><i class="fa fa-check"></i><b>5.3</b> Variance components</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#r2"><i class="fa fa-check"></i><b>5.3.1</b> R2</a></li>
+<li class="chapter" data-level="5.3.2" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#chick-weight-example"><i class="fa fa-check"></i><b>5.3.2</b> Chick weight example</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#split-plot-and-nested-designs"><i class="fa fa-check"></i><b>5.4</b> Split-plot and nested designs</a>
+<ul>
+<li class="chapter" data-level="5.4.1" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#additional-nesting"><i class="fa fa-check"></i><b>5.4.1</b> Additional nesting</a></li>
+<li class="chapter" data-level="5.4.2" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#r-challenge"><i class="fa fa-check"></i><b>5.4.2</b> R CHALLENGE</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#repeated-measures"><i class="fa fa-check"></i><b>5.5</b> Repeated Measures</a>
+<ul>
+<li class="chapter" data-level="5.5.1" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#r-challange---repeated-measures"><i class="fa fa-check"></i><b>5.5.1</b> R CHALLANGE - REPEATED MEASURES</a></li>
+</ul></li>
+<li class="chapter" data-level="5.6" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#additional-lmm-reading"><i class="fa fa-check"></i><b>5.6</b> Additional LMM reading</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="generalized-linear-mixed-models.html"><a href="generalized-linear-mixed-models.html"><i class="fa fa-check"></i><b>6</b> Generalized linear mixed models</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="generalized-linear-mixed-models.html"><a href="generalized-linear-mixed-models.html#poisson-and-nb-glmms"><i class="fa fa-check"></i><b>6.1</b> Poisson and NB GLMMs</a>
+<ul>
+<li class="chapter" data-level="6.1.1" data-path="generalized-linear-mixed-models.html"><a href="generalized-linear-mixed-models.html#improving-the-models-whats-next"><i class="fa fa-check"></i><b>6.1.1</b> Improving the models: What’s next?</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="generalized-linear-mixed-models.html"><a href="generalized-linear-mixed-models.html#binomial-glmms"><i class="fa fa-check"></i><b>6.2</b> Binomial GLMMs</a></li>
+<li class="chapter" data-level="6.3" data-path="generalized-linear-mixed-models.html"><a href="generalized-linear-mixed-models.html#beta-distributions"><i class="fa fa-check"></i><b>6.3</b> Beta Distributions</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="generalized-linear-mixed-models.html"><a href="generalized-linear-mixed-models.html#r-challenge-1"><i class="fa fa-check"></i><b>6.3.1</b> R CHALLENGE</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="generalized-linear-mixed-models.html"><a href="generalized-linear-mixed-models.html#zero-inflated-models"><i class="fa fa-check"></i><b>6.4</b> Zero-Inflated Models</a></li>
+<li class="chapter" data-level="6.5" data-path="generalized-linear-mixed-models.html"><a href="generalized-linear-mixed-models.html#model-app-exercise"><i class="fa fa-check"></i><b>6.5</b> Model App exercise</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Linear models in Agriculture and Natural Resources</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="generalized-linear-mixed-models" class="section level1 hasAnchor" number="6">
+<h1><span class="header-section-number">6</span> Generalized linear mixed models<a href="generalized-linear-mixed-models.html#generalized-linear-mixed-models" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>After completing this module, students will be able to:</p>
+<ul>
+<li>6.1 Construct models with both fixed and random effects and non-normal distributions</li>
+</ul>
+<div id="poisson-and-nb-glmms" class="section level2 hasAnchor" number="6.1">
+<h2><span class="header-section-number">6.1</span> Poisson and NB GLMMs<a href="generalized-linear-mixed-models.html#poisson-and-nb-glmms" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>In this module we will go over a variety of advanced models. We will start with Poisson generalized linear mixed effect models. The poisson error distribution is often used to model count data and because of this it is a popular tool for most biologist or ecologists as biological or ecological data is often in the form of counts (e.g., species richness). Let’s first load the libraries we will need:</p>
+<div class="sourceCode" id="cb613"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb613-1"><a href="generalized-linear-mixed-models.html#cb613-1" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb613-2"><a href="generalized-linear-mixed-models.html#cb613-2" tabindex="-1"></a><span class="fu">library</span>(emmeans)</span>
+<span id="cb613-3"><a href="generalized-linear-mixed-models.html#cb613-3" tabindex="-1"></a><span class="fu">library</span>(car)</span>
+<span id="cb613-4"><a href="generalized-linear-mixed-models.html#cb613-4" tabindex="-1"></a><span class="fu">library</span>(agridat)</span>
+<span id="cb613-5"><a href="generalized-linear-mixed-models.html#cb613-5" tabindex="-1"></a><span class="fu">library</span>(glmmTMB)</span>
+<span id="cb613-6"><a href="generalized-linear-mixed-models.html#cb613-6" tabindex="-1"></a><span class="fu">library</span>(DHARMa)</span>
+<span id="cb613-7"><a href="generalized-linear-mixed-models.html#cb613-7" tabindex="-1"></a><span class="fu">library</span>(performance)</span>
+<span id="cb613-8"><a href="generalized-linear-mixed-models.html#cb613-8" tabindex="-1"></a><span class="fu">library</span>(MuMIn)</span>
+<span id="cb613-9"><a href="generalized-linear-mixed-models.html#cb613-9" tabindex="-1"></a><span class="fu">library</span>(bbmle)</span>
+<span id="cb613-10"><a href="generalized-linear-mixed-models.html#cb613-10" tabindex="-1"></a><span class="fu">library</span>(aods3)</span>
+<span id="cb613-11"><a href="generalized-linear-mixed-models.html#cb613-11" tabindex="-1"></a><span class="fu">library</span>(boot)</span></code></pre></div>
+<p>Let’s load in the primary data set we will be working with and read about the <code>beall.webworms</code> data set. The variables of interest are the y-count of webworms, spray- spray treatment, and lead-lead treatment. Don’t worry about the blocks or other variables for now.</p>
+<div class="sourceCode" id="cb614"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb614-1"><a href="generalized-linear-mixed-models.html#cb614-1" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;beall.webworms&quot;</span>)</span>
+<span id="cb614-2"><a href="generalized-linear-mixed-models.html#cb614-2" tabindex="-1"></a>d1 <span class="ot">&lt;-</span> beall.webworms</span>
+<span id="cb614-3"><a href="generalized-linear-mixed-models.html#cb614-3" tabindex="-1"></a>?beall.webworms  <span class="do">## info about the beall.webworms dataset</span></span></code></pre></div>
+<pre><code>## starting httpd help server ... done</code></pre>
+<p>We can also glimpse the first several rows of the data:</p>
+<div class="sourceCode" id="cb616"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb616-1"><a href="generalized-linear-mixed-models.html#cb616-1" tabindex="-1"></a><span class="fu">head</span>(d1) <span class="do">## view data set</span></span></code></pre></div>
+<pre><code>##   row col y block trt spray lead
+## 1   1   1 1    B1  T1     N    N
+## 2   2   1 0    B1  T1     N    N
+## 3   3   1 1    B1  T1     N    N
+## 4   4   1 3    B1  T1     N    N
+## 5   5   1 6    B1  T1     N    N
+## 6   6   1 0    B2  T1     N    N</code></pre>
+<p>Let’s examine a plot of data where we look at the raw data points as well as violin plots of the y response variable on the y axis and the x-axis as the spray treatment and lead treatment type:</p>
+<div class="sourceCode" id="cb618"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb618-1"><a href="generalized-linear-mixed-models.html#cb618-1" tabindex="-1"></a><span class="fu">ggplot</span>(d1, <span class="fu">aes</span>(<span class="at">x=</span>spray, <span class="at">y=</span>y, <span class="at">fill=</span>lead)) <span class="sc">+</span></span>
+<span id="cb618-2"><a href="generalized-linear-mixed-models.html#cb618-2" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="at">scale=</span><span class="st">&quot;width&quot;</span>, <span class="at">adjust=</span><span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb618-3"><a href="generalized-linear-mixed-models.html#cb618-3" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">position =</span> <span class="fu">position_jitterdodge</span>(<span class="at">jitter.width=</span>.<span class="dv">5</span>,</span>
+<span id="cb618-4"><a href="generalized-linear-mixed-models.html#cb618-4" tabindex="-1"></a>                                             <span class="at">jitter.height=</span>.<span class="dv">1</span>,</span>
+<span id="cb618-5"><a href="generalized-linear-mixed-models.html#cb618-5" tabindex="-1"></a>                                             <span class="at">dodge.width =</span> <span class="dv">1</span>),</span>
+<span id="cb618-6"><a href="generalized-linear-mixed-models.html#cb618-6" tabindex="-1"></a>             <span class="at">alpha=</span>.<span class="dv">1</span>)<span class="sc">+</span></span>
+<span id="cb618-7"><a href="generalized-linear-mixed-models.html#cb618-7" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>block)</span></code></pre></div>
+<p><img src="05-Module_6_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>Here we create two models, r1 and r2. They were previously used in module 4C. So let’s first create r1. <code>r1</code> will be a Poisson GLM with the repose variable of y being ,modeled as a function of both the additive and interactive effects of spray and lead treatments.</p>
+<div class="sourceCode" id="cb619"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb619-1"><a href="generalized-linear-mixed-models.html#cb619-1" tabindex="-1"></a>r1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> spray <span class="sc">*</span> lead, <span class="at">data=</span>d1, <span class="at">family=</span><span class="st">&quot;poisson&quot;</span>)</span>
+<span id="cb619-2"><a href="generalized-linear-mixed-models.html#cb619-2" tabindex="-1"></a><span class="fu">summary</span>(r1)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## glm(formula = y ~ spray * lead, family = &quot;poisson&quot;, data = d1)
+## 
+## Coefficients:
+##              Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)   0.33647    0.04688   7.177 7.12e-13 ***
+## sprayY       -1.02043    0.09108 -11.204  &lt; 2e-16 ***
+## leadY        -0.49628    0.07621  -6.512 7.41e-11 ***
+## sprayY:leadY  0.29425    0.13917   2.114   0.0345 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for poisson family taken to be 1)
+## 
+##     Null deviance: 1955.9  on 1299  degrees of freedom
+## Residual deviance: 1720.4  on 1296  degrees of freedom
+## AIC: 3125.5
+## 
+## Number of Fisher Scoring iterations: 6</code></pre>
+<div class="sourceCode" id="cb621"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb621-1"><a href="generalized-linear-mixed-models.html#cb621-1" tabindex="-1"></a><span class="fu">Anova</span>(r1)</span></code></pre></div>
+<pre><code>## Analysis of Deviance Table (Type II tests)
+## 
+## Response: y
+##            LR Chisq Df Pr(&gt;Chisq)    
+## spray       188.707  1  &lt; 2.2e-16 ***
+## lead         42.294  1  7.853e-11 ***
+## spray:lead    4.452  1    0.03485 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<div class="sourceCode" id="cb623"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb623-1"><a href="generalized-linear-mixed-models.html#cb623-1" tabindex="-1"></a><span class="fu">emmeans</span>(r1, <span class="sc">~</span>spray<span class="sc">:</span>lead, <span class="at">type=</span><span class="st">&#39;response&#39;</span>) </span></code></pre></div>
+<pre><code>##  spray lead  rate     SE  df asymp.LCL asymp.UCL
+##  N     N    1.400 0.0656 Inf     1.277     1.535
+##  Y     N    0.505 0.0394 Inf     0.433     0.588
+##  N     Y    0.852 0.0512 Inf     0.758     0.959
+##  Y     Y    0.412 0.0356 Inf     0.348     0.488
+## 
+## Confidence level used: 0.95 
+## Intervals are back-transformed from the log scale</code></pre>
+<p>We check overdispersion in the model with the <code>check_overdisperson</code> wrapper:</p>
+<div class="sourceCode" id="cb625"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb625-1"><a href="generalized-linear-mixed-models.html#cb625-1" tabindex="-1"></a><span class="fu">check_overdispersion</span>(r1) <span class="co"># overdispersion ratio calculator from performance</span></span></code></pre></div>
+<pre><code>## # Overdispersion test
+## 
+##        dispersion ratio =    1.355
+##   Pearson&#39;s Chi-Squared = 1755.717
+##                 p-value =  &lt; 0.001</code></pre>
+<pre><code>## Overdispersion detected.</code></pre>
+<p>Now let’s implement the second model, <code>r2</code>, a negative binomial error distribution. While most of the information regarding this error distribution and its comparison to the Poisson should be covered in the main lecture material a brief explanation on when and why you may implement the negative binomial is as follows:</p>
+<ol style="list-style-type: decimal">
+<li><p>The Poisson distribution assumes that the mean and the variance of the distribution are the same, so as the mean increases the variance increases the same amount. The negative binomial assumes that these two components are different, usually with the variance being greater than the mean (often the case with real world data).</p></li>
+<li><p>Poisson models can result in over-dispersion because the variance in real data is often greater than the means. This issue can lead to several problems such as but not limited to: poor model convergence, weak effect sizes of model coefficients, or p-values that are way too low.</p></li>
+<li><p>The negative binomial distribution can be used in the cases above to improve model fit or reach model convergence. Oftentimes it performs better than the poisson even if both models converge successfully. Visually examining simulated residuals is usually the best way to assess model fit. Another way is to compare AIC (Akaike information criterion) of Poisson vs negative binomial models.</p></li>
+</ol>
+<div class="sourceCode" id="cb628"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb628-1"><a href="generalized-linear-mixed-models.html#cb628-1" tabindex="-1"></a>r2 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(y <span class="sc">~</span> spray <span class="sc">*</span> lead, <span class="at">data=</span>d1, <span class="at">family=</span><span class="st">&quot;nbinom2&quot;</span>)</span>
+<span id="cb628-2"><a href="generalized-linear-mixed-models.html#cb628-2" tabindex="-1"></a><span class="fu">Anova</span>(r2)</span></code></pre></div>
+<pre><code>## Analysis of Deviance Table (Type II Wald chisquare tests)
+## 
+## Response: y
+##               Chisq Df Pr(&gt;Chisq)    
+## spray      125.5047  1  &lt; 2.2e-16 ***
+## lead        26.8005  1  2.256e-07 ***
+## spray:lead   3.3942  1    0.06542 .  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<div class="sourceCode" id="cb630"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb630-1"><a href="generalized-linear-mixed-models.html#cb630-1" tabindex="-1"></a><span class="fu">emmeans</span>(r2, <span class="sc">~</span>spray<span class="sc">:</span>lead, <span class="at">type=</span><span class="st">&#39;response&#39;</span>) </span></code></pre></div>
+<pre><code>##  spray lead response     SE  df asymp.LCL asymp.UCL
+##  N     N       1.400 0.0855 Inf     1.242     1.578
+##  Y     N       0.505 0.0441 Inf     0.425     0.599
+##  N     Y       0.852 0.0611 Inf     0.741     0.981
+##  Y     Y       0.412 0.0391 Inf     0.342     0.497
+## 
+## Confidence level used: 0.95 
+## Intervals are back-transformed from the log scale</code></pre>
+<p>Now let’s simulate residuals for poisson:</p>
+<div class="sourceCode" id="cb632"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb632-1"><a href="generalized-linear-mixed-models.html#cb632-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">simulateResiduals</span>(r1))</span></code></pre></div>
+<pre><code>## DHARMa:testOutliers with type = binomial may have inflated Type I error rates for integer-valued distributions. To get a more exact result, it is recommended to re-run testOutliers with type = &#39;bootstrap&#39;. See ?testOutliers for details</code></pre>
+<p><img src="05-Module_6_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<div class="sourceCode" id="cb634"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb634-1"><a href="generalized-linear-mixed-models.html#cb634-1" tabindex="-1"></a><span class="fu">hist</span>(<span class="fu">simulateResiduals</span>(r1)) <span class="do">## histogram should be flat</span></span></code></pre></div>
+<p><img src="05-Module_6_files/figure-html/unnamed-chunk-8-2.png" width="672" /></p>
+<p>Here are the residuals for the negative binomial model:</p>
+<div class="sourceCode" id="cb635"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb635-1"><a href="generalized-linear-mixed-models.html#cb635-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">simulateResiduals</span>(r2))</span></code></pre></div>
+<p><img src="05-Module_6_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<div class="sourceCode" id="cb636"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb636-1"><a href="generalized-linear-mixed-models.html#cb636-1" tabindex="-1"></a><span class="fu">hist</span>(<span class="fu">simulateResiduals</span>(r2)) <span class="do">## histogram should be flat</span></span></code></pre></div>
+<p><img src="05-Module_6_files/figure-html/unnamed-chunk-9-2.png" width="672" /></p>
+<p>We can also compare the AIC:</p>
+<div class="sourceCode" id="cb637"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb637-1"><a href="generalized-linear-mixed-models.html#cb637-1" tabindex="-1"></a><span class="fu">AIC</span>(r1,r2)</span></code></pre></div>
+<pre><code>##    df      AIC
+## r1  4 3125.478
+## r2  5 3052.969</code></pre>
+<div id="improving-the-models-whats-next" class="section level3 hasAnchor" number="6.1.1">
+<h3><span class="header-section-number">6.1.1</span> Improving the models: What’s next?<a href="generalized-linear-mixed-models.html#improving-the-models-whats-next" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>How can we improve the models? What’s next? Are there any aspects of the experimental design missing from the model that we should maybe account for similar to the grass cover predictor from the previous module?</p>
+<p>We did notice some dispersion issues in the previous model and one way we can wrestle and address this is to implement an individual-level random effect to use for overdispersed Poission GLMs. For more information of this approach please see <a href="https://peerj.com/articles/616/">this paper</a>.</p>
+<p>To do this we can construct models that includes any missing factors. In the case of overdispersed Poission GLMs we can create an observation level random effect variable by simple creating another column titled <code>obs</code> and filling it with unique number for each observation such as a sequence of numbers from 1 to the number of observations we have in the dataset:</p>
+<div class="sourceCode" id="cb639"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb639-1"><a href="generalized-linear-mixed-models.html#cb639-1" tabindex="-1"></a>d1<span class="sc">$</span>obs <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(d1<span class="sc">$</span>y) <span class="do">## makes a unique number for each row in dataset</span></span></code></pre></div>
+<p>We can also create other models that include different random effects that account for blocks. In total let’s run 6 different models. For the sake of clarity we have built a table to showcase the 6 different models and we have also coded them in:</p>
+<table style="width:100%;">
+<colgroup>
+<col width="18%" />
+<col width="18%" />
+<col width="18%" />
+<col width="25%" />
+<col width="18%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">Model name</th>
+<th align="center">Response</th>
+<th align="center">Fixed Effect(s)</th>
+<th align="center">Random Effect(s)</th>
+<th align="center">Error Distribution</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">r0</td>
+<td align="center">y</td>
+<td align="center">spray * lead</td>
+<td align="center">none</td>
+<td align="center">Gaussian</td>
+</tr>
+<tr class="even">
+<td align="center">r1</td>
+<td align="center">y</td>
+<td align="center">spray * lead</td>
+<td align="center">none</td>
+<td align="center">Poisson</td>
+</tr>
+<tr class="odd">
+<td align="center">r2</td>
+<td align="center">y</td>
+<td align="center">spray * lead</td>
+<td align="center">none</td>
+<td align="center">Neg. Binomial</td>
+</tr>
+<tr class="even">
+<td align="center">r3</td>
+<td align="center">y</td>
+<td align="center">spray * lead</td>
+<td align="center">Obs. level random effect for overdispersion</td>
+<td align="center">Poisson</td>
+</tr>
+<tr class="odd">
+<td align="center">r4</td>
+<td align="center">y</td>
+<td align="center">spray * lead</td>
+<td align="center">Block random effect</td>
+<td align="center">Neg. Binomial</td>
+</tr>
+<tr class="even">
+<td align="center">r5</td>
+<td align="center">y</td>
+<td align="center">spray * lead</td>
+<td align="center">Both Obs. level and Block random effects</td>
+<td align="center">Poisson</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb640"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb640-1"><a href="generalized-linear-mixed-models.html#cb640-1" tabindex="-1"></a>r0 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(y <span class="sc">~</span> spray <span class="sc">*</span> lead, <span class="at">data=</span>d1, <span class="at">family=</span><span class="st">&quot;gaussian&quot;</span>)              <span class="do">### gaussian glm just to see how bad it really is</span></span>
+<span id="cb640-2"><a href="generalized-linear-mixed-models.html#cb640-2" tabindex="-1"></a>r1 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(y <span class="sc">~</span> spray <span class="sc">*</span> lead, <span class="at">data=</span>d1, <span class="at">family=</span><span class="st">&quot;poisson&quot;</span>)               <span class="do">### poisson glm</span></span>
+<span id="cb640-3"><a href="generalized-linear-mixed-models.html#cb640-3" tabindex="-1"></a>r2 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(y <span class="sc">~</span> spray <span class="sc">*</span> lead, <span class="at">data=</span>d1, <span class="at">family=</span><span class="st">&quot;nbinom2&quot;</span>)               <span class="do">### nb glm</span></span>
+<span id="cb640-4"><a href="generalized-linear-mixed-models.html#cb640-4" tabindex="-1"></a>r3 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(y <span class="sc">~</span> spray <span class="sc">*</span> lead <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>obs), <span class="at">data=</span>d1, <span class="at">family=</span><span class="st">&quot;poisson&quot;</span>)     <span class="do">### overdispersed poisson glm</span></span>
+<span id="cb640-5"><a href="generalized-linear-mixed-models.html#cb640-5" tabindex="-1"></a>r4 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(y <span class="sc">~</span> spray <span class="sc">*</span> lead <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>block), <span class="at">data=</span>d1, <span class="at">family=</span><span class="st">&quot;nbinom2&quot;</span>)   <span class="do">### nb w/ block</span></span>
+<span id="cb640-6"><a href="generalized-linear-mixed-models.html#cb640-6" tabindex="-1"></a>r5 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(y <span class="sc">~</span> spray <span class="sc">*</span> lead <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>obs) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>block), <span class="at">data=</span>d1, <span class="at">family=</span><span class="st">&quot;poisson&quot;</span>)   <span class="do">### OD poisson w/ block</span></span></code></pre></div>
+<p>Six models above differ only distribution and random effects. Fixed effects are the same. We can now use the AIC framework for selecting the most appropriate or most plausible model, distribution, and random effect structure. One key thing to remember is that the more complex models will be penalized in the calculation of AIC values:</p>
+<div class="sourceCode" id="cb641"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb641-1"><a href="generalized-linear-mixed-models.html#cb641-1" tabindex="-1"></a><span class="do">#### for model selection, use AIC or likihood ratio test</span></span>
+<span id="cb641-2"><a href="generalized-linear-mixed-models.html#cb641-2" tabindex="-1"></a><span class="fu">model.sel</span>(r0,r1,r2,r3,r4,r5) <span class="do">## from MuMIn</span></span></code></pre></div>
+<pre><code>## Model selection table 
+##    cnd((Int)) dsp((Int)) cnd(led) cnd(spr) cnd(led:spr) family    random df
+## r4     0.2835          +        +        +            + n2(lg)      c(b)  6
+## r5     0.1399          +        +        +            + ps(lg) c(o)+c(b)  6
+## r3     0.1042          +        +        +            + ps(lg)      c(o)  5
+## r2     0.3365          +        +        +            + n2(lg)            5
+## r1     0.3365          +        +        +            + ps(lg)            4
+## r0     1.4000          +        +        +            + gs(id)            5
+##       logLik   AICc  delta weight
+## r4 -1497.706 3007.5   0.00  0.903
+## r5 -1499.931 3011.9   4.45  0.097
+## r3 -1518.031 3046.1  38.63  0.000
+## r2 -1521.484 3053.0  45.54  0.000
+## r1 -1558.739 3125.5 118.03  0.000
+## r0 -1929.308 3868.7 861.18  0.000
+## Abbreviations:
+##  family: gs(id) = &#39;gaussian(identity)&#39;, n2(lg) = &#39;nbinom2(log)&#39;, 
+##          ps(lg) = &#39;poisson(log)&#39;
+## Models ranked by AICc(x) 
+## Random terms: 
+##  c(b): cond(1 | block)
+##  c(o): cond(1 | obs)</code></pre>
+<div class="sourceCode" id="cb643"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb643-1"><a href="generalized-linear-mixed-models.html#cb643-1" tabindex="-1"></a><span class="fu">AICtab</span>(r0,r1,r2,r3,r4,r5,<span class="at">base=</span>T,<span class="at">logLik=</span>T,<span class="at">weights=</span>T)    <span class="do">## from bbmle</span></span></code></pre></div>
+<pre><code>##    logLik  AIC     dLogLik dAIC    df weight
+## r4 -1497.7  3007.4   431.6     0.0 6  0.903 
+## r5 -1499.9  3011.9   429.4     4.5 6  0.097 
+## r3 -1518.0  3046.1   411.3    38.7 5  &lt;0.001
+## r2 -1521.5  3053.0   407.8    45.6 5  &lt;0.001
+## r1 -1558.7  3125.5   370.6   118.1 4  &lt;0.001
+## r0 -1929.3  3868.6     0.0   861.2 5  &lt;0.001</code></pre>
+<p>Looks like the best model according to AIC was r4, the negative binomial GLMM with a random effect for blocks. Of course we would also want to check the model residuals and glance at the parameter estimates and SE to make sure they look reasonable.</p>
+</div>
+</div>
+<div id="binomial-glmms" class="section level2 hasAnchor" number="6.2">
+<h2><span class="header-section-number">6.2</span> Binomial GLMMs<a href="generalized-linear-mixed-models.html#binomial-glmms" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>In this section we look at the binomial distribution. We often implement this distribution when we have a binary outcome in our data. For example survival is often coded as a binary where the only results can be that there is survival or there is no survival. Let’s load in the data we will use:</p>
+<div class="sourceCode" id="cb645"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb645-1"><a href="generalized-linear-mixed-models.html#cb645-1" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;wheatley.carrot&quot;</span>)</span>
+<span id="cb645-2"><a href="generalized-linear-mixed-models.html#cb645-2" tabindex="-1"></a>?wheatley.carrot</span></code></pre></div>
+<p>Let’s clean up the data by filtering out any insecticide value that was coded as ‘nil’. Let’s also create a new variable called <code>propdmg</code> which stand for damage proportion. This new variable is calculated by dividing the number of damaged plants (<code>damaged</code>) by the number of total plants (<code>total)</code>.</p>
+<div class="sourceCode" id="cb646"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb646-1"><a href="generalized-linear-mixed-models.html#cb646-1" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> wheatley.carrot <span class="sc">%&gt;%</span> <span class="fu">filter</span>(insecticide<span class="sc">!=</span><span class="st">&#39;nil&#39;</span>)</span>
+<span id="cb646-2"><a href="generalized-linear-mixed-models.html#cb646-2" tabindex="-1"></a>dat1<span class="sc">$</span>propdmg <span class="ot">&lt;-</span> dat1<span class="sc">$</span>damaged<span class="sc">/</span>dat1<span class="sc">$</span>total</span>
+<span id="cb646-3"><a href="generalized-linear-mixed-models.html#cb646-3" tabindex="-1"></a><span class="fu">head</span>(dat1) </span></code></pre></div>
+<pre><code>##   treatment insecticide depth rep damaged total    propdmg
+## 1       T01    diazinon   1.0  R1     120   187 0.64171123
+## 2       T02    diazinon   2.5  R1      60   184 0.32608696
+## 3       T03    diazinon   5.0  R1      35   179 0.19553073
+## 4       T04    diazinon  10.0  R1       5   178 0.02808989
+## 5       T05    diazinon  25.0  R1      66   182 0.36263736
+## 6       T06  disulfoton   1.0  R1      97   187 0.51871658</code></pre>
+<p>Let’s visualize the distribution of the new variable as well:</p>
+<div class="sourceCode" id="cb648"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb648-1"><a href="generalized-linear-mixed-models.html#cb648-1" tabindex="-1"></a><span class="fu">hist</span>(dat1<span class="sc">$</span>propdmg)</span></code></pre></div>
+<p><img src="05-Module_6_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p>Now let’s plot out some of the data. Let’s visualize the damage proportion across different depths as well as the insecticide variable (diazinon vs. disulfoton). Because the variable depth is so wide ranging it’ll be easier for us to visualize the axis if depth is log-transformed.</p>
+<div class="sourceCode" id="cb649"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb649-1"><a href="generalized-linear-mixed-models.html#cb649-1" tabindex="-1"></a><span class="fu">ggplot</span>(dat1, <span class="fu">aes</span>(<span class="at">x=</span><span class="fu">log</span>(depth),</span>
+<span id="cb649-2"><a href="generalized-linear-mixed-models.html#cb649-2" tabindex="-1"></a>                 <span class="at">y=</span>(damaged<span class="sc">/</span>total), <span class="at">color=</span>insecticide)) <span class="sc">+</span></span>
+<span id="cb649-3"><a href="generalized-linear-mixed-models.html#cb649-3" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size=</span><span class="dv">3</span>) <span class="sc">+</span> </span>
+<span id="cb649-4"><a href="generalized-linear-mixed-models.html#cb649-4" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">16</span>)</span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-17"></span>
+<img src="05-Module_6_files/figure-html/unnamed-chunk-17-1.png" alt="Plot of carrot data." width="672" />
+<p class="caption">
+Figure 2.13: Plot of carrot data.
+</p>
+</div>
+<p>It would be useful to also plot a line of best fit across these data points. Note that for plotting we can use the “beta_family” although for analysis we use “binomial”.</p>
+<div class="sourceCode" id="cb650"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb650-1"><a href="generalized-linear-mixed-models.html#cb650-1" tabindex="-1"></a><span class="fu">ggplot</span>(dat1, <span class="fu">aes</span>(<span class="at">x=</span><span class="fu">log</span>(depth), <span class="at">y=</span>(damaged<span class="sc">/</span>total), <span class="at">color=</span>insecticide)) <span class="sc">+</span></span>
+<span id="cb650-2"><a href="generalized-linear-mixed-models.html#cb650-2" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size=</span><span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb650-3"><a href="generalized-linear-mixed-models.html#cb650-3" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&#39;glm&#39;</span>,</span>
+<span id="cb650-4"><a href="generalized-linear-mixed-models.html#cb650-4" tabindex="-1"></a>              <span class="at">method.args=</span><span class="fu">list</span>(<span class="at">family=</span><span class="st">&quot;beta_family&quot;</span>),</span>
+<span id="cb650-5"><a href="generalized-linear-mixed-models.html#cb650-5" tabindex="-1"></a>              <span class="at">formula =</span> y<span class="sc">~</span>x) <span class="sc">+</span></span>
+<span id="cb650-6"><a href="generalized-linear-mixed-models.html#cb650-6" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">16</span>)</span></code></pre></div>
+<pre><code>## Warning: deviance residuals not defined for family &#39;beta&#39;: returning NA
+## Warning: deviance residuals not defined for family &#39;beta&#39;: returning NA</code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-18"></span>
+<img src="05-Module_6_files/figure-html/unnamed-chunk-18-1.png" alt="Plot of carrot data with best fit line." width="672" />
+<p class="caption">
+Figure 6.1: Plot of carrot data with best fit line.
+</p>
+</div>
+<p>From the plot above it looks like the best fit lines do not necessarily fit or follow the raw data well. Look at the red beta line above and notice how the line and the confidence intervals do not overlap with almost 3 different types of depth groups. This is one of the more important parts of visualizing your data before using models because we now see potential evidence that our data follow a possible non-linear trend.</p>
+<p>To confirm this we can use ggplot2 to plot a more non-linear trend line while using the Beta family. To do this we have to switch the formula used in the <code>formula</code> argument of <code>geom_smooth</code> from <code>y~x</code> to <code>y~x+I(x^2)</code>. This change essentially means that the model used to fit the trend line is actually a quadratic model (notice the extra squared term).</p>
+<table>
+<colgroup>
+<col width="100%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>More on quadratic models</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Note: A quadratic model is part of larger family of models called polynomial models. Polynomial models are used to model non-linear trends BUT they are still essentially linear regressions. One way to think about these sort of models is that we are essentially modeling the trends to have distinct slopes. Keep in mind, the interpretations of the models can be complicated and are often misinterpreted! Some decent resources for helping you understand these models can be found (here)[<a href="https://www.datatechnotes.com/2018/02/polynomial-regression-curve-fitting-in-r.html" class="uri">https://www.datatechnotes.com/2018/02/polynomial-regression-curve-fitting-in-r.html</a>]</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb652"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb652-1"><a href="generalized-linear-mixed-models.html#cb652-1" tabindex="-1"></a><span class="fu">ggplot</span>(dat1, <span class="fu">aes</span>(<span class="at">x=</span><span class="fu">log</span>(depth), <span class="at">y=</span>(damaged<span class="sc">/</span>total),</span>
+<span id="cb652-2"><a href="generalized-linear-mixed-models.html#cb652-2" tabindex="-1"></a>                 <span class="at">color=</span>insecticide)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb652-3"><a href="generalized-linear-mixed-models.html#cb652-3" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&#39;glm&#39;</span>, </span>
+<span id="cb652-4"><a href="generalized-linear-mixed-models.html#cb652-4" tabindex="-1"></a>              <span class="at">method.args=</span><span class="fu">list</span>(<span class="at">family=</span><span class="st">&quot;beta_family&quot;</span>), </span>
+<span id="cb652-5"><a href="generalized-linear-mixed-models.html#cb652-5" tabindex="-1"></a>              <span class="at">formula =</span> y<span class="sc">~</span>x<span class="sc">+</span><span class="fu">I</span>(x<span class="sc">^</span><span class="dv">2</span>))</span></code></pre></div>
+<pre><code>## Warning: deviance residuals not defined for family &#39;beta&#39;: returning NA
+## Warning: deviance residuals not defined for family &#39;beta&#39;: returning NA</code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-19"></span>
+<img src="05-Module_6_files/figure-html/unnamed-chunk-19-1.png" alt="Plot of carrot data with quadratic fit." width="672" />
+<p class="caption">
+Figure 2.14: Plot of carrot data with quadratic fit.
+</p>
+</div>
+<p>Once we plot the new trend line and its potential non-linearity we see a generally better fit with less data points not overlapping with the confidence intervals.</p>
+<p>Now let’s build two different binomial error distributed GLMMs with different set ups that relate to either a linear assumption of the data or a non-linear assumption. To do this there are several key differences between what we have done before till now:</p>
+<ol style="list-style-type: decimal">
+<li>Our response variable needs to be binary but need to account for damaged plants and non-damaged plants. This can be calculated by subtracting the number of damaged plants from the total number of plants: <code>total-damaged</code>. To combine the values of the damaged and the non damaged we use the function <code>cbind()</code> which combines the two into one vector that the model can use for a response variable: <code>cbind(damaged,total-damaged)</code>.</li>
+<li>We need to model a quadratic model for <code>mod2</code>. In order to do this we will essentially follow the same formula as we did with the ggplot above. So for <code>mod2</code> our quadratic predictor of depth would be: <code>depth + I(depth^2)</code>. Notice we do not add a quadratic component to the predictor <code>insecticide</code> as we did not see a non-linear trend with this variable.</li>
+</ol>
+<div class="sourceCode" id="cb654"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb654-1"><a href="generalized-linear-mixed-models.html#cb654-1" tabindex="-1"></a>mod1 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(<span class="fu">cbind</span>(damaged,total<span class="sc">-</span>damaged) <span class="sc">~</span> insecticide <span class="sc">*</span> depth <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>rep), <span class="at">data=</span>dat1, <span class="at">family=</span><span class="st">&#39;binomial&#39;</span>)</span>
+<span id="cb654-2"><a href="generalized-linear-mixed-models.html#cb654-2" tabindex="-1"></a></span>
+<span id="cb654-3"><a href="generalized-linear-mixed-models.html#cb654-3" tabindex="-1"></a>mod2 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(<span class="fu">cbind</span>(damaged,total<span class="sc">-</span>damaged) <span class="sc">~</span> insecticide <span class="sc">*</span> depth <span class="sc">+</span> <span class="fu">I</span>(depth<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>rep), <span class="at">data=</span>dat1, <span class="at">family=</span><span class="st">&#39;binomial&#39;</span>)</span></code></pre></div>
+<p>For easier syntax interpretation note above that mod2 is applying a non-linear modification where we include depth and depth squared. The “^” is another way of saying raise depth to the 2nd power. The I() isolate this and tells the R interpreter that the model is including a second order fixed effect. For more info check ?formula.</p>
+<p>We can plot residuals:</p>
+<div class="sourceCode" id="cb655"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb655-1"><a href="generalized-linear-mixed-models.html#cb655-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">simulateResiduals</span>(mod1))</span></code></pre></div>
+<p><img src="05-Module_6_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
+<div class="sourceCode" id="cb656"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb656-1"><a href="generalized-linear-mixed-models.html#cb656-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">simulateResiduals</span>(mod2))</span></code></pre></div>
+<p><img src="05-Module_6_files/figure-html/unnamed-chunk-21-2.png" width="672" /></p>
+<p>Which of the two is better? Remember, the <em>best</em> model might not be perfect.</p>
+<p>Finally, we can also run ANOVAs on the models:</p>
+<div class="sourceCode" id="cb657"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb657-1"><a href="generalized-linear-mixed-models.html#cb657-1" tabindex="-1"></a><span class="fu">Anova</span>(mod1)</span></code></pre></div>
+<pre><code>## Analysis of Deviance Table (Type II Wald chisquare tests)
+## 
+## Response: cbind(damaged, total - damaged)
+##                    Chisq Df Pr(&gt;Chisq)    
+## insecticide       91.449  1  &lt; 2.2e-16 ***
+## depth              2.543  1  0.1107873    
+## insecticide:depth 14.525  1  0.0001383 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<div class="sourceCode" id="cb659"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb659-1"><a href="generalized-linear-mixed-models.html#cb659-1" tabindex="-1"></a><span class="fu">Anova</span>(mod2)</span></code></pre></div>
+<pre><code>## Analysis of Deviance Table (Type II Wald chisquare tests)
+## 
+## Response: cbind(damaged, total - damaged)
+##                    Chisq Df Pr(&gt;Chisq)    
+## insecticide       111.62  1  &lt; 2.2e-16 ***
+## depth             563.71  1  &lt; 2.2e-16 ***
+## I(depth^2)        594.17  1  &lt; 2.2e-16 ***
+## insecticide:depth  15.85  1  6.858e-05 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</div>
+<div id="beta-distributions" class="section level2 hasAnchor" number="6.3">
+<h2><span class="header-section-number">6.3</span> Beta Distributions<a href="generalized-linear-mixed-models.html#beta-distributions" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>In this section we show an example of applying the beta family using true proportions (or percentages). The beta family has major utility when modeling proportion data as in the past the most suitable distributions would have been the gamma distribution or a arcsin transformation of the y response variable.</p>
+<p>First let’s load data from a case study. The study by Lynn et al. examined herbivory on several plant species at 42 different sites spanning a large latitudinal gradient. They are interested to know if there is more herbivore damage near the equator. If you are interested in the data the paper for this is found (here)[<a href="https://onlinelibrary.wiley.com/doi/10.1111/ecog.06114" class="uri">https://onlinelibrary.wiley.com/doi/10.1111/ecog.06114</a>].Let’s take a look but filter species to just one for simplicity:</p>
+<div class="sourceCode" id="cb661"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb661-1"><a href="generalized-linear-mixed-models.html#cb661-1" tabindex="-1"></a>b1 <span class="ot">&lt;-</span><span class="fu">read_csv</span>(<span class="st">&quot;LynnETAL_2022_Ecography_sodCaseStudy.csv&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb661-2"><a href="generalized-linear-mixed-models.html#cb661-2" tabindex="-1"></a>  <span class="fu">filter</span>(species<span class="sc">==</span><span class="st">&#39;SALA&#39;</span>)</span></code></pre></div>
+<pre><code>## Rows: 301 Columns: 18
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr  (7): study, family, species_name, species, meas_year, site, notes
+## dbl (11): latitude, longitude, o_lat, o_long, mean_herb, na_wdcpc, mat, iso,...
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<div class="sourceCode" id="cb663"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb663-1"><a href="generalized-linear-mixed-models.html#cb663-1" tabindex="-1"></a><span class="fu">head</span>(b1)</span></code></pre></div>
+<pre><code>## # A tibble: 6 × 18
+##   study     family species_name species meas_year site  latitude longitude o_lat
+##   &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;        &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;
+## 1 RivkinET… Alism… Sagittaria … SALA    2015      ACT-…     44.5     -77.3    NA
+## 2 RivkinET… Alism… Sagittaria … SALA    2015      BPV-…     45.7     -77.6    NA
+## 3 RivkinET… Alism… Sagittaria … SALA    2015      BSM-…     44.8     -76.1    NA
+## 4 RivkinET… Alism… Sagittaria … SALA    2015      BTC-…     44.2     -76.8    NA
+## 5 RivkinET… Alism… Sagittaria … SALA    2015      CBT-…     47.4     -79.7    NA
+## 6 RivkinET… Alism… Sagittaria … SALA    2015      CFR-…     44.7     -77.1    NA
+## # ℹ 9 more variables: o_long &lt;dbl&gt;, mean_herb &lt;dbl&gt;, na_wdcpc &lt;dbl&gt;, mat &lt;dbl&gt;,
+## #   iso &lt;dbl&gt;, dtr &lt;dbl&gt;, precip &lt;dbl&gt;, aet &lt;dbl&gt;, notes &lt;chr&gt;</code></pre>
+<p>Let’s examine a histogram of the response variable <code>mean_herb</code>:</p>
+<div class="sourceCode" id="cb665"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb665-1"><a href="generalized-linear-mixed-models.html#cb665-1" tabindex="-1"></a><span class="fu">hist</span>(b1<span class="sc">$</span>mean_herb) <span class="do">## examine histogram. Data are entered as percentage (0-100%)</span></span></code></pre></div>
+<p><img src="05-Module_6_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
+<p>Let’s plot out the data. Note: data was collected at 42 unique sites (one data point per site).</p>
+<div class="sourceCode" id="cb666"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb666-1"><a href="generalized-linear-mixed-models.html#cb666-1" tabindex="-1"></a><span class="fu">ggplot</span>(b1 , <span class="fu">aes</span>(<span class="at">x=</span>latitude, <span class="at">y=</span>mean_herb)) <span class="sc">+</span></span>
+<span id="cb666-2"><a href="generalized-linear-mixed-models.html#cb666-2" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-25"></span>
+<img src="05-Module_6_files/figure-html/unnamed-chunk-25-1.png" alt="Plot of herbivory data." width="672" />
+<p class="caption">
+Figure 3.1: Plot of herbivory data.
+</p>
+</div>
+<p>We see a potential decreasing of mean_herb across a latitudinal gradient (from latitude 42 to ~48 degrees).</p>
+<p>Now we need to convert <code>mean_herb</code> to a proportion and then do a small transformation to remove 0s and 1s:</p>
+<div class="sourceCode" id="cb667"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb667-1"><a href="generalized-linear-mixed-models.html#cb667-1" tabindex="-1"></a>b1<span class="sc">$</span>mean_herb1 <span class="ot">&lt;-</span> (b1<span class="sc">$</span>mean_herb<span class="sc">/</span><span class="dv">100</span>)</span>
+<span id="cb667-2"><a href="generalized-linear-mixed-models.html#cb667-2" tabindex="-1"></a>b1<span class="sc">$</span>mean_herb1 <span class="ot">&lt;-</span> (b1<span class="sc">$</span>mean_herb1<span class="sc">*</span>(<span class="fu">length</span>(b1<span class="sc">$</span>mean_herb1)<span class="sc">-</span><span class="dv">1</span>)<span class="sc">+</span>.<span class="dv">5</span>)<span class="sc">/</span><span class="fu">length</span>(b1<span class="sc">$</span>mean_herb1)</span></code></pre></div>
+<p>Let’s plot this along with a trend line applying the beta family as done previously above:</p>
+<div class="sourceCode" id="cb668"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb668-1"><a href="generalized-linear-mixed-models.html#cb668-1" tabindex="-1"></a><span class="fu">ggplot</span>(b1, <span class="fu">aes</span>(<span class="at">x=</span>latitude, <span class="at">y=</span>mean_herb1)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb668-2"><a href="generalized-linear-mixed-models.html#cb668-2" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&#39;glm&#39;</span>, </span>
+<span id="cb668-3"><a href="generalized-linear-mixed-models.html#cb668-3" tabindex="-1"></a>              <span class="at">method.args=</span><span class="fu">list</span>(<span class="at">family=</span><span class="st">&quot;beta_family&quot;</span>),</span>
+<span id="cb668-4"><a href="generalized-linear-mixed-models.html#cb668-4" tabindex="-1"></a>              <span class="at">formula =</span> y<span class="sc">~</span>x)</span></code></pre></div>
+<pre><code>## Warning: deviance residuals not defined for family &#39;beta&#39;: returning NA</code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-27"></span>
+<img src="05-Module_6_files/figure-html/unnamed-chunk-27-1.png" alt="Plot of herbivory by latitude with best fit line." width="672" />
+<p class="caption">
+Figure 2.21: Plot of herbivory by latitude with best fit line.
+</p>
+</div>
+<p>Now let’s build a GLMM with a beta distribution. Implementing this model structure is relatively simple with <code>glmmTMB</code>. In the code below we simply specify the family argument with <code>beta_family.</code></p>
+<div class="sourceCode" id="cb670"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb670-1"><a href="generalized-linear-mixed-models.html#cb670-1" tabindex="-1"></a>bm1 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(mean_herb1 <span class="sc">~</span> latitude, <span class="at">data=</span>b1, <span class="at">family=</span><span class="st">&#39;beta_family&#39;</span>)</span>
+<span id="cb670-2"><a href="generalized-linear-mixed-models.html#cb670-2" tabindex="-1"></a><span class="fu">Anova</span>(bm1)</span></code></pre></div>
+<pre><code>## Analysis of Deviance Table (Type II Wald chisquare tests)
+## 
+## Response: mean_herb1
+##           Chisq Df Pr(&gt;Chisq)   
+## latitude 9.1383  1   0.002503 **
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Let’s check the summary:</p>
+<div class="sourceCode" id="cb672"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb672-1"><a href="generalized-linear-mixed-models.html#cb672-1" tabindex="-1"></a><span class="fu">summary</span>(bm1)</span></code></pre></div>
+<pre><code>##  Family: beta  ( logit )
+## Formula:          mean_herb1 ~ latitude
+## Data: b1
+## 
+##      AIC      BIC   logLik deviance df.resid 
+##   -126.9   -121.7     66.5   -132.9       39 
+## 
+## 
+## Dispersion parameter for beta family (): 30.5 
+## 
+## Conditional model:
+##             Estimate Std. Error z value Pr(&gt;|z|)   
+## (Intercept)  5.69631    2.58221   2.206   0.0274 * 
+## latitude    -0.17525    0.05797  -3.023   0.0025 **
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>The model indicates a strong statistical effect of latitude on <code>mean_herb</code> with lower values of <code>mean_herb</code> tracking an increase in latitude.</p>
+<p>Plot and check residuals:</p>
+<div class="sourceCode" id="cb674"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb674-1"><a href="generalized-linear-mixed-models.html#cb674-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">simulateResiduals</span>(bm1)) </span></code></pre></div>
+<p><img src="05-Module_6_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
+<p>The QQ plot is good. The residuals versus prediction plot and line is not ideal but is probably ok.</p>
+<div id="r-challenge-1" class="section level3 hasAnchor" number="6.3.1">
+<h3><span class="header-section-number">6.3.1</span> R CHALLENGE<a href="generalized-linear-mixed-models.html#r-challenge-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ol style="list-style-type: decimal">
+<li>For this part of the problem set you will use real data (Rivkin et al. 2018 Am J Bot). If you want to know more about the study, follow this (link)[<a href="https://bsapubs.onlinelibrary.wiley.com/doi/full/10.1002/ajb2.1098" class="uri">https://bsapubs.onlinelibrary.wiley.com/doi/full/10.1002/ajb2.1098</a>].</li>
+</ol>
+<p>Herbivory data was collected from 43 populations of an aquatic plant across a latitudinal gradient in Canada. At each population, many plants (~5-15) were examined for herbivory damage. Some additional covariates were recorded, such as competition around the plant (1-3 from less to more) and plant height (cm).</p>
+<p>Read in data, look at the data structure, and plot the variable of interest, lead damage:</p>
+<div class="sourceCode" id="cb675"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb675-1"><a href="generalized-linear-mixed-models.html#cb675-1" tabindex="-1"></a>d1 <span class="ot">&lt;-</span><span class="fu">read.csv</span>(<span class="st">&quot;ajb21098-sup-0002-appendixs2.csv&quot;</span>)</span>
+<span id="cb675-2"><a href="generalized-linear-mixed-models.html#cb675-2" tabindex="-1"></a><span class="fu">head</span>(d1)</span></code></pre></div>
+<pre><code>##   Population Latitude Longitude Competition Individual PlantHeight LeafDamage
+## 1     ACT-ON 44.54829 -77.32384           2          4        41.0 0.02000000
+## 2     ACT-ON 44.54829 -77.32384           2          6        43.0 0.03000000
+## 3     ACT-ON 44.54829 -77.32384           2         18        17.5 0.04000000
+## 4     ACT-ON 44.54829 -77.32384           2          2        37.0 0.06666667
+## 5     ACT-ON 44.54829 -77.32384           2          3        48.0 0.07000000
+## 6     ACT-ON 44.54829 -77.32384           2         12        39.5 0.08000000
+##   LarvalAbundance
+## 1               0
+## 2               0
+## 3               0
+## 4               1
+## 5               0
+## 6               0</code></pre>
+<div class="sourceCode" id="cb677"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb677-1"><a href="generalized-linear-mixed-models.html#cb677-1" tabindex="-1"></a><span class="fu">hist</span>(d1<span class="sc">$</span>LeafDamage)</span></code></pre></div>
+<p><img src="05-Module_6_files/figure-html/unnamed-chunk-31-1.png" width="672" /></p>
+<p>Let’s remove 0’s and 1’s (see Smithson &amp; Verkuilen 2006 (here)[<a href="https://psycnet.apa.org/doiLanding?doi=10.1037%2F1082-989X.11.1.54" class="uri">https://psycnet.apa.org/doiLanding?doi=10.1037%2F1082-989X.11.1.54</a>] or Douma &amp; Weedon 2018 (here)[<a href="https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.13234" class="uri">https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.13234</a>]):</p>
+<div class="sourceCode" id="cb678"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb678-1"><a href="generalized-linear-mixed-models.html#cb678-1" tabindex="-1"></a>d1<span class="sc">$</span>LeafDamage <span class="ot">&lt;-</span> (d1<span class="sc">$</span>LeafDamage<span class="sc">*</span>(<span class="fu">length</span>(d1<span class="sc">$</span>LeafDamage)<span class="sc">-</span><span class="dv">1</span>)<span class="sc">+</span>.<span class="dv">5</span>)<span class="sc">/</span><span class="fu">length</span>(d1<span class="sc">$</span>LeafDamage)</span></code></pre></div>
+<p>Now plot data where we have a proportion value of leaf damage on the y-axis along the x-axis of latitude. Let’s also fit a best fit line using the beta family:</p>
+<div class="sourceCode" id="cb679"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb679-1"><a href="generalized-linear-mixed-models.html#cb679-1" tabindex="-1"></a><span class="fu">ggplot</span>(d1 , <span class="fu">aes</span>(<span class="at">x=</span>Latitude, <span class="at">y=</span>LeafDamage)) <span class="sc">+</span></span>
+<span id="cb679-2"><a href="generalized-linear-mixed-models.html#cb679-2" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb679-3"><a href="generalized-linear-mixed-models.html#cb679-3" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&#39;glm&#39;</span>, </span>
+<span id="cb679-4"><a href="generalized-linear-mixed-models.html#cb679-4" tabindex="-1"></a>              <span class="at">method.args=</span><span class="fu">list</span>(<span class="at">family=</span><span class="st">&quot;beta_family&quot;</span>),</span>
+<span id="cb679-5"><a href="generalized-linear-mixed-models.html#cb679-5" tabindex="-1"></a>              <span class="at">formula =</span> y<span class="sc">~</span>x)</span></code></pre></div>
+<pre><code>## Warning: deviance residuals not defined for family &#39;beta&#39;: returning NA</code></pre>
+<p><img src="05-Module_6_files/figure-html/unnamed-chunk-33-1.png" width="672" /></p>
+<p>Question: Does herbivory increase towards the equator? How do residuals look? Any way to improve them?</p>
+<ol start="2" style="list-style-type: decimal">
+<li>For this part of the problem set we will use the Rats data set with only females. Half treated with a drug and the other half were untreated. Then they were checked for tumors. Does the drug reduce probability of developing tumor? After 50 days? After 100 days?</li>
+</ol>
+<p>Load data:</p>
+<div class="sourceCode" id="cb681"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb681-1"><a href="generalized-linear-mixed-models.html#cb681-1" tabindex="-1"></a><span class="fu">library</span>(survival)</span></code></pre></div>
+<pre><code>## Warning: package &#39;survival&#39; was built under R version 4.3.3</code></pre>
+<pre><code>## 
+## Attaching package: &#39;survival&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:boot&#39;:
+## 
+##     aml</code></pre>
+<div class="sourceCode" id="cb685"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb685-1"><a href="generalized-linear-mixed-models.html#cb685-1" tabindex="-1"></a>rats <span class="ot">&lt;-</span> (survival<span class="sc">::</span>rats) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(sex<span class="sc">==</span><span class="st">&#39;f&#39;</span>) </span>
+<span id="cb685-2"><a href="generalized-linear-mixed-models.html#cb685-2" tabindex="-1"></a>?rats</span>
+<span id="cb685-3"><a href="generalized-linear-mixed-models.html#cb685-3" tabindex="-1"></a><span class="fu">head</span>(rats)</span></code></pre></div>
+<pre><code>##   litter rx time status sex
+## 1      1  1  101      0   f
+## 2      1  0   49      1   f
+## 3      1  0  104      0   f
+## 4      3  1  104      0   f
+## 5      3  0  102      0   f
+## 6      3  0  104      0   f</code></pre>
+<p>Plot data:</p>
+<div class="sourceCode" id="cb687"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb687-1"><a href="generalized-linear-mixed-models.html#cb687-1" tabindex="-1"></a><span class="fu">ggplot</span>(rats , <span class="fu">aes</span>(<span class="at">x=</span>time, <span class="at">y=</span>status)) <span class="sc">+</span> </span>
+<span id="cb687-2"><a href="generalized-linear-mixed-models.html#cb687-2" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb687-3"><a href="generalized-linear-mixed-models.html#cb687-3" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&#39;glm&#39;</span>, </span>
+<span id="cb687-4"><a href="generalized-linear-mixed-models.html#cb687-4" tabindex="-1"></a>              <span class="at">method.args=</span><span class="fu">list</span>(<span class="at">family=</span><span class="st">&quot;binomial&quot;</span>), </span>
+<span id="cb687-5"><a href="generalized-linear-mixed-models.html#cb687-5" tabindex="-1"></a>              <span class="at">formula =</span> y<span class="sc">~</span>x) <span class="sc">+</span> </span>
+<span id="cb687-6"><a href="generalized-linear-mixed-models.html#cb687-6" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>rx)</span></code></pre></div>
+<p><img src="05-Module_6_files/figure-html/unnamed-chunk-35-1.png" width="672" /></p>
+</div>
+</div>
+<div id="zero-inflated-models" class="section level2 hasAnchor" number="6.4">
+<h2><span class="header-section-number">6.4</span> Zero-Inflated Models<a href="generalized-linear-mixed-models.html#zero-inflated-models" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>In this section we will go over applying zero-inflated models. While the main lecture should have covered these types of models in depth, let’s quickly review some main points when it comes to these models:</p>
+<ol style="list-style-type: decimal">
+<li>In biological data, especially in ecology, zeros are often widespread in the dataset. However these zeroes and what they represent, i.e. absence of species, are not necessarily ‘true’. For example, in a survey of species I may not have found species A at specific sites but that may not be because species A truly does not exist in those sites but instead those zeros may be due to poor sampling methods or sampling mistakes. Therefore the underlying thought is that many of these zeros in these datasets are technically ‘false zeros’ that should be modeled separately from the rest of the data.</li>
+<li>Therefore, because there are likely to be two distinct processes that generate zeros in a dataset a zero-inflated model will apply two types of models. The first model is a logit model that will model the excess zeros while the second model can be a count model such as a poisson or negative binomial GLM.</li>
+</ol>
+<p>Now let’s load the data (wheatley carrot infection by carrot fly larvae):</p>
+<div class="sourceCode" id="cb688"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb688-1"><a href="generalized-linear-mixed-models.html#cb688-1" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;ridout.appleshoots&quot;</span>)</span></code></pre></div>
+<p>Let’s clean up the data and check out the distribution of the data in question:</p>
+<div class="sourceCode" id="cb689"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb689-1"><a href="generalized-linear-mixed-models.html#cb689-1" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> ridout.appleshoots <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">photo=</span><span class="fu">as.factor</span>(photo))</span>
+<span id="cb689-2"><a href="generalized-linear-mixed-models.html#cb689-2" tabindex="-1"></a><span class="fu">hist</span>(dat1<span class="sc">$</span>roots)</span></code></pre></div>
+<p><img src="05-Module_6_files/figure-html/unnamed-chunk-37-1.png" width="672" /></p>
+<p>Now let’s run several models: a Poisson, a negative binomial, and a negative binomial with a general intercept for zero inflation:</p>
+<div class="sourceCode" id="cb690"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb690-1"><a href="generalized-linear-mixed-models.html#cb690-1" tabindex="-1"></a><span class="do">## poisson model</span></span>
+<span id="cb690-2"><a href="generalized-linear-mixed-models.html#cb690-2" tabindex="-1"></a>mod1 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(roots <span class="sc">~</span> photo <span class="sc">*</span> bap , <span class="at">data=</span>dat1, <span class="at">family=</span><span class="st">&#39;poisson&#39;</span>)</span>
+<span id="cb690-3"><a href="generalized-linear-mixed-models.html#cb690-3" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">simulateResiduals</span>(mod1))</span></code></pre></div>
+<p><img src="05-Module_6_files/figure-html/unnamed-chunk-38-1.png" width="672" /></p>
+<div class="sourceCode" id="cb691"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb691-1"><a href="generalized-linear-mixed-models.html#cb691-1" tabindex="-1"></a><span class="do">## negative binomial model</span></span>
+<span id="cb691-2"><a href="generalized-linear-mixed-models.html#cb691-2" tabindex="-1"></a>mod2 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(roots <span class="sc">~</span> photo <span class="sc">*</span> bap , <span class="at">data=</span>dat1, <span class="at">family=</span><span class="st">&#39;nbinom2&#39;</span>)</span>
+<span id="cb691-3"><a href="generalized-linear-mixed-models.html#cb691-3" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">simulateResiduals</span>(mod2))</span></code></pre></div>
+<p><img src="05-Module_6_files/figure-html/unnamed-chunk-39-1.png" width="672" /></p>
+<div class="sourceCode" id="cb692"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb692-1"><a href="generalized-linear-mixed-models.html#cb692-1" tabindex="-1"></a><span class="do">## negative binomial w/ a general intercept for zero inflation (ie. ZI equal for all observations)</span></span>
+<span id="cb692-2"><a href="generalized-linear-mixed-models.html#cb692-2" tabindex="-1"></a>mod3 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(roots <span class="sc">~</span> photo <span class="sc">*</span> bap , <span class="at">data=</span>dat1, <span class="at">family=</span><span class="st">&#39;nbinom2&#39;</span>, <span class="at">zi=</span><span class="sc">~</span><span class="dv">1</span>)</span>
+<span id="cb692-3"><a href="generalized-linear-mixed-models.html#cb692-3" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">simulateResiduals</span>(mod3))</span></code></pre></div>
+<p><img src="05-Module_6_files/figure-html/unnamed-chunk-40-1.png" width="672" /></p>
+<div class="sourceCode" id="cb693"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb693-1"><a href="generalized-linear-mixed-models.html#cb693-1" tabindex="-1"></a><span class="fu">summary</span>(mod3) <span class="do">## back-transform ZI intercept (exp(p)/(1+exp(p)))</span></span></code></pre></div>
+<pre><code>##  Family: nbinom2  ( log )
+## Formula:          roots ~ photo * bap
+## Zero inflation:         ~1
+## Data: dat1
+## 
+##      AIC      BIC   logLik deviance df.resid 
+##   1342.4   1364.0   -665.2   1330.4      264 
+## 
+## 
+## Dispersion parameter for nbinom2 family (): 12.6 
+## 
+## Conditional model:
+##              Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  1.895659   0.072535  26.134   &lt;2e-16 ***
+## photo16     -0.029863   0.135890  -0.220   0.8261    
+## bap          0.008760   0.006724   1.303   0.1927    
+## photo16:bap -0.032083   0.013065  -2.456   0.0141 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Zero-inflation model:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)   -1.226      0.151  -8.125 4.49e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<div class="sourceCode" id="cb695"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb695-1"><a href="generalized-linear-mixed-models.html#cb695-1" tabindex="-1"></a><span class="fu">inv.logit</span>(<span class="fu">fixef</span>(mod3)<span class="sc">$</span>zi) <span class="do">## use inv.logit from boot package to backtransform</span></span></code></pre></div>
+<pre><code>## (Intercept) 
+##   0.2267941</code></pre>
+<p>The zero-inflated model is much better than without, so there is definately some zero-inflation. To understand the zero-inflation parameter (-1.226) we need to back-transform it. The zero-inflated model uses a logit-link fuction, which is seperate from the distribution and link function of the main model (although in this example with the beta family, it also has a logit-link). We can do this manually or use the <code>inv.logit</code> function from the boot package. We get a value of 0.22, meaning there is a 22% change any observation will be a zero beyond what is expected by the main model assuming a beta distribution. We don’t really know what causes the extra zeros, but this model does an ok job of caturing them.</p>
+<p>Maybe we can do a little better though. What do we expect to cause the zero inflation? We can check out further details in the data’s metadata:</p>
+<div class="sourceCode" id="cb697"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb697-1"><a href="generalized-linear-mixed-models.html#cb697-1" tabindex="-1"></a>??ridout.appleshoots</span></code></pre></div>
+<p>The metadata state that “Almost all of the shoots in the 8 hour photoperiod rooted. Under the 16 hour photoperiod only about half rooted.” Perhaps the photoperiod treatment is a better predictor of extra zeros?</p>
+<div class="sourceCode" id="cb698"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb698-1"><a href="generalized-linear-mixed-models.html#cb698-1" tabindex="-1"></a><span class="fu">ggplot</span>(dat1, <span class="fu">aes</span>(<span class="at">x=</span>roots)) <span class="sc">+</span> </span>
+<span id="cb698-2"><a href="generalized-linear-mixed-models.html#cb698-2" tabindex="-1"></a>  <span class="fu">geom_histogram</span>() <span class="sc">+</span></span>
+<span id="cb698-3"><a href="generalized-linear-mixed-models.html#cb698-3" tabindex="-1"></a>  <span class="fu">facet_grid</span>(bap<span class="sc">~</span>photo) <span class="sc">+</span> </span>
+<span id="cb698-4"><a href="generalized-linear-mixed-models.html#cb698-4" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size=</span><span class="dv">16</span>)</span></code></pre></div>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-43"></span>
+<img src="05-Module_6_files/figure-html/unnamed-chunk-43-1.png" alt="Plot of apple shoot data." width="672" />
+<p class="caption">
+Figure 6.2: Plot of apple shoot data.
+</p>
+</div>
+<p>Now let’s run a negative binomial with zero inflation modeled as a function of treatment:</p>
+<div class="sourceCode" id="cb700"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb700-1"><a href="generalized-linear-mixed-models.html#cb700-1" tabindex="-1"></a>mod4 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(roots <span class="sc">~</span> photo <span class="sc">*</span> bap , <span class="at">data=</span>dat1, <span class="at">family=</span><span class="st">&#39;nbinom2&#39;</span>, <span class="at">zi=</span><span class="sc">~</span>photo)</span>
+<span id="cb700-2"><a href="generalized-linear-mixed-models.html#cb700-2" tabindex="-1"></a><span class="fu">summary</span>(mod4)</span></code></pre></div>
+<pre><code>##  Family: nbinom2  ( log )
+## Formula:          roots ~ photo * bap
+## Zero inflation:         ~photo
+## Data: dat1
+## 
+##      AIC      BIC   logLik deviance df.resid 
+##   1252.3   1277.5   -619.2   1238.3      263 
+## 
+## 
+## Dispersion parameter for nbinom2 family (): 13.8 
+## 
+## Conditional model:
+##              Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  1.898347   0.071568  26.525   &lt;2e-16 ***
+## photo16     -0.023525   0.130488  -0.180   0.8569    
+## bap          0.008222   0.006689   1.229   0.2190    
+## photo16:bap -0.029492   0.012427  -2.373   0.0176 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Zero-inflation model:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  -4.4000     0.8446  -5.210 1.89e-07 ***
+## photo16       4.2831     0.8627   4.965 6.87e-07 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Plot residuals:</p>
+<div class="sourceCode" id="cb702"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb702-1"><a href="generalized-linear-mixed-models.html#cb702-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">simulateResiduals</span>(mod4))</span></code></pre></div>
+<p><img src="05-Module_6_files/figure-html/unnamed-chunk-45-1.png" width="672" /></p>
+<p>Now let’s compare all models with AIC. Which one was the best? Why do you think?</p>
+<div class="sourceCode" id="cb703"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb703-1"><a href="generalized-linear-mixed-models.html#cb703-1" tabindex="-1"></a><span class="do">### check with AIC</span></span>
+<span id="cb703-2"><a href="generalized-linear-mixed-models.html#cb703-2" tabindex="-1"></a><span class="fu">AIC</span>(mod1,mod2,mod3,mod4)</span></code></pre></div>
+<pre><code>##      df      AIC
+## mod1  4 1575.916
+## mod2  5 1412.415
+## mod3  6 1342.435
+## mod4  7 1252.333</code></pre>
+</div>
+<div id="model-app-exercise" class="section level2 hasAnchor" number="6.5">
+<h2><span class="header-section-number">6.5</span> Model App exercise<a href="generalized-linear-mixed-models.html#model-app-exercise" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>This shinyapp will allow you to practice and implement a variety of model types to fit randomly generated data. You can test yourself by randomly generating data and then choosing which models you would apply based on plots of the data as well as the data structure (e.g. count data vs. binary).</p>
+<div class="sourceCode" id="cb705"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb705-1"><a href="generalized-linear-mixed-models.html#cb705-1" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_app</span>(<span class="st">&quot;https://leoohyama.shinyapps.io/adv_residuals/&quot;</span>,</span>
+<span id="cb705-2"><a href="generalized-linear-mixed-models.html#cb705-2" tabindex="-1"></a>                   <span class="at">height =</span> <span class="dv">1000</span>)</span></code></pre></div>
+<iframe src="https://leoohyama.shinyapps.io/adv_residuals/?showcase=0" width="100%" height="1000" data-external="1">
+</iframe>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="mixed-effect-models.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/05-Module_6.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["_main.pdf", "_main.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+},
+"smooth_scroll": false
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

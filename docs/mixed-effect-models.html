@@ -1,0 +1,1882 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>5 Mixed-effect models | Linear models in Agriculture and Natural Resources</title>
+  <meta name="description" content="<p>This book contains code associated with ALS6502C.
+The HTML output format for this example is bookdown::gitbook,
+set in the _output.yml file.</p>" />
+  <meta name="generator" content="bookdown 0.42 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="5 Mixed-effect models | Linear models in Agriculture and Natural Resources" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="<p>This book contains code associated with ALS6502C.
+The HTML output format for this example is bookdown::gitbook,
+set in the _output.yml file.</p>" />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="5 Mixed-effect models | Linear models in Agriculture and Natural Resources" />
+  
+  <meta name="twitter:description" content="<p>This book contains code associated with ALS6502C.
+The HTML output format for this example is bookdown::gitbook,
+set in the _output.yml file.</p>" />
+  
+
+<meta name="author" content="Phil Hahn &amp; Leo Ohyama" />
+
+
+<meta name="date" content="2025-01-08" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="generalized-linear-models.html"/>
+<link rel="next" href="generalized-linear-mixed-models.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Linear Models in Agriculture and Natural Resources</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Preface</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#learning-outcomes"><i class="fa fa-check"></i><b>1.1</b> Learning outcomes:</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#overview-of-statistical-analysis-workflow"><i class="fa fa-check"></i><b>1.2</b> Overview of statistical analysis workflow</a>
+<ul>
+<li class="chapter" data-level="1.2.1" data-path="index.html"><a href="index.html#workflow-pre-analysis"><i class="fa fa-check"></i><b>1.2.1</b> Workflow pre-analysis</a></li>
+<li class="chapter" data-level="1.2.2" data-path="index.html"><a href="index.html#workflow-for-analysis"><i class="fa fa-check"></i><b>1.2.2</b> Workflow for analysis</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html"><i class="fa fa-check"></i><b>2</b> Data vizualization and review of linear models</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#introduction-to-data-visualization"><i class="fa fa-check"></i><b>2.1</b> Introduction to Data Visualization</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#continuous-variables"><i class="fa fa-check"></i><b>2.1.1</b> Continuous Variables</a></li>
+<li class="chapter" data-level="2.1.2" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#fancy-scatter-plots"><i class="fa fa-check"></i><b>2.1.2</b> Fancy Scatter plots</a></li>
+<li class="chapter" data-level="2.1.3" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#categorical-variables"><i class="fa fa-check"></i><b>2.1.3</b> Categorical Variables</a></li>
+<li class="chapter" data-level="2.1.4" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#plots-for-categorical-data-with-ggplot2"><i class="fa fa-check"></i><b>2.1.4</b> Plots for categorical data with ggplot2</a></li>
+<li class="chapter" data-level="2.1.5" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#breakout-group-challenge"><i class="fa fa-check"></i><b>2.1.5</b> Breakout group challenge</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#regression-as-a-linear-model"><i class="fa fa-check"></i><b>2.2</b> Regression as a linear model</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#an-example-of-linear-regression-in-r"><i class="fa fa-check"></i><b>2.2.1</b> An Example of Linear Regression in R</a></li>
+<li class="chapter" data-level="2.2.2" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#regression-challenge"><i class="fa fa-check"></i><b>2.2.2</b> Regression Challenge</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#anova-as-a-linear-model"><i class="fa fa-check"></i><b>2.3</b> ANOVA as a linear model</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#example-of-a-one-way-anova-in-r"><i class="fa fa-check"></i><b>2.3.1</b> Example of a one-way ANOVA in R</a></li>
+<li class="chapter" data-level="2.3.2" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#anova-challenge"><i class="fa fa-check"></i><b>2.3.2</b> ANOVA Challenge</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#extra-data-visualization"><i class="fa fa-check"></i><b>2.4</b> Extra Data Visualization</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#adding-model-averages-to-plots"><i class="fa fa-check"></i><b>2.4.1</b> Adding Model Averages to Plots</a></li>
+<li class="chapter" data-level="2.4.2" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#extra-r-challenge"><i class="fa fa-check"></i><b>2.4.2</b> Extra R Challenge</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="data-vizualization-and-review-of-linear-models.html"><a href="data-vizualization-and-review-of-linear-models.html#ggplot2-app-via-shiny"><i class="fa fa-check"></i><b>2.5</b> ggplot2 app via Shiny</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html"><i class="fa fa-check"></i><b>3</b> Data Management and Exploration</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#data-management"><i class="fa fa-check"></i><b>3.1</b> Data Management</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#making-and-modifying-variables"><i class="fa fa-check"></i><b>3.1.1</b> Making and modifying variables</a></li>
+<li class="chapter" data-level="3.1.2" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#variables-with-the-tidyverse"><i class="fa fa-check"></i><b>3.1.2</b> Variables with the tidyverse</a></li>
+<li class="chapter" data-level="3.1.3" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#reshape-data-for-better-usability"><i class="fa fa-check"></i><b>3.1.3</b> Reshape data for better usability</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#data-exploration"><i class="fa fa-check"></i><b>3.2</b> Data Exploration</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#distributions-summary-statistics"><i class="fa fa-check"></i><b>3.2.1</b> Distributions &amp; summary statistics</a></li>
+<li class="chapter" data-level="3.2.2" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#examining-for-outliers"><i class="fa fa-check"></i><b>3.2.2</b> Examining for outliers</a></li>
+<li class="chapter" data-level="3.2.3" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#exploring-relationships-in-data"><i class="fa fa-check"></i><b>3.2.3</b> Exploring relationships in data</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#model-selection"><i class="fa fa-check"></i><b>3.3</b> Model Selection</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#quick-introduction"><i class="fa fa-check"></i><b>3.3.1</b> Quick introduction</a></li>
+<li class="chapter" data-level="3.3.2" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#basic-calculations"><i class="fa fa-check"></i><b>3.3.2</b> Basic calculations</a></li>
+<li class="chapter" data-level="3.3.3" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#aicc"><i class="fa fa-check"></i><b>3.3.3</b> AICc</a></li>
+<li class="chapter" data-level="3.3.4" data-path="data-management-and-exploration.html"><a href="data-management-and-exploration.html#case-study-with-aic"><i class="fa fa-check"></i><b>3.3.4</b> Case study with AIC</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html"><i class="fa fa-check"></i><b>4</b> Generalized Linear Models</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#overview-of-generalized-linear-models"><i class="fa fa-check"></i><b>4.1</b> Overview of Generalized Linear Models</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#example-one-way-anova-with-non-normal-data"><i class="fa fa-check"></i><b>4.1.1</b> Example: One-way ANOVA with non-normal data</a></li>
+<li class="chapter" data-level="4.1.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#log-linear-model"><i class="fa fa-check"></i><b>4.1.2</b> Log-linear model</a></li>
+<li class="chapter" data-level="4.1.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#generalized-linear-models-glms"><i class="fa fa-check"></i><b>4.1.3</b> Generalized linear models (GLMs)</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#overdispersion"><i class="fa fa-check"></i><b>4.2</b> Overdispersion</a></li>
+<li class="chapter" data-level="4.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#binomial-glm"><i class="fa fa-check"></i><b>4.3</b> Binomial GLM</a></li>
+<li class="chapter" data-level="4.4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#gamma-glm"><i class="fa fa-check"></i><b>4.4</b> Gamma GLM</a>
+<ul>
+<li class="chapter" data-level="4.4.1" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#example-1"><i class="fa fa-check"></i><b>4.4.1</b> Example 1</a></li>
+<li class="chapter" data-level="4.4.2" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#example-2"><i class="fa fa-check"></i><b>4.4.2</b> Example 2</a></li>
+<li class="chapter" data-level="4.4.3" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#example-3"><i class="fa fa-check"></i><b>4.4.3</b> Example 3</a></li>
+<li class="chapter" data-level="4.4.4" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#example-4"><i class="fa fa-check"></i><b>4.4.4</b> Example 4</a></li>
+</ul></li>
+<li class="chapter" data-level="4.5" data-path="generalized-linear-models.html"><a href="generalized-linear-models.html#briefly-running-gamma-glms"><i class="fa fa-check"></i><b>4.5</b> Briefly running Gamma GLMs</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html"><i class="fa fa-check"></i><b>5</b> Mixed-effect models</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#interactions-in-statistical-models"><i class="fa fa-check"></i><b>5.1</b> Interactions in statistical models</a>
+<ul>
+<li class="chapter" data-level="5.1.1" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#ancova-multiple-intercept-model"><i class="fa fa-check"></i><b>5.1.1</b> ANCOVA: multiple intercept model</a></li>
+<li class="chapter" data-level="5.1.2" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#ancova-multiple-intercept-and-slope-model"><i class="fa fa-check"></i><b>5.1.2</b> ANCOVA: multiple intercept AND slope model</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#block-designs"><i class="fa fa-check"></i><b>5.2</b> Block Designs</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#data-prep-and-plotting"><i class="fa fa-check"></i><b>5.2.1</b> Data prep and Plotting</a></li>
+<li class="chapter" data-level="5.2.2" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#models-with-block-designs"><i class="fa fa-check"></i><b>5.2.2</b> Models with block designs</a></li>
+<li class="chapter" data-level="5.2.3" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#blocks-as-random-effects"><i class="fa fa-check"></i><b>5.2.3</b> Blocks as random effects</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#variance-components"><i class="fa fa-check"></i><b>5.3</b> Variance components</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#r2"><i class="fa fa-check"></i><b>5.3.1</b> R2</a></li>
+<li class="chapter" data-level="5.3.2" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#chick-weight-example"><i class="fa fa-check"></i><b>5.3.2</b> Chick weight example</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#split-plot-and-nested-designs"><i class="fa fa-check"></i><b>5.4</b> Split-plot and nested designs</a>
+<ul>
+<li class="chapter" data-level="5.4.1" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#additional-nesting"><i class="fa fa-check"></i><b>5.4.1</b> Additional nesting</a></li>
+<li class="chapter" data-level="5.4.2" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#r-challenge"><i class="fa fa-check"></i><b>5.4.2</b> R CHALLENGE</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#repeated-measures"><i class="fa fa-check"></i><b>5.5</b> Repeated Measures</a>
+<ul>
+<li class="chapter" data-level="5.5.1" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#r-challange---repeated-measures"><i class="fa fa-check"></i><b>5.5.1</b> R CHALLANGE - REPEATED MEASURES</a></li>
+</ul></li>
+<li class="chapter" data-level="5.6" data-path="mixed-effect-models.html"><a href="mixed-effect-models.html#additional-lmm-reading"><i class="fa fa-check"></i><b>5.6</b> Additional LMM reading</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="generalized-linear-mixed-models.html"><a href="generalized-linear-mixed-models.html"><i class="fa fa-check"></i><b>6</b> Generalized linear mixed models</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="generalized-linear-mixed-models.html"><a href="generalized-linear-mixed-models.html#poisson-and-nb-glmms"><i class="fa fa-check"></i><b>6.1</b> Poisson and NB GLMMs</a>
+<ul>
+<li class="chapter" data-level="6.1.1" data-path="generalized-linear-mixed-models.html"><a href="generalized-linear-mixed-models.html#improving-the-models-whats-next"><i class="fa fa-check"></i><b>6.1.1</b> Improving the models: What’s next?</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="generalized-linear-mixed-models.html"><a href="generalized-linear-mixed-models.html#binomial-glmms"><i class="fa fa-check"></i><b>6.2</b> Binomial GLMMs</a></li>
+<li class="chapter" data-level="6.3" data-path="generalized-linear-mixed-models.html"><a href="generalized-linear-mixed-models.html#beta-distributions"><i class="fa fa-check"></i><b>6.3</b> Beta Distributions</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="generalized-linear-mixed-models.html"><a href="generalized-linear-mixed-models.html#r-challenge-1"><i class="fa fa-check"></i><b>6.3.1</b> R CHALLENGE</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="generalized-linear-mixed-models.html"><a href="generalized-linear-mixed-models.html#zero-inflated-models"><i class="fa fa-check"></i><b>6.4</b> Zero-Inflated Models</a></li>
+<li class="chapter" data-level="6.5" data-path="generalized-linear-mixed-models.html"><a href="generalized-linear-mixed-models.html#model-app-exercise"><i class="fa fa-check"></i><b>6.5</b> Model App exercise</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Linear models in Agriculture and Natural Resources</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="mixed-effect-models" class="section level1 hasAnchor" number="5">
+<h1><span class="header-section-number">5</span> Mixed-effect models<a href="mixed-effect-models.html#mixed-effect-models" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>After completing this module, students will be able to:</p>
+<ul>
+<li><p>5.1 Differentiate between fixed and random effects</p></li>
+<li><p>5.2 Interpret output for fixed and random effects in R</p></li>
+<li><p>5.3 Design experiments with blocks, repeated measures, and fixed effect treatments</p></li>
+</ul>
+<div id="interactions-in-statistical-models" class="section level2 hasAnchor" number="5.1">
+<h2><span class="header-section-number">5.1</span> Interactions in statistical models<a href="mixed-effect-models.html#interactions-in-statistical-models" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Before we learn about random effects, we will briefly cover interactions in statistical models. We will need the following libraries:</p>
+<div class="sourceCode" id="cb425"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb425-1"><a href="mixed-effect-models.html#cb425-1" tabindex="-1"></a><span class="fu">library</span>(tidyverse)   </span>
+<span id="cb425-2"><a href="mixed-effect-models.html#cb425-2" tabindex="-1"></a><span class="fu">library</span>(car) <span class="do">### helpful for analyzing linear models</span></span>
+<span id="cb425-3"><a href="mixed-effect-models.html#cb425-3" tabindex="-1"></a><span class="fu">library</span>(emmeans) <span class="do">### helpful for getting means from linear models</span></span>
+<span id="cb425-4"><a href="mixed-effect-models.html#cb425-4" tabindex="-1"></a><span class="fu">library</span>(multcompView)</span>
+<span id="cb425-5"><a href="mixed-effect-models.html#cb425-5" tabindex="-1"></a><span class="fu">library</span>(glmmTMB)</span>
+<span id="cb425-6"><a href="mixed-effect-models.html#cb425-6" tabindex="-1"></a><span class="fu">library</span>(performance)</span></code></pre></div>
+<p>For this section we will construct data using some code. For this example, we need to “doctor” up a data set. We will use the InsectSprays data set (from previous examples) but we will make a few changes. Don’t worry about the changes, but the code below does this. The main one is that we have added a new column to the dataset called ‘weeds’, which represents the amount of weed cover in the plot.</p>
+<p>Let’s plot the raw data to show the count values as a function of spray types using boxplots:</p>
+<div class="sourceCode" id="cb426"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb426-1"><a href="mixed-effect-models.html#cb426-1" tabindex="-1"></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x=</span>spray,<span class="at">y=</span>count)) <span class="sc">+</span></span>
+<span id="cb426-2"><a href="mixed-effect-models.html#cb426-2" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">outlier.shape =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb426-3"><a href="mixed-effect-models.html#cb426-3" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">height=</span><span class="dv">0</span>,<span class="at">width=</span>.<span class="dv">1</span>) </span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-3"></span>
+<img src="04-Module_5_files/figure-html/unnamed-chunk-3-1.png" alt="Plot of insect count data." width="672" />
+<p class="caption">
+Figure 5.1: Plot of insect count data.
+</p>
+</div>
+<p>We want to look at pairwise means between these spray types. To do this we can use the emmeans package and set the pairwise arguments from the <code>emmeans</code> function as <code>pairwise ~ spray</code>. We need to apply this function to a linear model (basically an ANOVA) that assesses the counts as a function of the spray type. The pairwise comparisons are seen in the ‘contrasts’ section of the output below:</p>
+<div class="sourceCode" id="cb427"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb427-1"><a href="mixed-effect-models.html#cb427-1" tabindex="-1"></a>anova_means <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(<span class="fu">glmmTMB</span>(count<span class="sc">~</span>spray, <span class="at">data=</span>d), pairwise<span class="sc">~</span>spray) </span>
+<span id="cb427-2"><a href="mixed-effect-models.html#cb427-2" tabindex="-1"></a>anova_means</span></code></pre></div>
+<pre><code>## $emmeans
+##  spray emmean   SE df lower.CL upper.CL
+##  A      14.50 1.26 43   11.961    17.04
+##  B      20.33 1.26 43   17.794    22.87
+##  C       2.08 1.26 43   -0.456     4.62
+##  F      16.67 1.26 43   14.127    19.21
+## 
+## Confidence level used: 0.95 
+## 
+## $contrasts
+##  contrast estimate   SE df t.ratio p.value
+##  A - B       -5.83 1.78 43  -3.276  0.0108
+##  A - C       12.42 1.78 43   6.973  &lt;.0001
+##  A - F       -2.17 1.78 43  -1.217  0.6198
+##  B - C       18.25 1.78 43  10.249  &lt;.0001
+##  B - F        3.67 1.78 43   2.059  0.1830
+##  C - F      -14.58 1.78 43  -8.190  &lt;.0001
+## 
+## P value adjustment: tukey method for comparing a family of 4 estimates</code></pre>
+<p>It would also be helpful to view counts as a function of weed cover. We can do this using <code>facet_wrap()</code> and <code>geom_smooth</code>:</p>
+<div class="sourceCode" id="cb429"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb429-1"><a href="mixed-effect-models.html#cb429-1" tabindex="-1"></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x=</span>weeds,<span class="at">y=</span>count)) <span class="sc">+</span></span>
+<span id="cb429-2"><a href="mixed-effect-models.html#cb429-2" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb429-3"><a href="mixed-effect-models.html#cb429-3" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>spray) <span class="sc">+</span></span>
+<span id="cb429-4"><a href="mixed-effect-models.html#cb429-4" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&#39;lm&#39;</span>)</span></code></pre></div>
+<pre><code>## `geom_smooth()` using formula = &#39;y ~ x&#39;</code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-5"></span>
+<img src="04-Module_5_files/figure-html/unnamed-chunk-5-1.png" alt="Insect counts plotted against weed cover for the four spray treatments." width="672" />
+<p class="caption">
+Figure 2.2: Insect counts plotted against weed cover for the four spray treatments.
+</p>
+</div>
+<div id="ancova-multiple-intercept-model" class="section level3 hasAnchor" number="5.1.1">
+<h3><span class="header-section-number">5.1.1</span> ANCOVA: multiple intercept model<a href="mixed-effect-models.html#ancova-multiple-intercept-model" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>In the previous example we ran an ANOVA with only a categorical predictor. ANOVAs have long been taught to be used for categorical predictors only if your response variable is continuous. This is not entirely accurate considering that an ANOVA is the same thing as a linear model which can use continuous predictors.</p>
+<p>For this part, let’s run a model that assesses counts as a function of both a categorical and continuous variable, <strong>spray type</strong> and <strong>weed cover</strong>. This would be a biologically reasonable model to run as we see from the plots above that our counts are not only different based on spray types but also vary along a weed cover gradient where, in most cases, there are higher insect counts associated with higher weed cover.</p>
+<p>Our goal should therefore be to assess the effects of spray types on counts while accounting for this relationship between counts and weed cover. We can incorporate both types of predictors in the same linear model format as before. With the inclusion of a continuous variable, an ANOVA is often called an ANCOVA (an analysis of covariance). Here is the basic form of the linear model with a categorical and continous variable:</p>
+<p><span class="math display">\[y = \beta_{0} + \beta_{i} + \beta_{1}*x + \varepsilon\]</span>
+<span class="math inline">\(y\)</span> is the <strong>response variable</strong><br />
+<span class="math inline">\(\beta_{0}\)</span> is the <strong>intercept</strong><br />
+<span class="math inline">\(\beta_{i}\)</span> is the <strong>adjustment to the intercept</strong> for each group <span class="math inline">\(_{i}\)</span>
+<span class="math inline">\(\beta_{1}\)</span> is the <strong>slope</strong><br />
+<span class="math inline">\(x\)</span> is the <strong>predictor variable</strong> and
+<span class="math inline">\(\varepsilon\)</span> are the residuals.</p>
+<p>Let’s run our ANCOVA model:</p>
+<div class="sourceCode" id="cb431"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb431-1"><a href="mixed-effect-models.html#cb431-1" tabindex="-1"></a>lm1i <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(count <span class="sc">~</span> spray <span class="sc">+</span> weeds, <span class="at">data=</span>d)</span></code></pre></div>
+<p>Let’s get an ANOVA table with Type II sums of squares (see Box 5.1 for overview of Sums of Squares and differences with SAS Type III):</p>
+<div class="sourceCode" id="cb432"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb432-1"><a href="mixed-effect-models.html#cb432-1" tabindex="-1"></a><span class="fu">Anova</span>(lm1i, <span class="at">type=</span><span class="dv">2</span>) </span></code></pre></div>
+<pre><code>## Analysis of Deviance Table (Type II Wald chisquare tests)
+## 
+## Response: count
+##         Chisq Df Pr(&gt;Chisq)    
+## spray 228.168  3  &lt; 2.2e-16 ***
+## weeds  51.318  1  7.854e-13 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Note: Don’t use the base <code>anova()</code>!</p>
+<p>If we want to look at the model coefficients we can use <code>summary()</code>:</p>
+<div class="sourceCode" id="cb434"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb434-1"><a href="mixed-effect-models.html#cb434-1" tabindex="-1"></a><span class="fu">summary</span>(lm1i) <span class="do">## model coefficients</span></span></code></pre></div>
+<pre><code>##  Family: gaussian  ( identity )
+## Formula:          count ~ spray + weeds
+## Data: d
+## 
+##      AIC      BIC   logLik deviance df.resid 
+##    254.7    265.9   -121.4    242.7       42 
+## 
+## 
+## Dispersion estimate for gaussian family (sigma^2):  9.2 
+## 
+## Conditional model:
+##              Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)   7.69502    1.29175   5.957 2.57e-09 ***
+## sprayB        2.88374    1.30463   2.210   0.0271 *  
+## sprayC      -13.64507    1.24977 -10.918  &lt; 2e-16 ***
+## sprayF        1.48599    1.24159   1.197   0.2314    
+## weeds         0.21271    0.02969   7.164 7.85e-13 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>There is quite a bit in that output and its difficult to piece together. What does it all mean?!?! Really all we want to do is calculate the estimated means for each group once we’ve accounted for the effect of weed cover. With <code>emmeans</code> we can just that – that is, calculate estimated marginal mean for each group (ie. groups means after accounting for the effect of weeds). We can extract the emmeans means (ie. group means after accounting for the effect of weeds):</p>
+<div class="sourceCode" id="cb436"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb436-1"><a href="mixed-effect-models.html#cb436-1" tabindex="-1"></a>ancova_means <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(lm1i, pairwise<span class="sc">~</span>spray)  </span>
+<span id="cb436-2"><a href="mixed-effect-models.html#cb436-2" tabindex="-1"></a>ancova_means</span></code></pre></div>
+<pre><code>## $emmeans
+##  spray emmean    SE df lower.CL upper.CL
+##  A      15.71 0.892 42   13.915    17.51
+##  B      18.60 0.908 42   16.765    20.43
+##  C       2.07 0.875 42    0.303     3.84
+##  F      17.20 0.879 42   15.428    18.97
+## 
+## Confidence level used: 0.95 
+## 
+## $contrasts
+##  contrast estimate   SE df t.ratio p.value
+##  A - B       -2.88 1.30 42  -2.210  0.1370
+##  A - C       13.65 1.25 42  10.918  &lt;.0001
+##  A - F       -1.49 1.24 42  -1.197  0.6322
+##  B - C       16.53 1.26 42  13.107  &lt;.0001
+##  B - F        1.40 1.28 42   1.094  0.6952
+##  C - F      -15.13 1.24 42 -12.199  &lt;.0001
+## 
+## P value adjustment: tukey method for comparing a family of 4 estimates</code></pre>
+<p>If we want to plot these readouts from the emmeans output then we first need to convert this table into a data frame using <code>as.data.frame()</code>:</p>
+<div class="sourceCode" id="cb438"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb438-1"><a href="mixed-effect-models.html#cb438-1" tabindex="-1"></a>lm1i_coef <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">emmeans</span>(lm1i, <span class="sc">~</span>spray))</span></code></pre></div>
+<p>Now that we have saved the emmeans outputs into a data.frame we can extract intercepts and add slopes into new dataframe. We can do this by using the `at=list(weeds=0)’ in emmeans to specify that we want to means of each spray treatment when the covariate <strong>weeds</strong> is equal to zero (in other words, the intercepts for each group). We also extract the slope manually from the saved model.</p>
+<div class="sourceCode" id="cb439"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb439-1"><a href="mixed-effect-models.html#cb439-1" tabindex="-1"></a>lm1i_coef2 <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">emmeans</span>(lm1i,</span>
+<span id="cb439-2"><a href="mixed-effect-models.html#cb439-2" tabindex="-1"></a>                                    <span class="sc">~</span>spray,</span>
+<span id="cb439-3"><a href="mixed-effect-models.html#cb439-3" tabindex="-1"></a>                                    <span class="at">at=</span><span class="fu">list</span>(<span class="at">weeds=</span><span class="dv">0</span>)))</span>
+<span id="cb439-4"><a href="mixed-effect-models.html#cb439-4" tabindex="-1"></a>lm1i_coef2<span class="sc">$</span>slope <span class="ot">&lt;-</span> <span class="fu">coef</span>(lm1i)[<span class="dv">5</span>]</span></code></pre></div>
+<p>We can now plot the data with the fitted model and also color in specific values of importance. We can color code the different intercepts as well as the different means:</p>
+<div class="sourceCode" id="cb440"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb440-1"><a href="mixed-effect-models.html#cb440-1" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>d, <span class="fu">aes</span>(<span class="at">x=</span>weeds,<span class="at">y=</span>count)) <span class="sc">+</span></span>
+<span id="cb440-2"><a href="mixed-effect-models.html#cb440-2" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb440-3"><a href="mixed-effect-models.html#cb440-3" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>spray) <span class="sc">+</span> </span>
+<span id="cb440-4"><a href="mixed-effect-models.html#cb440-4" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">data=</span>lm1i_coef2,</span>
+<span id="cb440-5"><a href="mixed-effect-models.html#cb440-5" tabindex="-1"></a>              <span class="fu">aes</span>(<span class="at">intercept=</span>emmean, <span class="at">slope=</span>slope)) <span class="sc">+</span></span>
+<span id="cb440-6"><a href="mixed-effect-models.html#cb440-6" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data=</span>lm1i_coef2,</span>
+<span id="cb440-7"><a href="mixed-effect-models.html#cb440-7" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">x=</span><span class="dv">0</span>,<span class="at">y=</span>emmean),<span class="at">color=</span><span class="st">&quot;red&quot;</span>) <span class="sc">+</span></span>
+<span id="cb440-8"><a href="mixed-effect-models.html#cb440-8" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data=</span>lm1i_coef,</span>
+<span id="cb440-9"><a href="mixed-effect-models.html#cb440-9" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">x=</span><span class="fu">mean</span>(d<span class="sc">$</span>weeds),<span class="at">y=</span>emmean),</span>
+<span id="cb440-10"><a href="mixed-effect-models.html#cb440-10" tabindex="-1"></a>             <span class="at">color=</span><span class="st">&quot;blue&quot;</span>, <span class="at">size=</span><span class="dv">2</span>)</span></code></pre></div>
+<pre><code>## Warning: Removed 4 rows containing missing values or values outside the scale range
+## (`geom_abline()`).</code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-12"></span>
+<img src="04-Module_5_files/figure-html/unnamed-chunk-12-1.png" alt="Plot of insect counts against weed cover for each spray type. Red dots represent intercepts and blue dots represent emmeans." width="672" />
+<p class="caption">
+Figure 2.8: Plot of insect counts against weed cover for each spray type. Red dots represent intercepts and blue dots represent emmeans.
+</p>
+</div>
+<table>
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>Box 5.1. Sums of Squares</strong> In <code>car::Anova()</code> the Type II sums of squares is the default and is preferred over Type I or III. Type II SS are calculated based on the principal of marginally, meaning the test statistic for each term in the model is calculated after all other terms excluding the term’s high-order relatives. How the car package calculates SS is different from SAS. In SAS, Type III SS are almost always preferred. In <code>car::Anova()</code> Type II are similar to Type III in SAS, although there are some differences. See the help for <code>??car::Anova</code> for additional information. Long story short, Type II SS are preferred in <code>car::Anova()</code>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="ancova-multiple-intercept-and-slope-model" class="section level3 hasAnchor" number="5.1.2">
+<h3><span class="header-section-number">5.1.2</span> ANCOVA: multiple intercept AND slope model<a href="mixed-effect-models.html#ancova-multiple-intercept-and-slope-model" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>In the previous example above we ran a ANCOVA to account for variation around the intercept. The idea being: weed cover percentages are associated with insect counts and therefore they need to be accounted for because different spray types were done across a gradient of weed cover. For example, in the previous plot, <strong>Spray A</strong> tended to have plots with low weed cover, whereas <strong>Spray B</strong> tended to have plots with high weed cover (mostly &gt;40%). Therefore, we assumed that insect counts, and therefore the intercepts per spray type, would be different. The previous model does a good job at capturing these different intercepts for each spray type.</p>
+<p>There is one problem with the previous model, though. Look at the fitted regression line for <strong>Spray C</strong> – it doesn’t fit that well. The intercept looks way too low, the slope looks too steep, but the emmean estimate looks ok. If we wanted to also account for different slope values across the grass cover gradient then we can do so by including an interaction term between spray type and weeds. This would be done by coding in the interaction as <code>spray:weeds</code> into the model predictors as shown below.</p>
+<p>This is how we do an ANCOVA with multiple intercept and slopes:</p>
+<div class="sourceCode" id="cb442"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb442-1"><a href="mixed-effect-models.html#cb442-1" tabindex="-1"></a>lm1is <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(count <span class="sc">~</span> spray <span class="sc">+</span> weeds <span class="sc">+</span> spray<span class="sc">:</span>weeds, <span class="at">data=</span>d)</span></code></pre></div>
+<p>The above code essentially translates to: “Use a linear model to assess count as a function of the additive effects of spray and weeds as well as the interactive effect of the two predictors.</p>
+<p>Another shorthand way to code the above would be:</p>
+<div class="sourceCode" id="cb443"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb443-1"><a href="mixed-effect-models.html#cb443-1" tabindex="-1"></a><span class="fu">glmmTMB</span>(count <span class="sc">~</span> spray <span class="sc">*</span> weeds, <span class="at">data=</span>d)</span></code></pre></div>
+<pre><code>## Formula:          count ~ spray * weeds
+## Data: d
+##       AIC       BIC    logLik  df.resid 
+##  235.0966  251.9375 -108.5483        39 
+## 
+## Number of obs: 48
+## 
+## Dispersion estimate for gaussian family (sigma^2): 5.39 
+## 
+## Fixed Effects:
+## 
+## Conditional model:
+##  (Intercept)        sprayB        sprayC        sprayF         weeds  
+##     5.619629      2.440333     -2.441188      0.613378      0.277584  
+## sprayB:weeds  sprayC:weeds  sprayF:weeds  
+##    -0.009947     -0.306581      0.018897</code></pre>
+<p>Let’s get an ANOVA table and a summary of the model as we did in the previous examples:</p>
+<div class="sourceCode" id="cb445"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb445-1"><a href="mixed-effect-models.html#cb445-1" tabindex="-1"></a><span class="fu">Anova</span>(lm1is, <span class="at">type=</span><span class="dv">2</span>)</span></code></pre></div>
+<pre><code>## Analysis of Deviance Table (Type II Wald chisquare tests)
+## 
+## Response: count
+##               Chisq Df Pr(&gt;Chisq)    
+## spray       389.083  3  &lt; 2.2e-16 ***
+## weeds        87.510  1  &lt; 2.2e-16 ***
+## spray:weeds  33.852  3  2.129e-07 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<div class="sourceCode" id="cb447"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb447-1"><a href="mixed-effect-models.html#cb447-1" tabindex="-1"></a><span class="fu">summary</span>(lm1is)</span></code></pre></div>
+<pre><code>##  Family: gaussian  ( identity )
+## Formula:          count ~ spray + weeds + spray:weeds
+## Data: d
+## 
+##      AIC      BIC   logLik deviance df.resid 
+##    235.1    251.9   -108.5    217.1       39 
+## 
+## 
+## Dispersion estimate for gaussian family (sigma^2): 5.39 
+## 
+## Conditional model:
+##               Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)   5.619629   1.677717   3.350 0.000809 ***
+## sprayB        2.440333   3.111865   0.784 0.432921    
+## sprayC       -2.441188   2.545417  -0.959 0.337532    
+## sprayF        0.613378   2.227141   0.275 0.783001    
+## weeds         0.277584   0.048074   5.774 7.74e-09 ***
+## sprayB:weeds -0.009947   0.073238  -0.136 0.891963    
+## sprayC:weeds -0.306581   0.067566  -4.537 5.69e-06 ***
+## sprayF:weeds  0.018897   0.060668   0.311 0.755434    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>From the ANOVA table we can see all three terms (the two main effects as well as the interaction) are all highly significant. The <code>summary()</code> output is difficult to make sense of. Once again we can use <code>emmeans</code> to calculate the estimated marginal mean for each group (ie. groups means after accounting for the effect of weeds):</p>
+<div class="sourceCode" id="cb449"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb449-1"><a href="mixed-effect-models.html#cb449-1" tabindex="-1"></a>ancova_is_means <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(lm1is, pairwise<span class="sc">~</span>spray)  </span></code></pre></div>
+<pre><code>## NOTE: Results may be misleading due to involvement in interactions</code></pre>
+<div class="sourceCode" id="cb451"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb451-1"><a href="mixed-effect-models.html#cb451-1" tabindex="-1"></a>ancova_is_means</span></code></pre></div>
+<pre><code>## $emmeans
+##  spray emmean    SE df lower.CL upper.CL
+##  A      16.09 0.724 39   14.620    17.55
+##  B      18.15 0.808 39   16.517    19.78
+##  C       2.09 0.670 39    0.729     3.44
+##  F      17.41 0.677 39   16.042    18.78
+## 
+## Confidence level used: 0.95 
+## 
+## $contrasts
+##  contrast estimate    SE df t.ratio p.value
+##  A - B      -2.065 1.080 39  -1.904  0.2432
+##  A - C      14.000 0.987 39  14.185  &lt;.0001
+##  A - F      -1.326 0.991 39  -1.337  0.5453
+##  B - C      16.065 1.050 39  15.305  &lt;.0001
+##  B - F       0.739 1.050 39   0.702  0.8958
+##  C - F     -15.326 0.953 39 -16.089  &lt;.0001
+## 
+## P value adjustment: tukey method for comparing a family of 4 estimates</code></pre>
+<p>In addition to retrieving estimated means we should also calculate and extract the different slope values. We can calculate the slope for each group with <code>emtrends()</code>:</p>
+<div class="sourceCode" id="cb453"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb453-1"><a href="mixed-effect-models.html#cb453-1" tabindex="-1"></a>ancova_is_slopes <span class="ot">&lt;-</span> <span class="fu">emtrends</span>(lm1is, pairwise<span class="sc">~</span>spray, <span class="at">var=</span><span class="st">&quot;weeds&quot;</span>)  </span>
+<span id="cb453-2"><a href="mixed-effect-models.html#cb453-2" tabindex="-1"></a>ancova_is_slopes</span></code></pre></div>
+<pre><code>## $emtrends
+##  spray weeds.trend     SE df lower.CL upper.CL
+##  A           0.278 0.0481 39    0.180    0.375
+##  B           0.268 0.0553 39    0.156    0.379
+##  C          -0.029 0.0475 39   -0.125    0.067
+##  F           0.296 0.0370 39    0.222    0.371
+## 
+## Confidence level used: 0.95 
+## 
+## $contrasts
+##  contrast estimate     SE df t.ratio p.value
+##  A - B     0.00995 0.0732 39   0.136  0.9991
+##  A - C     0.30658 0.0676 39   4.537  0.0003
+##  A - F    -0.01890 0.0607 39  -0.311  0.9894
+##  B - C     0.29663 0.0728 39   4.072  0.0012
+##  B - F    -0.02884 0.0665 39  -0.434  0.9723
+##  C - F    -0.32548 0.0602 39  -5.407  &lt;.0001
+## 
+## P value adjustment: tukey method for comparing a family of 4 estimates</code></pre>
+<p>We can extract the emmeans means (ie. group means after accounting for the effect of weeds):</p>
+<div class="sourceCode" id="cb455"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb455-1"><a href="mixed-effect-models.html#cb455-1" tabindex="-1"></a>lm1is_coef <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">emmeans</span>(lm1is, <span class="sc">~</span>spray))</span></code></pre></div>
+<pre><code>## NOTE: Results may be misleading due to involvement in interactions</code></pre>
+<p>We can also extract the intercepts and add slopes into a new data frame:</p>
+<div class="sourceCode" id="cb457"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb457-1"><a href="mixed-effect-models.html#cb457-1" tabindex="-1"></a>lm1is_coef2a <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">emmeans</span>(lm1is, <span class="sc">~</span>spray, <span class="at">at=</span><span class="fu">list</span>(<span class="at">weeds=</span><span class="dv">0</span>)))</span></code></pre></div>
+<pre><code>## NOTE: Results may be misleading due to involvement in interactions</code></pre>
+<div class="sourceCode" id="cb459"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb459-1"><a href="mixed-effect-models.html#cb459-1" tabindex="-1"></a>lm1is_coef2b <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">emtrends</span>(lm1is, <span class="at">var=</span><span class="st">&quot;weeds&quot;</span>))</span>
+<span id="cb459-2"><a href="mixed-effect-models.html#cb459-2" tabindex="-1"></a>lm1is_coef2 <span class="ot">&lt;-</span> <span class="fu">full_join</span>(lm1is_coef2a,lm1is_coef2b,<span class="at">by=</span><span class="st">&quot;spray&quot;</span>)</span></code></pre></div>
+<p>Finally we can plot the data of the fitted model:</p>
+<div class="sourceCode" id="cb460"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb460-1"><a href="mixed-effect-models.html#cb460-1" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>d, <span class="fu">aes</span>(<span class="at">x=</span>weeds,<span class="at">y=</span>count)) <span class="sc">+</span></span>
+<span id="cb460-2"><a href="mixed-effect-models.html#cb460-2" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb460-3"><a href="mixed-effect-models.html#cb460-3" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>spray) <span class="sc">+</span> </span>
+<span id="cb460-4"><a href="mixed-effect-models.html#cb460-4" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">data=</span>lm1is_coef2, <span class="fu">aes</span>(<span class="at">intercept=</span>emmean,</span>
+<span id="cb460-5"><a href="mixed-effect-models.html#cb460-5" tabindex="-1"></a>                                    <span class="at">slope=</span>weeds.trend), <span class="at">lty=</span><span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb460-6"><a href="mixed-effect-models.html#cb460-6" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data=</span>lm1is_coef2, </span>
+<span id="cb460-7"><a href="mixed-effect-models.html#cb460-7" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">x=</span><span class="dv">0</span>,<span class="at">y=</span>emmean),</span>
+<span id="cb460-8"><a href="mixed-effect-models.html#cb460-8" tabindex="-1"></a>             <span class="at">color=</span><span class="st">&quot;orange&quot;</span>) <span class="sc">+</span></span>
+<span id="cb460-9"><a href="mixed-effect-models.html#cb460-9" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data=</span>lm1is_coef,</span>
+<span id="cb460-10"><a href="mixed-effect-models.html#cb460-10" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">x=</span><span class="fu">mean</span>(d<span class="sc">$</span>weeds),<span class="at">y=</span>emmean),</span>
+<span id="cb460-11"><a href="mixed-effect-models.html#cb460-11" tabindex="-1"></a>             <span class="at">color=</span><span class="st">&quot;purple&quot;</span>, <span class="at">size=</span><span class="dv">2</span>)</span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-20"></span>
+<img src="04-Module_5_files/figure-html/unnamed-chunk-20-1.png" alt="Plot of insect counts against weed cover for each spray type. Orange dots represent intercepts and purple dots represent emmeans." width="672" />
+<p class="caption">
+Figure 2.15: Plot of insect counts against weed cover for each spray type. Orange dots represent intercepts and purple dots represent emmeans.
+</p>
+</div>
+<p>Note with the plot above that we can observe the slopes differing in values compared to the previous model that only accounted for varying intercepts. Now, even for <strong>Spray C</strong> the intercept and slope look like good estimates.</p>
+<p>Here’s an alternative nice plot of the data with weed cover:</p>
+<div class="sourceCode" id="cb461"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb461-1"><a href="mixed-effect-models.html#cb461-1" tabindex="-1"></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x=</span>weeds,<span class="at">y=</span>count)) <span class="sc">+</span></span>
+<span id="cb461-2"><a href="mixed-effect-models.html#cb461-2" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb461-3"><a href="mixed-effect-models.html#cb461-3" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>spray) <span class="sc">+</span> </span>
+<span id="cb461-4"><a href="mixed-effect-models.html#cb461-4" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&#39;lm&#39;</span>, <span class="at">color=</span><span class="st">&#39;black&#39;</span>) <span class="sc">+</span></span>
+<span id="cb461-5"><a href="mixed-effect-models.html#cb461-5" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">16</span>) <span class="sc">+</span></span>
+<span id="cb461-6"><a href="mixed-effect-models.html#cb461-6" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Weed Coverage %&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Count&quot;</span>)</span></code></pre></div>
+<pre><code>## `geom_smooth()` using formula = &#39;y ~ x&#39;</code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-21"></span>
+<img src="04-Module_5_files/figure-html/unnamed-chunk-21-1.png" alt="Plot of insect counts against weed cover for each spray type." width="672" />
+<p class="caption">
+Figure 2.16: Plot of insect counts against weed cover for each spray type.
+</p>
+</div>
+</div>
+</div>
+<div id="block-designs" class="section level2 hasAnchor" number="5.2">
+<h2><span class="header-section-number">5.2</span> Block Designs<a href="mixed-effect-models.html#block-designs" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="data-prep-and-plotting" class="section level3 hasAnchor" number="5.2.1">
+<h3><span class="header-section-number">5.2.1</span> Data prep and Plotting<a href="mixed-effect-models.html#data-prep-and-plotting" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Let’s load the packages and data. Note we are using the InsectSprays data set one again.</p>
+<div class="sourceCode" id="cb463"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb463-1"><a href="mixed-effect-models.html#cb463-1" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb463-2"><a href="mixed-effect-models.html#cb463-2" tabindex="-1"></a><span class="fu">library</span>(car)</span>
+<span id="cb463-3"><a href="mixed-effect-models.html#cb463-3" tabindex="-1"></a><span class="fu">library</span>(glmmTMB)</span>
+<span id="cb463-4"><a href="mixed-effect-models.html#cb463-4" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;InsectSprays&quot;</span>)</span></code></pre></div>
+<p>Now we can add our blocks to the data by constructing a vector of factor variables using the <code>as.factor(rep(c(1:12), 6))</code>. This code essentially builds 12 different blocks in the data set with each block being comprised of 6 replicates for a total of 72 replicates or samples.</p>
+<div class="sourceCode" id="cb464"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb464-1"><a href="mixed-effect-models.html#cb464-1" tabindex="-1"></a>InsectSprays<span class="sc">$</span>block <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>), <span class="dv">6</span>)) </span>
+<span id="cb464-2"><a href="mixed-effect-models.html#cb464-2" tabindex="-1"></a>d <span class="ot">&lt;-</span> InsectSprays <span class="sc">%&gt;%</span></span>
+<span id="cb464-3"><a href="mixed-effect-models.html#cb464-3" tabindex="-1"></a>  <span class="fu">filter</span>(spray<span class="sc">==</span><span class="st">&#39;A&#39;</span><span class="sc">|</span>spray<span class="sc">==</span><span class="st">&#39;B&#39;</span><span class="sc">|</span>spray<span class="sc">==</span><span class="st">&#39;C&#39;</span><span class="sc">|</span>spray<span class="sc">==</span><span class="st">&#39;F&#39;</span>)</span>
+<span id="cb464-4"><a href="mixed-effect-models.html#cb464-4" tabindex="-1"></a><span class="fu">glimpse</span>(d)</span></code></pre></div>
+<pre><code>## Rows: 48
+## Columns: 3
+## $ count &lt;dbl&gt; 10, 7, 20, 14, 14, 12, 10, 23, 17, 20, 14, 13, 11, 17, 21, 11, 1…
+## $ spray &lt;fct&gt; A, A, A, A, A, A, A, A, A, A, A, A, B, B, B, B, B, B, B, B, B, B…
+## $ block &lt;fct&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9…</code></pre>
+<p>We can graph the data by treatment group based on spray type by using a combination of raw data points and boxplots:</p>
+<div class="sourceCode" id="cb466"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb466-1"><a href="mixed-effect-models.html#cb466-1" tabindex="-1"></a><span class="co">#plot data by treatment group</span></span>
+<span id="cb466-2"><a href="mixed-effect-models.html#cb466-2" tabindex="-1"></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x=</span>spray,<span class="at">y=</span>count)) <span class="sc">+</span></span>
+<span id="cb466-3"><a href="mixed-effect-models.html#cb466-3" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">outlier.shape =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb466-4"><a href="mixed-effect-models.html#cb466-4" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">height=</span><span class="dv">0</span>,<span class="at">width=</span>.<span class="dv">1</span>)</span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-24"></span>
+<img src="04-Module_5_files/figure-html/unnamed-chunk-24-1.png" alt="Plot of insect counts." width="672" />
+<p class="caption">
+Figure 2.19: Plot of insect counts.
+</p>
+</div>
+<p>A plot by treatment and block (note one observation per block, which is why the boxplots are just a point and line):</p>
+<div class="sourceCode" id="cb467"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb467-1"><a href="mixed-effect-models.html#cb467-1" tabindex="-1"></a><span class="fu">ggplot</span>(d, <span class="fu">aes</span>(<span class="at">x=</span>spray,<span class="at">y=</span>count)) <span class="sc">+</span></span>
+<span id="cb467-2"><a href="mixed-effect-models.html#cb467-2" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">outlier.shape =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb467-3"><a href="mixed-effect-models.html#cb467-3" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">height=</span><span class="dv">0</span>,<span class="at">width=</span>.<span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb467-4"><a href="mixed-effect-models.html#cb467-4" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>block)  <span class="co">#12 blocks</span></span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-25"></span>
+<img src="04-Module_5_files/figure-html/unnamed-chunk-25-1.png" alt="Plot of insect counts by block." width="672" />
+<p class="caption">
+Figure 3.1: Plot of insect counts by block.
+</p>
+</div>
+</div>
+<div id="models-with-block-designs" class="section level3 hasAnchor" number="5.2.2">
+<h3><span class="header-section-number">5.2.2</span> Models with block designs<a href="mixed-effect-models.html#models-with-block-designs" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>If we were to ignore the blocked design in our data then we would simply run a linear model of counts as a function of spray type:</p>
+<div class="sourceCode" id="cb468"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb468-1"><a href="mixed-effect-models.html#cb468-1" tabindex="-1"></a>lm1 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(count<span class="sc">~</span>spray, <span class="at">data=</span>d)</span>
+<span id="cb468-2"><a href="mixed-effect-models.html#cb468-2" tabindex="-1"></a><span class="fu">Anova</span>(lm1)</span></code></pre></div>
+<pre><code>## Analysis of Deviance Table (Type II Wald chisquare tests)
+## 
+## Response: count
+##        Chisq Df Pr(&gt;Chisq)    
+## spray 86.656  3  &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>We can easily account for the blocking factors by adding the <strong>block</strong> variable to our model as a fixed effect. We can see there is still a significant <strong>Spray</strong> effect and also a significant <strong>block</strong> effect.</p>
+<div class="sourceCode" id="cb470"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb470-1"><a href="mixed-effect-models.html#cb470-1" tabindex="-1"></a>lm2 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(count<span class="sc">~</span>spray<span class="sc">+</span>block, <span class="at">data=</span>d)</span>
+<span id="cb470-2"><a href="mixed-effect-models.html#cb470-2" tabindex="-1"></a><span class="fu">Anova</span>(lm2)</span></code></pre></div>
+<pre><code>## Analysis of Deviance Table (Type II Wald chisquare tests)
+## 
+## Response: count
+##         Chisq Df Pr(&gt;Chisq)    
+## spray 141.948  3  &lt; 2.2e-16 ***
+## block  30.627 11   0.001262 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</div>
+<div id="blocks-as-random-effects" class="section level3 hasAnchor" number="5.2.3">
+<h3><span class="header-section-number">5.2.3</span> Blocks as random effects<a href="mixed-effect-models.html#blocks-as-random-effects" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>In the previous example, we aren’t necessarily interested in testing the significance, or estimating parameters, for the <strong>block</strong> effect – we just want to account for it. Therefore, <strong>block</strong> may be more appropriate fitted as a <em>random</em> effect. Another nice thing about the <code>glmmTMB()</code> function is that we can also incorporate random effects. In this section we will utilize random effects to account for blocks as opposed to fixed effects in the models prior to this section.</p>
+<p>Now let’s set up a linear mixed effect model with a block as a random effect (random intercept). The syntax to set this up is relatively similar to how we specify a regular linear model. However to add a random effect we utilize parentheses. More specifically we include the term <code>(1|block)</code> to include a random intercept that varies across blocks:</p>
+<div class="sourceCode" id="cb472"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb472-1"><a href="mixed-effect-models.html#cb472-1" tabindex="-1"></a><span class="co"># block as random effect</span></span>
+<span id="cb472-2"><a href="mixed-effect-models.html#cb472-2" tabindex="-1"></a>lm3 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(count<span class="sc">~</span>spray<span class="sc">+</span>(<span class="dv">1</span><span class="sc">|</span>block), <span class="at">data=</span>d)</span>
+<span id="cb472-3"><a href="mixed-effect-models.html#cb472-3" tabindex="-1"></a><span class="fu">Anova</span>(lm3)</span></code></pre></div>
+<pre><code>## Analysis of Deviance Table (Type II Wald chisquare tests)
+## 
+## Response: count
+##        Chisq Df Pr(&gt;Chisq)    
+## spray 106.46  3  &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>In the ANOVA table above, we can see the results for the <strong>spray</strong> effect.</p>
+<table>
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>Box 5.2. Alternative packages for linear mixed models</strong> Another great package for running linear mixed models the <code>lme4</code> package. This was actually a precursor to glmmTMB – for the part, glmmTMB has superceded lme4, although there are a few things that are usefully implemented in lme4 that are not available with glmmTMB objects. One is the extension package <code>lmerTest</code> which calculates F-values, Type III SS, and p-values using algorithms borrowed from SAS. The <code>anova()</code> function is from the <code>lmerTest</code> package and uses Type III SS. See Box 5.1 for a refresher on sums of squares. The results are usually similar between glmmTMB and lme4, but sometimes its useful to be able to obtain F-values for mixed models.</td>
+</tr>
+</tbody>
+</table>
+<p>Now let’s compare the model for blocks as fixed vs. random effects:</p>
+<div class="sourceCode" id="cb474"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb474-1"><a href="mixed-effect-models.html#cb474-1" tabindex="-1"></a><span class="co"># compare summary() for fixed vs. random blocking effect</span></span>
+<span id="cb474-2"><a href="mixed-effect-models.html#cb474-2" tabindex="-1"></a><span class="fu">summary</span>(lm2)</span></code></pre></div>
+<pre><code>##  Family: gaussian  ( identity )
+## Formula:          count ~ spray + block
+## Data: d
+## 
+##      AIC      BIC   logLik deviance df.resid 
+##    285.9    315.9   -127.0    253.9       32 
+## 
+## 
+## Dispersion estimate for gaussian family (sigma^2): 11.6 
+## 
+## Conditional model:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  10.3541     1.9052   5.435 5.49e-08 ***
+## sprayB        0.8333     1.3913   0.599 0.549213    
+## sprayC      -12.4167     1.3913  -8.924  &lt; 2e-16 ***
+## sprayF        2.1667     1.3913   1.557 0.119412    
+## block2        0.5000     2.4099   0.207 0.835624    
+## block3        7.7500     2.4099   3.216 0.001300 ** 
+## block4        4.2500     2.4099   1.764 0.077802 .  
+## block5        4.0000     2.4099   1.660 0.096946 .  
+## block6        2.7500     2.4099   1.141 0.253808    
+## block7        2.5000     2.4099   1.037 0.299545    
+## block8        4.7500     2.4099   1.971 0.048717 *  
+## block9        8.2500     2.4099   3.423 0.000618 ***
+## block10       8.7500     2.4099   3.631 0.000282 ***
+## block11       3.5000     2.4099   1.452 0.146400    
+## block12       2.7500     2.4099   1.141 0.253808    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<div class="sourceCode" id="cb476"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb476-1"><a href="mixed-effect-models.html#cb476-1" tabindex="-1"></a><span class="fu">summary</span>(lm3)</span></code></pre></div>
+<pre><code>##  Family: gaussian  ( identity )
+## Formula:          count ~ spray + (1 | block)
+## Data: d
+## 
+##      AIC      BIC   logLik deviance df.resid 
+##    287.5    298.8   -137.8    275.5       42 
+## 
+## Random effects:
+## 
+## Conditional model:
+##  Groups   Name        Variance Std.Dev.
+##  block    (Intercept)  3.539   1.881   
+##  Residual             15.487   3.935   
+## Number of obs: 48, groups:  block, 12
+## 
+## Dispersion estimate for gaussian family (sigma^2): 15.5 
+## 
+## Conditional model:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  14.5000     1.2592  11.516  &lt; 2e-16 ***
+## sprayB        0.8333     1.6066   0.519    0.604    
+## sprayC      -12.4167     1.6066  -7.729 1.09e-14 ***
+## sprayF        2.1667     1.6066   1.349    0.177    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<div class="sourceCode" id="cb478"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb478-1"><a href="mixed-effect-models.html#cb478-1" tabindex="-1"></a><span class="fu">coef</span>(lm3)    <span class="do">## prints model coefficients</span></span></code></pre></div>
+<pre><code>## $block
+##    (Intercept)    sprayB    sprayC   sprayF
+## 1     12.52003 0.8333361 -12.41666 2.166669
+## 2     12.75882 0.8333361 -12.41666 2.166669
+## 3     16.22128 0.8333361 -12.41666 2.166669
+## 4     14.54975 0.8333361 -12.41666 2.166669
+## 5     14.43035 0.8333361 -12.41666 2.166669
+## 6     13.83338 0.8333361 -12.41666 2.166669
+## 7     13.71398 0.8333361 -12.41666 2.166669
+## 8     14.78854 0.8333361 -12.41666 2.166669
+## 9     16.46007 0.8333361 -12.41666 2.166669
+## 10    16.69886 0.8333361 -12.41666 2.166669
+## 11    14.19156 0.8333361 -12.41666 2.166669
+## 12    13.83338 0.8333361 -12.41666 2.166669</code></pre>
+<p>Notice the different outputs above and how they differ between the model types. When blocks are added as a fixed effect in <code>lm2</code> we see every block effect in the summary. Whereas for the mixed effect model <code>lm3</code>, the effect of block is not printed in the summary; rather, we have to print it out using the <code>coef()</code>. The coefficients for the spray treatment types are essentially the same as well as the standard errors between the two models.</p>
+<p>Let’s check residuals:</p>
+<div class="sourceCode" id="cb480"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb480-1"><a href="mixed-effect-models.html#cb480-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">resid</span>(lm2)<span class="sc">~</span><span class="fu">fitted</span>(lm2)) <span class="co"># check residuals of fixed-effect block models</span></span></code></pre></div>
+<p><img src="04-Module_5_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
+<div class="sourceCode" id="cb481"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb481-1"><a href="mixed-effect-models.html#cb481-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">resid</span>(lm3)<span class="sc">~</span><span class="fu">fitted</span>(lm3)) <span class="co"># check residuals of random-effect block model</span></span></code></pre></div>
+<p><img src="04-Module_5_files/figure-html/unnamed-chunk-30-2.png" width="672" /></p>
+<div class="sourceCode" id="cb482"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb482-1"><a href="mixed-effect-models.html#cb482-1" tabindex="-1"></a><span class="fu">hist</span>(<span class="fu">resid</span>(lm2))</span></code></pre></div>
+<p><img src="04-Module_5_files/figure-html/unnamed-chunk-30-3.png" width="672" /></p>
+<div class="sourceCode" id="cb483"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb483-1"><a href="mixed-effect-models.html#cb483-1" tabindex="-1"></a><span class="fu">hist</span>(<span class="fu">resid</span>(lm3))</span></code></pre></div>
+<p><img src="04-Module_5_files/figure-html/unnamed-chunk-30-4.png" width="672" /></p>
+<p>Finally, we can compare estimated marginal means:</p>
+<div class="sourceCode" id="cb484"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb484-1"><a href="mixed-effect-models.html#cb484-1" tabindex="-1"></a><span class="fu">emmeans</span>(lm2, pairwise<span class="sc">~</span>spray) <span class="do">## fixed effect block</span></span></code></pre></div>
+<pre><code>## $emmeans
+##  spray emmean    SE df lower.CL upper.CL
+##  A      14.50 0.984 32  12.4960    16.50
+##  B      15.33 0.984 32  13.3293    17.34
+##  C       2.08 0.984 32   0.0793     4.09
+##  F      16.67 0.984 32  14.6627    18.67
+## 
+## Results are averaged over the levels of: block 
+## Confidence level used: 0.95 
+## 
+## $contrasts
+##  contrast estimate   SE df t.ratio p.value
+##  A - B      -0.833 1.39 32  -0.599  0.9316
+##  A - C      12.417 1.39 32   8.924  &lt;.0001
+##  A - F      -2.167 1.39 32  -1.557  0.4166
+##  B - C      13.250 1.39 32   9.523  &lt;.0001
+##  B - F      -1.333 1.39 32  -0.958  0.7737
+##  C - F     -14.583 1.39 32 -10.481  &lt;.0001
+## 
+## Results are averaged over the levels of: block 
+## P value adjustment: tukey method for comparing a family of 4 estimates</code></pre>
+<div class="sourceCode" id="cb486"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb486-1"><a href="mixed-effect-models.html#cb486-1" tabindex="-1"></a><span class="fu">emmeans</span>(lm3, pairwise<span class="sc">~</span>spray) <span class="do">## random effect block</span></span></code></pre></div>
+<pre><code>## $emmeans
+##  spray emmean   SE df lower.CL upper.CL
+##  A      14.50 1.26 42   11.959    17.04
+##  B      15.33 1.26 42   12.792    17.87
+##  C       2.08 1.26 42   -0.458     4.62
+##  F      16.67 1.26 42   14.126    19.21
+## 
+## Confidence level used: 0.95 
+## 
+## $contrasts
+##  contrast estimate   SE df t.ratio p.value
+##  A - B      -0.833 1.61 42  -0.519  0.9541
+##  A - C      12.417 1.61 42   7.729  &lt;.0001
+##  A - F      -2.167 1.61 42  -1.349  0.5379
+##  B - C      13.250 1.61 42   8.247  &lt;.0001
+##  B - F      -1.333 1.61 42  -0.830  0.8400
+##  C - F     -14.583 1.61 42  -9.077  &lt;.0001
+## 
+## P value adjustment: tukey method for comparing a family of 4 estimates</code></pre>
+<p>The results are similar for the fixed and random effect model, so what’s the difference? We will discuss the advantages of random effects in lecture and cover other aspects in the sections below.</p>
+</div>
+</div>
+<div id="variance-components" class="section level2 hasAnchor" number="5.3">
+<h2><span class="header-section-number">5.3</span> Variance components<a href="mixed-effect-models.html#variance-components" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>One of the major differences for mixed-effect models is that we can calculate the <strong>variance component</strong> of the random effects. We will go through how to do this in lecture, but basically the <strong>variance component</strong> is how much variation there is among the intercepts of the levels of the random effect. In the InsectSprays example, if the block had very little effect on the insect counts (all blocks are about the same), the variance component would be low (near zero). However, if there was a large amount of variation among the blocks (some blocks as very few insects and some had a lot), the variance component would be high. The concept of variance components is closely related to the <strong>coefficient of determination</strong> or <span class="math inline">\(R^2\)</span>.</p>
+<div id="r2" class="section level3 hasAnchor" number="5.3.1">
+<h3><span class="header-section-number">5.3.1</span> R2<a href="mixed-effect-models.html#r2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Let’s review the <span class="math inline">\(R^2\)</span> using some fake data we will make up. The code below will make a dataset with 8 sites. At each site, temperature (temp) was measured, so just one temp per site. Body size was measured on 5 insects per site, with each measured indivdual getting a unique ID. Make and view the dataset below:</p>
+<div class="sourceCode" id="cb488"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb488-1"><a href="mixed-effect-models.html#cb488-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">10</span>)</span>
+<span id="cb488-2"><a href="mixed-effect-models.html#cb488-2" tabindex="-1"></a>fakedata <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Site=</span><span class="fu">factor</span>(<span class="dv">40</span>), <span class="at">ID=</span><span class="fu">factor</span>(<span class="dv">40</span>), <span class="at">temp=</span><span class="fu">double</span>(<span class="dv">40</span>), <span class="at">size=</span><span class="fu">double</span>(<span class="dv">40</span>), <span class="at">stringsAsFactors =</span> F)</span>
+<span id="cb488-3"><a href="mixed-effect-models.html#cb488-3" tabindex="-1"></a>fakedata<span class="sc">$</span>Site <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>, <span class="at">each=</span><span class="dv">5</span>)</span>
+<span id="cb488-4"><a href="mixed-effect-models.html#cb488-4" tabindex="-1"></a>fakedata<span class="sc">$</span>ID <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">times=</span><span class="dv">8</span>)</span>
+<span id="cb488-5"><a href="mixed-effect-models.html#cb488-5" tabindex="-1"></a>fakedata<span class="sc">$</span>temp <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">10</span>,<span class="dv">18</span>,<span class="dv">12</span>,<span class="dv">15</span>,<span class="dv">8</span>,<span class="dv">11</span>,<span class="dv">10</span>,<span class="dv">16</span>), <span class="at">each=</span><span class="dv">5</span>)</span>
+<span id="cb488-6"><a href="mixed-effect-models.html#cb488-6" tabindex="-1"></a>fakedata<span class="sc">$</span>size <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">rnorm</span>(<span class="dv">40</span>, (<span class="dv">2</span><span class="sc">*</span>fakedata<span class="sc">$</span>temp), <span class="dv">8</span>), <span class="dv">1</span>)</span>
+<span id="cb488-7"><a href="mixed-effect-models.html#cb488-7" tabindex="-1"></a></span>
+<span id="cb488-8"><a href="mixed-effect-models.html#cb488-8" tabindex="-1"></a><span class="fu">head</span>(fakedata)</span></code></pre></div>
+<pre><code>##   Site ID temp size
+## 1    1  1   10 20.1
+## 2    1  2   10 18.5
+## 3    1  3   10  9.0
+## 4    1  4   10 15.2
+## 5    1  5   10 22.4
+## 6    2  1   18 39.1</code></pre>
+<div class="sourceCode" id="cb490"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb490-1"><a href="mixed-effect-models.html#cb490-1" tabindex="-1"></a><span class="fu">hist</span>(fakedata<span class="sc">$</span>size)</span></code></pre></div>
+<p><img src="04-Module_5_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
+<p>Make a plot of the data:</p>
+<div class="sourceCode" id="cb491"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb491-1"><a href="mixed-effect-models.html#cb491-1" tabindex="-1"></a><span class="fu">ggplot</span>(fakedata, <span class="fu">aes</span>(<span class="at">x=</span>temp, <span class="at">y=</span>size)) <span class="sc">+</span> </span>
+<span id="cb491-2"><a href="mixed-effect-models.html#cb491-2" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb491-3"><a href="mixed-effect-models.html#cb491-3" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&quot;lm&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb491-4"><a href="mixed-effect-models.html#cb491-4" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size=</span><span class="dv">16</span>)</span></code></pre></div>
+<pre><code>## `geom_smooth()` using formula = &#39;y ~ x&#39;</code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-33"></span>
+<img src="04-Module_5_files/figure-html/unnamed-chunk-33-1.png" alt="Size plotted against temp." width="672" />
+<p class="caption">
+Figure 2.27: Size plotted against temp.
+</p>
+</div>
+<p>Calculate R2 for linear model and linear mixed model. Obe nice thing about the simple <code>lm()</code> function is that it is easy to obtain the R2.</p>
+<div class="sourceCode" id="cb493"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb493-1"><a href="mixed-effect-models.html#cb493-1" tabindex="-1"></a>lm1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(size <span class="sc">~</span> temp , <span class="at">data=</span>fakedata)</span>
+<span id="cb493-2"><a href="mixed-effect-models.html#cb493-2" tabindex="-1"></a><span class="fu">summary</span>(lm1) <span class="co"># look at R2 from MuMIn package</span></span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = size ~ temp, data = fakedata)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -13.101  -5.146   0.216   5.060  12.193 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  -6.4118     4.5097  -1.422    0.163    
+## temp          2.2515     0.3492   6.447 1.39e-07 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 7.157 on 38 degrees of freedom
+## Multiple R-squared:  0.5224, Adjusted R-squared:  0.5098 
+## F-statistic: 41.57 on 1 and 38 DF,  p-value: 1.39e-07</code></pre>
+<p>For the mixed model, where is the R2?</p>
+<div class="sourceCode" id="cb495"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb495-1"><a href="mixed-effect-models.html#cb495-1" tabindex="-1"></a>lmm1 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(size <span class="sc">~</span> temp <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>Site), <span class="at">data=</span>fakedata)</span>
+<span id="cb495-2"><a href="mixed-effect-models.html#cb495-2" tabindex="-1"></a><span class="fu">summary</span>(lmm1)</span></code></pre></div>
+<pre><code>##  Family: gaussian  ( identity )
+## Formula:          size ~ temp + (1 | Site)
+## Data: fakedata
+## 
+##      AIC      BIC   logLik deviance df.resid 
+##    273.4    280.2   -132.7    265.4       36 
+## 
+## Random effects:
+## 
+## Conditional model:
+##  Groups   Name        Variance Std.Dev.
+##  Site     (Intercept) 11.84    3.441   
+##  Residual             36.83    6.068   
+## Number of obs: 40, groups:  Site, 8
+## 
+## Dispersion estimate for gaussian family (sigma^2): 36.8 
+## 
+## Conditional model:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  -6.4119     6.1743  -1.038    0.299    
+## temp          2.2515     0.4781   4.709 2.49e-06 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Load <code>performance</code> package to calculate R2 for mixed models. Note that we get two values, <span class="math inline">\(R^2m\)</span> and <span class="math inline">\(R^2c\)</span>. <span class="math inline">\(R^2m\)</span> is the marginal <span class="math inline">\(R^2\)</span> for the fixed-effects and <span class="math inline">\(R^2c\)</span> is the conditional <span class="math inline">\(R^2\)</span> for the fixed plus random effects. The <code>MuMIn</code> package also has a function <code>r.squaredGLMM()</code> that calculates <span class="math inline">\(R^2m\)</span> and <span class="math inline">\(R^2c\)</span>. Usually the results are identical, but sometimes not (as <span class="math inline">\(R^2\)</span> for generalized mixed models are still being developed). So, use a bit of caution. For example, be suspitous if you see a very high <span class="math inline">\(R^2m\)</span> (&gt;0.9).</p>
+<div class="sourceCode" id="cb497"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb497-1"><a href="mixed-effect-models.html#cb497-1" tabindex="-1"></a><span class="fu">library</span>(performance)</span>
+<span id="cb497-2"><a href="mixed-effect-models.html#cb497-2" tabindex="-1"></a><span class="fu">r2</span>(lmm1)</span></code></pre></div>
+<pre><code>## # R2 for Mixed Models
+## 
+##   Conditional R2: 0.643
+##      Marginal R2: 0.529</code></pre>
+</div>
+<div id="chick-weight-example" class="section level3 hasAnchor" number="5.3.2">
+<h3><span class="header-section-number">5.3.2</span> Chick weight example<a href="mixed-effect-models.html#chick-weight-example" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Load in the ChickWeight dataset. It contains weight (g) of small chickens grown on four different diets. Chickens were weighed every few days for 21 days.</p>
+<div class="sourceCode" id="cb499"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb499-1"><a href="mixed-effect-models.html#cb499-1" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;ChickWeight&quot;</span>)</span>
+<span id="cb499-2"><a href="mixed-effect-models.html#cb499-2" tabindex="-1"></a>ChickWeight<span class="sc">$</span>Diet <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(ChickWeight<span class="sc">$</span>Diet)</span>
+<span id="cb499-3"><a href="mixed-effect-models.html#cb499-3" tabindex="-1"></a>?ChickWeight</span></code></pre></div>
+<pre><code>## starting httpd help server ... done</code></pre>
+<div class="sourceCode" id="cb501"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb501-1"><a href="mixed-effect-models.html#cb501-1" tabindex="-1"></a><span class="fu">head</span>(ChickWeight)</span></code></pre></div>
+<pre><code>## Grouped Data: weight ~ Time | Chick
+##   weight Time Chick Diet
+## 1     42    0     1    1
+## 2     51    2     1    1
+## 3     59    4     1    1
+## 4     64    6     1    1
+## 5     76    8     1    1
+## 6     93   10     1    1</code></pre>
+<p>Plot out data</p>
+<div class="sourceCode" id="cb503"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb503-1"><a href="mixed-effect-models.html#cb503-1" tabindex="-1"></a><span class="fu">ggplot</span>(ChickWeight, <span class="fu">aes</span>(<span class="at">x=</span>Time,<span class="at">y=</span>weight))<span class="sc">+</span></span>
+<span id="cb503-2"><a href="mixed-effect-models.html#cb503-2" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb503-3"><a href="mixed-effect-models.html#cb503-3" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Diet)<span class="sc">+</span></span>
+<span id="cb503-4"><a href="mixed-effect-models.html#cb503-4" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&quot;lm&quot;</span>)<span class="sc">+</span></span>
+<span id="cb503-5"><a href="mixed-effect-models.html#cb503-5" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">16</span>)</span></code></pre></div>
+<pre><code>## `geom_smooth()` using formula = &#39;y ~ x&#39;</code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-38"></span>
+<img src="04-Module_5_files/figure-html/unnamed-chunk-38-1.png" alt="Chick weight by week on the four different diets." width="672" />
+<p class="caption">
+Figure 2.32: Chick weight by week on the four different diets.
+</p>
+</div>
+<p>Construct a regular linear model ignoring chick</p>
+<div class="sourceCode" id="cb505"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb505-1"><a href="mixed-effect-models.html#cb505-1" tabindex="-1"></a>cw0 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(weight <span class="sc">~</span> Time <span class="sc">*</span> Diet , <span class="at">data=</span>ChickWeight)</span>
+<span id="cb505-2"><a href="mixed-effect-models.html#cb505-2" tabindex="-1"></a><span class="fu">Anova</span>(cw0)</span></code></pre></div>
+<pre><code>## Analysis of Deviance Table (Type II Wald chisquare tests)
+## 
+## Response: weight
+##              Chisq Df Pr(&gt;Chisq)    
+## Time      1761.751  1  &lt; 2.2e-16 ***
+## Diet       113.477  3  &lt; 2.2e-16 ***
+## Time:Diet   70.601  3  3.173e-15 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Examine means at time 20</p>
+<div class="sourceCode" id="cb507"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb507-1"><a href="mixed-effect-models.html#cb507-1" tabindex="-1"></a><span class="fu">emmeans</span>(cw0, pairwise<span class="sc">~</span>Diet, <span class="at">at=</span><span class="fu">list</span>(<span class="at">Time=</span><span class="dv">20</span>)) <span class="co"># All contrasts are significant</span></span></code></pre></div>
+<pre><code>## NOTE: Results may be misleading due to involvement in interactions</code></pre>
+<pre><code>## $emmeans
+##  Diet emmean   SE  df lower.CL upper.CL
+##  1       168 3.95 569      160      176
+##  2       201 5.17 569      191      211
+##  3       247 5.17 569      237      257
+##  4       225 5.30 569      215      235
+## 
+## Confidence level used: 0.95 
+## 
+## $contrasts
+##  contrast      estimate   SE  df t.ratio p.value
+##  Diet1 - Diet2    -33.0 6.50 569  -5.084  &lt;.0001
+##  Diet1 - Diet3    -78.9 6.50 569 -12.144  &lt;.0001
+##  Diet1 - Diet4    -57.3 6.61 569  -8.674  &lt;.0001
+##  Diet2 - Diet3    -45.9 7.30 569  -6.283  &lt;.0001
+##  Diet2 - Diet4    -24.3 7.40 569  -3.279  0.0061
+##  Diet3 - Diet4     21.6 7.40 569   2.923  0.0189
+## 
+## P value adjustment: tukey method for comparing a family of 4 estimates</code></pre>
+<p>Construct a new model with chick as fixed effect</p>
+<div class="sourceCode" id="cb510"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb510-1"><a href="mixed-effect-models.html#cb510-1" tabindex="-1"></a>cw1a <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(weight <span class="sc">~</span> Time <span class="sc">*</span> Diet <span class="sc">+</span> Chick , <span class="at">data=</span>ChickWeight)</span></code></pre></div>
+<pre><code>## dropping columns from rank-deficient conditional model: Chick^47, Chick^48, Chick^49</code></pre>
+<div class="sourceCode" id="cb512"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb512-1"><a href="mixed-effect-models.html#cb512-1" tabindex="-1"></a><span class="fu">summary</span>(cw1a) <span class="do">## look for R2</span></span></code></pre></div>
+<pre><code>##  Family: gaussian  ( identity )
+## Formula:          weight ~ Time * Diet + Chick
+## Data: ChickWeight
+## 
+##      AIC      BIC   logLik deviance df.resid 
+##   5431.7   5671.5  -2660.8   5321.7      523 
+## 
+## 
+## Dispersion estimate for gaussian family (sigma^2):  584 
+## 
+## Conditional model:
+##              Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  196.2615    49.3936   3.973 7.08e-05 ***
+## Time           6.6906     0.2474  27.047  &lt; 2e-16 ***
+## Diet2       -133.6647    29.8694  -4.475 7.64e-06 ***
+## Diet3         93.6606   132.3998   0.707  0.47931    
+## Diet4       -800.0810   318.8249  -2.509  0.01209 *  
+## Chick.L     1502.0057   538.9094   2.787  0.00532 ** 
+## Chick.Q     1070.1507   554.1817   1.931  0.05348 .  
+## Chick.C      673.7465   362.1979   1.860  0.06286 .  
+## Chick^4       43.8753    67.7943   0.647  0.51751    
+## Chick^5     -618.1626   301.4119  -2.051  0.04028 *  
+## Chick^6     -595.7249   280.7504  -2.122  0.03385 *  
+## Chick^7      -39.1387    18.4354  -2.123  0.03375 *  
+## Chick^8      451.8890   195.4582   2.312  0.02078 *  
+## Chick^9      364.8086   177.0176   2.061  0.03932 *  
+## Chick^10      16.9198    44.0390   0.384  0.70083    
+## Chick^11    -178.3482    81.8023  -2.180  0.02924 *  
+## Chick^12    -177.5333    99.0864  -1.792  0.07318 .  
+## Chick^13    -116.1829    65.5923  -1.771  0.07651 .  
+## Chick^14     -20.6745    14.3656  -1.439  0.15010    
+## Chick^15      89.9792    50.4586   1.783  0.07455 .  
+## Chick^16     163.1248    88.2217   1.849  0.06445 .  
+## Chick^17     146.0524    72.1376   2.025  0.04290 *  
+## Chick^18       6.7008    18.7118   0.358  0.72026    
+## Chick^19    -200.1907    93.3114  -2.145  0.03192 *  
+## Chick^20    -200.9105    95.0470  -2.114  0.03453 *  
+## Chick^21     -20.5819    14.9446  -1.377  0.16845    
+## Chick^22     145.1502    67.9424   2.136  0.03265 *  
+## Chick^23     156.5127    75.6180   2.070  0.03847 *  
+## Chick^24      61.5087    38.2141   1.610  0.10749    
+## Chick^25     -36.2350    12.3280  -2.939  0.00329 ** 
+## Chick^26     -36.5757    33.8045  -1.082  0.27926    
+## Chick^27     -82.5708    51.0420  -1.618  0.10573    
+## Chick^28     -98.9502    50.2965  -1.967  0.04914 *  
+## Chick^29     -24.8506    16.0039  -1.553  0.12048    
+## Chick^30      78.3099    42.4720   1.844  0.06521 .  
+## Chick^31     156.3767    77.9511   2.006  0.04485 *  
+## Chick^32      12.0154     8.0104   1.500  0.13362    
+## Chick^33      60.8397    26.7850   2.271  0.02312 *  
+## Chick^34      87.6695    40.1077   2.186  0.02883 *  
+## Chick^35      17.7933    10.1954   1.745  0.08094 .  
+## Chick^36      42.9841    25.7234   1.671  0.09472 .  
+## Chick^37     -27.0019    16.9516  -1.593  0.11119    
+## Chick^38      96.3421    50.8375   1.895  0.05808 .  
+## Chick^39    -189.9712    92.6935  -2.049  0.04042 *  
+## Chick^40     -95.4900    59.2927  -1.610  0.10729    
+## Chick^41      92.7147    49.5890   1.870  0.06153 .  
+## Chick^42     -52.6442    19.0304  -2.766  0.00567 ** 
+## Chick^43     -96.4086    33.2667  -2.898  0.00375 ** 
+## Chick^44     -60.4537    24.9001  -2.428  0.01519 *  
+## Chick^45    -102.5664    45.1616  -2.271  0.02314 *  
+## Chick^46     -13.8247    13.8978  -0.995  0.31986    
+## Chick^47           NA         NA      NA       NA    
+## Chick^48           NA         NA      NA       NA    
+## Chick^49           NA         NA      NA       NA    
+## Time:Diet2     1.9185     0.4088   4.693 2.69e-06 ***
+## Time:Diet3     4.7322     0.4088  11.576  &lt; 2e-16 ***
+## Time:Diet4     2.9653     0.4142   7.159 8.11e-13 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>There are some problems with this model. Basically, there are so many levels of <em>chick</em> that the model errors out (runs out of degrees of freedom). This causes the Hessian matrix warning.</p>
+<p>Examine means at time 20 for the new model with the chick fixed-effect.</p>
+<div class="sourceCode" id="cb514"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb514-1"><a href="mixed-effect-models.html#cb514-1" tabindex="-1"></a><span class="fu">emmeans</span>(cw1a, pairwise<span class="sc">~</span>Diet, <span class="at">at=</span><span class="fu">list</span>(<span class="at">Time=</span><span class="dv">20</span>)) <span class="co"># Contrasts similar to above</span></span></code></pre></div>
+<pre><code>## NOTE: A nesting structure was detected in the fitted model:
+##     Chick %in% Diet</code></pre>
+<pre><code>## NOTE: Results may be misleading due to involvement in interactions</code></pre>
+<pre><code>## $emmeans
+##  Diet emmean   SE  df lower.CL upper.CL
+##  1       165 3.07 523      159      171
+##  2       201 3.69 523      194      208
+##  3       247 3.69 523      239      254
+##  4       224 3.80 523      217      232
+## 
+## Results are averaged over the levels of: Chick 
+## Confidence level used: 0.95 
+## 
+## $contrasts
+##  contrast      estimate   SE  df t.ratio p.value
+##  Diet1 - Diet2    -35.4 4.80 523  -7.383  &lt;.0001
+##  Diet1 - Diet3    -81.3 4.80 523 -16.951  &lt;.0001
+##  Diet1 - Diet4    -58.9 4.88 523 -12.052  &lt;.0001
+##  Diet2 - Diet3    -45.9 5.22 523  -8.798  &lt;.0001
+##  Diet2 - Diet4    -23.5 5.30 523  -4.428  0.0001
+##  Diet3 - Diet4     22.4 5.30 523   4.236  0.0002
+## 
+## Results are averaged over the levels of: Chick 
+## P value adjustment: tukey method for comparing a family of 4 estimates</code></pre>
+<p>Construct model with chick as a random (block) effect. No more warnings when chick is a random effect!</p>
+<div class="sourceCode" id="cb518"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb518-1"><a href="mixed-effect-models.html#cb518-1" tabindex="-1"></a>cw1 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(weight <span class="sc">~</span> Time <span class="sc">*</span> Diet <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>Chick), <span class="at">data=</span>ChickWeight)</span>
+<span id="cb518-2"><a href="mixed-effect-models.html#cb518-2" tabindex="-1"></a><span class="fu">summary</span>(cw1) <span class="do">## look for variance component. Where is R2 ???</span></span></code></pre></div>
+<pre><code>##  Family: gaussian  ( identity )
+## Formula:          weight ~ Time * Diet + (1 | Chick)
+## Data: ChickWeight
+## 
+##      AIC      BIC   logLik deviance df.resid 
+##   5508.0   5551.6  -2744.0   5488.0      568 
+## 
+## Random effects:
+## 
+## Conditional model:
+##  Groups   Name        Variance Std.Dev.
+##  Chick    (Intercept) 498.0    22.32   
+##  Residual             638.4    25.27   
+## Number of obs: 578, groups:  Chick, 50
+## 
+## Dispersion estimate for gaussian family (sigma^2):  638 
+## 
+## Conditional model:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  31.5079     5.9114   5.330 9.82e-08 ***
+## Time          6.7130     0.2573  26.086  &lt; 2e-16 ***
+## Diet2        -2.8807    10.1920  -0.283    0.777    
+## Diet3       -13.2565    10.1920  -1.301    0.193    
+## Diet4        -0.3930    10.2008  -0.039    0.969    
+## Time:Diet2    1.8962     0.4267   4.444 8.85e-06 ***
+## Time:Diet3    4.7098     0.4267  11.037  &lt; 2e-16 ***
+## Time:Diet4    2.9494     0.4323   6.823 8.91e-12 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Examine means at time 20 for the new model with the chick random-effect</p>
+<div class="sourceCode" id="cb520"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb520-1"><a href="mixed-effect-models.html#cb520-1" tabindex="-1"></a><span class="fu">emmeans</span>(cw1, pairwise<span class="sc">~</span>Diet, <span class="at">at=</span><span class="fu">list</span>(<span class="at">Time=</span><span class="dv">20</span>)) <span class="co"># Contrasts similar to above</span></span></code></pre></div>
+<pre><code>## NOTE: Results may be misleading due to involvement in interactions</code></pre>
+<pre><code>## $emmeans
+##  Diet emmean   SE  df lower.CL upper.CL
+##  1       166 5.89 568      154      177
+##  2       201 8.04 568      185      217
+##  3       247 8.04 568      231      263
+##  4       224 8.10 568      208      240
+## 
+## Confidence level used: 0.95 
+## 
+## $contrasts
+##  contrast      estimate    SE  df t.ratio p.value
+##  Diet1 - Diet2    -35.0  9.97 568  -3.516  0.0027
+##  Diet1 - Diet3    -80.9  9.97 568  -8.120  &lt;.0001
+##  Diet1 - Diet4    -58.6 10.00 568  -5.852  &lt;.0001
+##  Diet2 - Diet3    -45.9 11.40 568  -4.035  0.0004
+##  Diet2 - Diet4    -23.6 11.40 568  -2.063  0.1665
+##  Diet3 - Diet4     22.3 11.40 568   1.958  0.2055
+## 
+## P value adjustment: tukey method for comparing a family of 4 estimates</code></pre>
+<p>Print off only variance component</p>
+<div class="sourceCode" id="cb523"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb523-1"><a href="mixed-effect-models.html#cb523-1" tabindex="-1"></a>cvar <span class="ot">&lt;-</span> <span class="fu">VarCorr</span>(cw1)</span>
+<span id="cb523-2"><a href="mixed-effect-models.html#cb523-2" tabindex="-1"></a><span class="fu">print</span>(cvar, <span class="at">comp=</span><span class="fu">c</span>(<span class="st">&quot;Variance&quot;</span>,<span class="st">&quot;Std.Dev.&quot;</span>))</span></code></pre></div>
+<pre><code>## 
+## Conditional model:
+##  Groups   Name        Variance Std.Dev.
+##  Chick    (Intercept) 498.02   22.316  
+##  Residual             638.41   25.267</code></pre>
+<p>Print off anova table.</p>
+<div class="sourceCode" id="cb525"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb525-1"><a href="mixed-effect-models.html#cb525-1" tabindex="-1"></a><span class="fu">Anova</span>(cw1) <span class="do">## Anova() from car package.</span></span></code></pre></div>
+<pre><code>## Analysis of Deviance Table (Type II Wald chisquare tests)
+## 
+## Response: weight
+##              Chisq Df Pr(&gt;Chisq)    
+## Time      3088.536  1  &lt; 2.2e-16 ***
+## Diet        20.221  3  0.0001527 ***
+## Time:Diet  131.333  3  &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Examine model residuals. Residuals are not great, but we’ll fix this later. For now we will proceed with caution.</p>
+<div class="sourceCode" id="cb527"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb527-1"><a href="mixed-effect-models.html#cb527-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">resid</span>(cw1)<span class="sc">~</span><span class="fu">fitted</span>(cw1)) </span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-47"></span>
+<img src="04-Module_5_files/figure-html/unnamed-chunk-47-1.png" alt="Residual plots." width="672" />
+<p class="caption">
+Figure 5.2: Residual plots.
+</p>
+</div>
+<p>Examine emmeans and contrasts</p>
+<div class="sourceCode" id="cb528"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb528-1"><a href="mixed-effect-models.html#cb528-1" tabindex="-1"></a><span class="fu">emmeans</span>(cw1, pairwise<span class="sc">~</span>Diet, <span class="at">at=</span><span class="fu">list</span>(<span class="at">Time=</span><span class="dv">20</span>)) <span class="co"># 4 of 6 differ at time 20</span></span></code></pre></div>
+<pre><code>## NOTE: Results may be misleading due to involvement in interactions</code></pre>
+<pre><code>## $emmeans
+##  Diet emmean   SE  df lower.CL upper.CL
+##  1       166 5.89 568      154      177
+##  2       201 8.04 568      185      217
+##  3       247 8.04 568      231      263
+##  4       224 8.10 568      208      240
+## 
+## Confidence level used: 0.95 
+## 
+## $contrasts
+##  contrast      estimate    SE  df t.ratio p.value
+##  Diet1 - Diet2    -35.0  9.97 568  -3.516  0.0027
+##  Diet1 - Diet3    -80.9  9.97 568  -8.120  &lt;.0001
+##  Diet1 - Diet4    -58.6 10.00 568  -5.852  &lt;.0001
+##  Diet2 - Diet3    -45.9 11.40 568  -4.035  0.0004
+##  Diet2 - Diet4    -23.6 11.40 568  -2.063  0.1665
+##  Diet3 - Diet4     22.3 11.40 568   1.958  0.2055
+## 
+## P value adjustment: tukey method for comparing a family of 4 estimates</code></pre>
+<p>Calculate R2 for the mixed-model</p>
+<div class="sourceCode" id="cb531"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb531-1"><a href="mixed-effect-models.html#cb531-1" tabindex="-1"></a><span class="fu">r2</span>(cw1)</span></code></pre></div>
+<pre><code>## # R2 for Mixed Models
+## 
+##   Conditional R2: 0.873
+##      Marginal R2: 0.773</code></pre>
+<p>Question: How much of the variance in weight is explained by Diet and Time? How much by Chick?
+Harder question: calculate the R2c by hand based (based on lecture notes) on the R2m and variance components (just to check)</p>
+</div>
+</div>
+<div id="split-plot-and-nested-designs" class="section level2 hasAnchor" number="5.4">
+<h2><span class="header-section-number">5.4</span> Split-plot and nested designs<a href="mixed-effect-models.html#split-plot-and-nested-designs" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="sourceCode" id="cb533"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb533-1"><a href="mixed-effect-models.html#cb533-1" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb533-2"><a href="mixed-effect-models.html#cb533-2" tabindex="-1"></a><span class="fu">library</span>(glmmTMB)</span>
+<span id="cb533-3"><a href="mixed-effect-models.html#cb533-3" tabindex="-1"></a><span class="fu">library</span>(emmeans)</span>
+<span id="cb533-4"><a href="mixed-effect-models.html#cb533-4" tabindex="-1"></a><span class="fu">library</span>(MuMIn)</span>
+<span id="cb533-5"><a href="mixed-effect-models.html#cb533-5" tabindex="-1"></a><span class="fu">library</span>(agridat) <span class="do">## install and load package for datasets</span></span>
+<span id="cb533-6"><a href="mixed-effect-models.html#cb533-6" tabindex="-1"></a><span class="fu">library</span>(multcomp) <span class="do">## install and load package for multiple comparisons</span></span></code></pre></div>
+<p>Some experimental treatments are easier to apply than others. Or, some treatments work better in bigger plots while others work better in smaller plots. For these logistical reasons (and others), ecologists often design their experiments with some nestedness. Lets take a look at the dataset below as an example. The ‘gomez.multilocsplitplot’ dataset contains data on rice yield from an experiment that manipulated nitrogen (6 levels) and genotype (2 levels). Logistically, it is much easier to apply nitrogen to big plots and then plant the two genotypes within those plots (see lecture notes for sketch of design). The experiment was setup at three locations (blocks).</p>
+<p>Based on the experimental design, do we have the same number of independent plots (ie. true replicates) for the nitrogen treatment and the genotype treatment? Remember, nitrogen was added to big (whole) plots and then the genotypes were planted within that (split-plots). So, what we have is a <strong>split-plot design</strong>. Let’s take a look at how to analyze these data.</p>
+<p>Load the rice data and process for analyses.</p>
+<div class="sourceCode" id="cb534"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb534-1"><a href="mixed-effect-models.html#cb534-1" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;gomez.multilocsplitplot&quot;</span>)</span>
+<span id="cb534-2"><a href="mixed-effect-models.html#cb534-2" tabindex="-1"></a>gomez.multilocsplitplot<span class="sc">$</span>nitro <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(gomez.multilocsplitplot<span class="sc">$</span>nitro)</span>
+<span id="cb534-3"><a href="mixed-effect-models.html#cb534-3" tabindex="-1"></a>gomez <span class="ot">&lt;-</span> gomez.multilocsplitplot</span>
+<span id="cb534-4"><a href="mixed-effect-models.html#cb534-4" tabindex="-1"></a><span class="fu">head</span>(gomez)</span></code></pre></div>
+<pre><code>##   loc nitro rep gen yield
+## 1  L1     0  R1  G1  1979
+## 2  L1    30  R1  G1  4572
+## 3  L1    60  R1  G1  5630
+## 4  L1    90  R1  G1  7153
+## 5  L1   120  R1  G1  7223
+## 6  L1   150  R1  G1  7239</code></pre>
+<div class="sourceCode" id="cb536"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb536-1"><a href="mixed-effect-models.html#cb536-1" tabindex="-1"></a>?gomez.multilocsplitplot</span></code></pre></div>
+<div class="sourceCode" id="cb537"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb537-1"><a href="mixed-effect-models.html#cb537-1" tabindex="-1"></a><span class="fu">ggplot</span>(gomez, <span class="fu">aes</span>(<span class="at">x=</span>gen, <span class="at">y=</span>yield, <span class="at">fill=</span>nitro))<span class="sc">+</span></span>
+<span id="cb537-2"><a href="mixed-effect-models.html#cb537-2" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">outlier.shape =</span> <span class="cn">NA</span>)<span class="sc">+</span></span>
+<span id="cb537-3"><a href="mixed-effect-models.html#cb537-3" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">position =</span> <span class="fu">position_jitterdodge</span>(<span class="at">jitter.height=</span><span class="dv">0</span>,<span class="at">jitter.width=</span>.<span class="dv">1</span>))<span class="sc">+</span></span>
+<span id="cb537-4"><a href="mixed-effect-models.html#cb537-4" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>loc)</span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-52"></span>
+<img src="04-Module_5_files/figure-html/unnamed-chunk-52-1.png" alt="Boxplot of gomez rice data." width="672" />
+<p class="caption">
+Figure 5.3: Boxplot of gomez rice data.
+</p>
+</div>
+<p>One addition aspect of the experiment is that there were additional replicates planted within each plot. This technically creates another level of nestedness, which we need to deal with. For now, we will average the data by loc, nitro, gen to account for pseudo-replication (n = 36 plots total).</p>
+<div class="sourceCode" id="cb538"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb538-1"><a href="mixed-effect-models.html#cb538-1" tabindex="-1"></a>gomez_summarized <span class="ot">&lt;-</span> gomez <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(loc,nitro,gen) <span class="sc">%&gt;%</span> <span class="fu">summarize</span>(<span class="at">yield=</span><span class="fu">mean</span>(yield, <span class="at">na.rm=</span>T))</span></code></pre></div>
+<pre><code>## `summarise()` has grouped output by &#39;loc&#39;, &#39;nitro&#39;. You can override using the
+## `.groups` argument.</code></pre>
+<p>Now we are ready to fit a linear model to the data. To see the difference between no block, blocking, and split-plot designs, we will make a model for each of these. Take a look at the anova table for each, keeping an eye especially of the DF values.</p>
+<p>Start with a regular two-way anova using summarized dataset – no blocking.</p>
+<div class="sourceCode" id="cb540"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb540-1"><a href="mixed-effect-models.html#cb540-1" tabindex="-1"></a>mm0 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(yield <span class="sc">~</span> gen<span class="sc">*</span>nitro, <span class="at">data=</span>gomez_summarized)</span>
+<span id="cb540-2"><a href="mixed-effect-models.html#cb540-2" tabindex="-1"></a><span class="fu">Anova</span>(mm0)</span></code></pre></div>
+<pre><code>## Analysis of Deviance Table (Type II Wald chisquare tests)
+## 
+## Response: yield
+##              Chisq Df Pr(&gt;Chisq)    
+## gen        11.6485  1  0.0006426 ***
+## nitro     170.7516  5  &lt; 2.2e-16 ***
+## gen:nitro   1.4288  5  0.9211385    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Two-way anova with block as a random effect</p>
+<div class="sourceCode" id="cb542"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb542-1"><a href="mixed-effect-models.html#cb542-1" tabindex="-1"></a>mm1 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(yield <span class="sc">~</span> gen<span class="sc">*</span>nitro<span class="sc">+</span>(<span class="dv">1</span><span class="sc">|</span>loc), <span class="at">data=</span>gomez_summarized)</span>
+<span id="cb542-2"><a href="mixed-effect-models.html#cb542-2" tabindex="-1"></a><span class="fu">Anova</span>(mm1)</span></code></pre></div>
+<pre><code>## Analysis of Deviance Table (Type II Wald chisquare tests)
+## 
+## Response: yield
+##              Chisq Df Pr(&gt;Chisq)    
+## gen        12.5997  1  0.0003858 ***
+## nitro     184.6953  5  &lt; 2.2e-16 ***
+## gen:nitro   1.5455  5  0.9077652    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Two-way anova with block and nitro nested within block as random effects.</p>
+<div class="sourceCode" id="cb544"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb544-1"><a href="mixed-effect-models.html#cb544-1" tabindex="-1"></a>mm2 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(yield <span class="sc">~</span> gen<span class="sc">*</span>nitro<span class="sc">+</span>(<span class="dv">1</span><span class="sc">|</span>loc<span class="sc">/</span>nitro), <span class="at">data=</span>gomez_summarized)</span></code></pre></div>
+<pre><code>## Warning in finalizeTMB(TMBStruc, obj, fit, h, data.tmb.old): Model convergence
+## problem; non-positive-definite Hessian matrix. See vignette(&#39;troubleshooting&#39;)</code></pre>
+<div class="sourceCode" id="cb546"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb546-1"><a href="mixed-effect-models.html#cb546-1" tabindex="-1"></a><span class="fu">Anova</span>(mm2)</span></code></pre></div>
+<pre><code>## Analysis of Deviance Table (Type II Wald chisquare tests)
+## 
+## Response: yield
+##              Chisq Df Pr(&gt;Chisq)    
+## gen        28.6780  1  8.547e-08 ***
+## nitro     107.1280  5  &lt; 2.2e-16 ***
+## gen:nitro   3.5214  5     0.6201    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Summary for split-plot model</p>
+<div class="sourceCode" id="cb548"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb548-1"><a href="mixed-effect-models.html#cb548-1" tabindex="-1"></a><span class="fu">summary</span>(mm2)</span></code></pre></div>
+<pre><code>##  Family: gaussian  ( identity )
+## Formula:          yield ~ gen * nitro + (1 | loc/nitro)
+## Data: gomez_summarized
+## 
+##      AIC      BIC   logLik deviance df.resid 
+##       NA       NA       NA       NA       21 
+## 
+## Random effects:
+## 
+## Conditional model:
+##  Groups    Name        Variance  Std.Dev.
+##  nitro:loc (Intercept) 1.586e+05 398.2967
+##  loc       (Intercept) 5.281e-01   0.7267
+##  Residual              1.085e+05 329.4078
+## Number of obs: 36, groups:  nitro:loc, 18; loc, 3
+## 
+## Dispersion estimate for gaussian family (sigma^2): 1.09e+05 
+## 
+## Conditional model:
+##                Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)     3392.67     298.41  11.369  &lt; 2e-16 ***
+## genG2            305.88     268.96   1.137    0.255    
+## nitro30         1652.82     422.02   3.916 8.99e-05 ***
+## nitro60         2380.84     422.02   5.642 1.69e-08 ***
+## nitro90         2993.67     422.02   7.094 1.31e-12 ***
+## nitro120        3119.38     422.02   7.392 1.45e-13 ***
+## nitro150        2794.73     422.02   6.622 3.54e-11 ***
+## genG2:nitro30    464.86     380.37   1.222    0.222    
+## genG2:nitro60    275.19     380.37   0.723    0.469    
+## genG2:nitro90    532.03     380.37   1.399    0.162    
+## genG2:nitro120    24.67     380.37   0.065    0.948    
+## genG2:nitro150   396.02     380.37   1.041    0.298    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>emmeans for just for nitro and genotype)</p>
+<div class="sourceCode" id="cb550"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb550-1"><a href="mixed-effect-models.html#cb550-1" tabindex="-1"></a><span class="fu">emmeans</span>(mm2, pairwise<span class="sc">~</span>nitro)</span></code></pre></div>
+<pre><code>## NOTE: Results may be misleading due to involvement in interactions</code></pre>
+<pre><code>## $emmeans
+##  nitro emmean  SE df lower.CL upper.CL
+##  0       3546 266 21     2992     4100
+##  30      5431 266 21     4877     5985
+##  60      6064 266 21     5510     6618
+##  90      6805 266 21     6251     7359
+##  120     6677 266 21     6123     7231
+##  150     6538 266 21     5984     7092
+## 
+## Results are averaged over the levels of: gen 
+## Confidence level used: 0.95 
+## 
+## $contrasts
+##  contrast            estimate  SE df t.ratio p.value
+##  nitro0 - nitro30       -1885 377 21  -5.004  0.0007
+##  nitro0 - nitro60       -2518 377 21  -6.685  &lt;.0001
+##  nitro0 - nitro90       -3260 377 21  -8.652  &lt;.0001
+##  nitro0 - nitro120      -3132 377 21  -8.313  &lt;.0001
+##  nitro0 - nitro150      -2993 377 21  -7.944  &lt;.0001
+##  nitro30 - nitro60       -633 377 21  -1.681  0.5582
+##  nitro30 - nitro90      -1374 377 21  -3.648  0.0163
+##  nitro30 - nitro120     -1246 377 21  -3.309  0.0342
+##  nitro30 - nitro150     -1107 377 21  -2.940  0.0735
+##  nitro60 - nitro90       -741 377 21  -1.968  0.3922
+##  nitro60 - nitro120      -613 377 21  -1.628  0.5904
+##  nitro60 - nitro150      -474 377 21  -1.259  0.8030
+##  nitro90 - nitro120       128 377 21   0.340  0.9993
+##  nitro90 - nitro150       267 377 21   0.709  0.9788
+##  nitro120 - nitro150      139 377 21   0.369  0.9990
+## 
+## Results are averaged over the levels of: gen 
+## P value adjustment: tukey method for comparing a family of 6 estimates</code></pre>
+<div class="sourceCode" id="cb553"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb553-1"><a href="mixed-effect-models.html#cb553-1" tabindex="-1"></a><span class="fu">emmeans</span>(mm2, pairwise<span class="sc">~</span>gen)</span></code></pre></div>
+<pre><code>## NOTE: Results may be misleading due to involvement in interactions</code></pre>
+<pre><code>## $emmeans
+##  gen emmean  SE df lower.CL upper.CL
+##  G1    5550 122 21     5296     5803
+##  G2    6138 122 21     5884     6391
+## 
+## Results are averaged over the levels of: nitro 
+## Confidence level used: 0.95 
+## 
+## $contrasts
+##  contrast estimate  SE df t.ratio p.value
+##  G1 - G2      -588 110 21  -5.355  &lt;.0001
+## 
+## Results are averaged over the levels of: nitro</code></pre>
+<div id="additional-nesting" class="section level3 hasAnchor" number="5.4.1">
+<h3><span class="header-section-number">5.4.1</span> Additional nesting<a href="mixed-effect-models.html#additional-nesting" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Above we dealt with the extra replicates by averaging them to avoid pseudo-replication. However, we can ully embrace the nestedness and include plot as a random effect instead of averaging (n=108 data points, use them all!). Let’s do this now and compare the results to the model <code>mm2</code> above.</p>
+<p>Two-way anova with block, nitro, and gen nested within block as random effects, using the full dataset.</p>
+<div class="sourceCode" id="cb556"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb556-1"><a href="mixed-effect-models.html#cb556-1" tabindex="-1"></a>mm3 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(yield <span class="sc">~</span> gen<span class="sc">*</span>nitro<span class="sc">+</span>(<span class="dv">1</span><span class="sc">|</span>loc<span class="sc">/</span>nitro<span class="sc">/</span>gen), <span class="at">data=</span>gomez)</span></code></pre></div>
+<pre><code>## Warning in finalizeTMB(TMBStruc, obj, fit, h, data.tmb.old): Model convergence
+## problem; non-positive-definite Hessian matrix. See vignette(&#39;troubleshooting&#39;)</code></pre>
+<div class="sourceCode" id="cb558"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb558-1"><a href="mixed-effect-models.html#cb558-1" tabindex="-1"></a><span class="fu">Anova</span>(mm3) <span class="do">## identical to averaged model in mm2</span></span></code></pre></div>
+<pre><code>## Analysis of Deviance Table (Type II Wald chisquare tests)
+## 
+## Response: yield
+##              Chisq Df Pr(&gt;Chisq)    
+## gen        16.6251  1  4.554e-05 ***
+## nitro     243.6201  5  &lt; 2.2e-16 ***
+## gen:nitro   2.0375  5     0.8439    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<div class="sourceCode" id="cb560"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb560-1"><a href="mixed-effect-models.html#cb560-1" tabindex="-1"></a><span class="fu">summary</span>(mm3)  <span class="do">## additional variance component, so no information sacrificed</span></span></code></pre></div>
+<pre><code>##  Family: gaussian  ( identity )
+## Formula:          yield ~ gen * nitro + (1 | loc/nitro/gen)
+## Data: gomez
+## 
+##      AIC      BIC   logLik deviance df.resid 
+##       NA       NA       NA       NA       92 
+## 
+## Random effects:
+## 
+## Conditional model:
+##  Groups        Name        Variance  Std.Dev. 
+##  gen:nitro:loc (Intercept) 3.756e+00 1.938e+00
+##  nitro:loc     (Intercept) 2.267e-08 1.506e-04
+##  loc           (Intercept) 7.300e-01 8.544e-01
+##  Residual                  5.618e+05 7.495e+02
+## Number of obs: 108, groups:  gen:nitro:loc, 36; nitro:loc, 18; loc, 3
+## 
+## Dispersion estimate for gaussian family (sigma^2): 5.62e+05 
+## 
+## Conditional model:
+##                Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)     3392.52     249.85  13.578  &lt; 2e-16 ***
+## genG2            306.14     353.34   0.866    0.386    
+## nitro30         1652.49     353.34   4.677 2.91e-06 ***
+## nitro60         2380.66     353.34   6.738 1.61e-11 ***
+## nitro90         2994.36     353.34   8.475  &lt; 2e-16 ***
+## nitro120        3119.27     353.34   8.828  &lt; 2e-16 ***
+## nitro150        2795.04     353.34   7.910 2.56e-15 ***
+## genG2:nitro30    464.71     499.69   0.930    0.352    
+## genG2:nitro60    275.15     499.69   0.551    0.582    
+## genG2:nitro90    531.64     499.69   1.064    0.287    
+## genG2:nitro120    24.81     499.69   0.050    0.960    
+## genG2:nitro150   395.80     499.69   0.792    0.428    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Now look at emmeans for nitro and gen</p>
+<div class="sourceCode" id="cb562"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb562-1"><a href="mixed-effect-models.html#cb562-1" tabindex="-1"></a><span class="fu">emmeans</span>(mm3, pairwise<span class="sc">~</span>nitro)</span></code></pre></div>
+<pre><code>## NOTE: Results may be misleading due to involvement in interactions</code></pre>
+<pre><code>## $emmeans
+##  nitro emmean  SE df lower.CL upper.CL
+##  0       3546 177 92     3195     3896
+##  30      5430 177 92     5080     5781
+##  60      6064 177 92     5713     6415
+##  90      6806 177 92     6455     7157
+##  120     6677 177 92     6326     7028
+##  150     6539 177 92     6188     6889
+## 
+## Results are averaged over the levels of: gen 
+## Confidence level used: 0.95 
+## 
+## $contrasts
+##  contrast            estimate  SE df t.ratio p.value
+##  nitro0 - nitro30       -1885 250 92  -7.544  &lt;.0001
+##  nitro0 - nitro60       -2518 250 92 -10.079  &lt;.0001
+##  nitro0 - nitro90       -3260 250 92 -13.049  &lt;.0001
+##  nitro0 - nitro120      -3132 250 92 -12.534  &lt;.0001
+##  nitro0 - nitro150      -2993 250 92 -11.979  &lt;.0001
+##  nitro30 - nitro60       -633 250 92  -2.535  0.1247
+##  nitro30 - nitro90      -1375 250 92  -5.505  &lt;.0001
+##  nitro30 - nitro120     -1247 250 92  -4.990  &lt;.0001
+##  nitro30 - nitro150     -1108 250 92  -4.435  0.0004
+##  nitro60 - nitro90       -742 250 92  -2.970  0.0428
+##  nitro60 - nitro120      -613 250 92  -2.455  0.1486
+##  nitro60 - nitro150      -475 250 92  -1.900  0.4088
+##  nitro90 - nitro120       129 250 92   0.514  0.9955
+##  nitro90 - nitro150       267 250 92   1.070  0.8922
+##  nitro120 - nitro150      139 250 92   0.555  0.9936
+## 
+## Results are averaged over the levels of: gen 
+## P value adjustment: tukey method for comparing a family of 6 estimates</code></pre>
+<div class="sourceCode" id="cb565"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb565-1"><a href="mixed-effect-models.html#cb565-1" tabindex="-1"></a><span class="fu">emmeans</span>(mm3, pairwise<span class="sc">~</span>gen)</span></code></pre></div>
+<pre><code>## NOTE: Results may be misleading due to involvement in interactions</code></pre>
+<pre><code>## $emmeans
+##  gen emmean  SE df lower.CL upper.CL
+##  G1    5549 102 92     5347     5752
+##  G2    6138 102 92     5935     6340
+## 
+## Results are averaged over the levels of: nitro 
+## Confidence level used: 0.95 
+## 
+## $contrasts
+##  contrast estimate  SE df t.ratio p.value
+##  G1 - G2      -588 144 92  -4.077  0.0001
+## 
+## Results are averaged over the levels of: nitro</code></pre>
+<p>Examine pairwise comparisons as compact letter displays (ie. CLD, sometimes called tukey groupings). Treatments that share the same number in the “.group” column do not differ significantly, while treatments that with different numbers are significantly different. Oftentimes people use letters rather than numbers. In certain cases the CLD can be convenient, although most times it is better to directly report the contrasts. Nevertheless, lets go through an example here.</p>
+<p>First calculate the emmeans and then the CLD.</p>
+<div class="sourceCode" id="cb568"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb568-1"><a href="mixed-effect-models.html#cb568-1" tabindex="-1"></a>mm3em <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(mm3, pairwise<span class="sc">~</span>nitro)</span></code></pre></div>
+<pre><code>## NOTE: Results may be misleading due to involvement in interactions</code></pre>
+<div class="sourceCode" id="cb570"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb570-1"><a href="mixed-effect-models.html#cb570-1" tabindex="-1"></a><span class="fu">cld</span>(mm3em)</span></code></pre></div>
+<pre><code>##  nitro emmean  SE df lower.CL upper.CL .group
+##  0       3546 177 92     3195     3896  1    
+##  30      5430 177 92     5080     5781   2   
+##  60      6064 177 92     5713     6415   23  
+##  150     6539 177 92     6188     6889    34 
+##  120     6677 177 92     6326     7028    34 
+##  90      6806 177 92     6455     7157     4 
+## 
+## Results are averaged over the levels of: gen 
+## Confidence level used: 0.95 
+## P value adjustment: tukey method for comparing a family of 6 estimates 
+## significance level used: alpha = 0.05 
+## NOTE: If two or more means share the same grouping symbol,
+##       then we cannot show them to be different.
+##       But we also did not show them to be the same.</code></pre>
+<p>Extract means and make plot of nitrogen emmeans with CLD. I have manually added the letters based on the <code>cld()</code> table above.</p>
+<div class="sourceCode" id="cb572"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb572-1"><a href="mixed-effect-models.html#cb572-1" tabindex="-1"></a>n1 <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(mm3, <span class="sc">~</span>nitro) <span class="sc">%&gt;%</span> <span class="fu">as.data.frame</span>()</span></code></pre></div>
+<pre><code>## NOTE: Results may be misleading due to involvement in interactions</code></pre>
+<div class="sourceCode" id="cb574"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb574-1"><a href="mixed-effect-models.html#cb574-1" tabindex="-1"></a><span class="fu">ggplot</span>(n1, <span class="fu">aes</span>(<span class="at">x=</span>nitro, <span class="at">y=</span>emmean)) <span class="sc">+</span> </span>
+<span id="cb574-2"><a href="mixed-effect-models.html#cb574-2" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size=</span><span class="dv">5</span>) <span class="sc">+</span> </span>
+<span id="cb574-3"><a href="mixed-effect-models.html#cb574-3" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin=</span>lower.CL, <span class="at">ymax=</span>upper.CL), <span class="at">width=</span><span class="dv">0</span>, <span class="at">lwd=</span><span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb574-4"><a href="mixed-effect-models.html#cb574-4" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">&quot;yield (g) +/- 95% CI&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb574-5"><a href="mixed-effect-models.html#cb574-5" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">20</span>)<span class="sc">+</span></span>
+<span id="cb574-6"><a href="mixed-effect-models.html#cb574-6" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="at">x=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>), <span class="at">y=</span><span class="dv">7750</span>, <span class="at">label=</span><span class="fu">c</span>(<span class="st">&quot;A&quot;</span>,<span class="st">&quot;B&quot;</span>,<span class="st">&quot;B&quot;</span>,<span class="st">&quot;B&quot;</span>,<span class="st">&quot;B&quot;</span>,<span class="st">&quot;B&quot;</span>), <span class="at">size=</span><span class="dv">10</span>)</span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-62"></span>
+<img src="04-Module_5_files/figure-html/unnamed-chunk-62-1.png" alt="Rice yield in different nitrogen treatments. Letters indicate significant differences based on tukey-adjusted p-values." width="672" />
+<p class="caption">
+Figure 2.41: Rice yield in different nitrogen treatments. Letters indicate significant differences based on tukey-adjusted p-values.
+</p>
+</div>
+</div>
+<div id="r-challenge" class="section level3 hasAnchor" number="5.4.2">
+<h3><span class="header-section-number">5.4.2</span> R CHALLENGE<a href="mixed-effect-models.html#r-challenge" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>In this challenge we are interested in answering the question: Do grazing or Nitrogen affect insect abundance? The experiment measured insect abundances in experimental plots with nitrogen addition (control, low, medium, and high amounts of N added) and different grazing regimes (not grazed and grazed). See the image below for the physical layout of the plots.</p>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-63"></span>
+<img src="splitplotgrazing.jpg" alt="Example of two sites of the nitrogen x grazing experimental design." width="640" />
+<p class="caption">
+Figure 4.17: Example of two sites of the nitrogen x grazing experimental design.
+</p>
+</div>
+<p>Based on the experimental design, complete the questions below:</p>
+<ol style="list-style-type: decimal">
+<li><p>Construct an appropriate linear model</p></li>
+<li><p>Model assumptions met?</p></li>
+<li><p>Do grazing or Nitrogen affect insect abundance?</p></li>
+<li><p>How do the results change depending on whether you include a block or split-plot?</p></li>
+</ol>
+<p>4a. How big is the blocking and split-plot effect?</p>
+<p>Load dataset and reorder levels.</p>
+<div class="sourceCode" id="cb575"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb575-1"><a href="mixed-effect-models.html#cb575-1" tabindex="-1"></a>d1 <span class="ot">&lt;-</span><span class="fu">read_csv</span>(<span class="st">&quot;InsectData.csv&quot;</span>)</span></code></pre></div>
+<pre><code>## Rows: 48 Columns: 4
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (3): N_Add, site, grazed
+## dbl (1): abund
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<div class="sourceCode" id="cb577"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb577-1"><a href="mixed-effect-models.html#cb577-1" tabindex="-1"></a><span class="fu">head</span>(d1)</span></code></pre></div>
+<pre><code>## # A tibble: 6 × 4
+##   abund N_Add  site  grazed
+##   &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; 
+## 1    25 High.N A     YES   
+## 2    24 Low.N  A     YES   
+## 3    20 Med.N  A     YES   
+## 4    17 No.N   A     YES   
+## 5    20 High.N A     NO    
+## 6    22 Low.N  A     NO</code></pre>
+<div class="sourceCode" id="cb579"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb579-1"><a href="mixed-effect-models.html#cb579-1" tabindex="-1"></a>d1<span class="sc">$</span>N_Add <span class="ot">&lt;-</span> <span class="fu">factor</span>(d1<span class="sc">$</span>N_Add, <span class="at">levels=</span><span class="fu">c</span>(<span class="st">&quot;No.N&quot;</span>,<span class="st">&quot;Low.N&quot;</span>,<span class="st">&quot;Med.N&quot;</span>,<span class="st">&quot;High.N&quot;</span>))  <span class="do">## reorder factor levels</span></span></code></pre></div>
+<p>Couple plots to begin</p>
+<div class="sourceCode" id="cb580"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb580-1"><a href="mixed-effect-models.html#cb580-1" tabindex="-1"></a><span class="fu">ggplot</span>(d1, <span class="fu">aes</span>(<span class="at">x=</span>abund)) <span class="sc">+</span> </span>
+<span id="cb580-2"><a href="mixed-effect-models.html#cb580-2" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y=</span>..density..), <span class="at">color=</span><span class="st">&quot;white&quot;</span>, <span class="at">fill=</span><span class="st">&quot;grey&quot;</span>,<span class="at">bins=</span><span class="dv">8</span>)<span class="sc">+</span></span>
+<span id="cb580-3"><a href="mixed-effect-models.html#cb580-3" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha=</span>.<span class="dv">5</span>, <span class="at">color=</span><span class="st">&quot;red&quot;</span>, <span class="at">lwd=</span><span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb580-4"><a href="mixed-effect-models.html#cb580-4" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span><span class="st">&quot;histogram of raw data&quot;</span>) <span class="sc">+</span></span>
+<span id="cb580-5"><a href="mixed-effect-models.html#cb580-5" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">18</span>))</span></code></pre></div>
+<pre><code>## Warning: The dot-dot notation (`..density..`) was deprecated in ggplot2 3.4.0.
+## ℹ Please use `after_stat(density)` instead.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+## generated.</code></pre>
+<p><img src="04-Module_5_files/figure-html/unnamed-chunk-65-1.png" width="672" /></p>
+<div class="sourceCode" id="cb582"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb582-1"><a href="mixed-effect-models.html#cb582-1" tabindex="-1"></a><span class="fu">ggplot</span>(d1, <span class="fu">aes</span>(<span class="at">y=</span>abund, <span class="at">x=</span>grazed, <span class="at">fill=</span>N_Add))<span class="sc">+</span></span>
+<span id="cb582-2"><a href="mixed-effect-models.html#cb582-2" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>()<span class="sc">+</span></span>
+<span id="cb582-3"><a href="mixed-effect-models.html#cb582-3" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">position =</span> <span class="fu">position_jitterdodge</span>(<span class="at">jitter.height=</span><span class="dv">0</span>,<span class="at">jitter.width=</span>.<span class="dv">1</span>), </span>
+<span id="cb582-4"><a href="mixed-effect-models.html#cb582-4" tabindex="-1"></a>             <span class="at">size=</span><span class="dv">3</span>, <span class="at">stroke=</span><span class="fl">1.5</span>, <span class="at">pch=</span><span class="dv">21</span>, <span class="at">color=</span><span class="st">&quot;grey&quot;</span>)<span class="sc">+</span></span>
+<span id="cb582-5"><a href="mixed-effect-models.html#cb582-5" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values=</span><span class="fu">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;grey90&quot;</span>,<span class="st">&quot;grey50&quot;</span>,<span class="st">&quot;grey25&quot;</span>))<span class="sc">+</span>    </span>
+<span id="cb582-6"><a href="mixed-effect-models.html#cb582-6" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">18</span>)</span></code></pre></div>
+<p><img src="04-Module_5_files/figure-html/unnamed-chunk-65-2.png" width="672" /></p>
+</div>
+</div>
+<div id="repeated-measures" class="section level2 hasAnchor" number="5.5">
+<h2><span class="header-section-number">5.5</span> Repeated Measures<a href="mixed-effect-models.html#repeated-measures" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Many reseach projects involve collecting data on the same units through time. For example, plant ecologists may be interested in monitoring changes is plant richness in plots through time or stream biogeochemists often monitor seasonal changes in stream chemistry. These <strong>repeated measures</strong> are a unique case of nestedness and therefore many on the principles we learned about regarding <strong>split-plots</strong> also apply here. Basically, the unit being repeatedly sampled (e.g. plot or stream) is the <strong>whole plot</strong> while <em>time</em> is the <strong>split-plot</strong>. There are some more complexities of repeated measures, sometimes called <strong>temporal autocorrelation</strong>, that we will get to in this section. First, lets load packages and look at the chick weight data from before.</p>
+<p>LOAD AND PROCESSES DATA</p>
+<div class="sourceCode" id="cb583"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb583-1"><a href="mixed-effect-models.html#cb583-1" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb583-2"><a href="mixed-effect-models.html#cb583-2" tabindex="-1"></a><span class="fu">library</span>(car)</span>
+<span id="cb583-3"><a href="mixed-effect-models.html#cb583-3" tabindex="-1"></a><span class="fu">library</span>(emmeans)</span>
+<span id="cb583-4"><a href="mixed-effect-models.html#cb583-4" tabindex="-1"></a><span class="fu">library</span>(viridis)</span>
+<span id="cb583-5"><a href="mixed-effect-models.html#cb583-5" tabindex="-1"></a><span class="fu">library</span>(MuMIn)</span>
+<span id="cb583-6"><a href="mixed-effect-models.html#cb583-6" tabindex="-1"></a><span class="fu">library</span>(glmmTMB) </span></code></pre></div>
+<div class="sourceCode" id="cb584"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb584-1"><a href="mixed-effect-models.html#cb584-1" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;ChickWeight&quot;</span>)</span>
+<span id="cb584-2"><a href="mixed-effect-models.html#cb584-2" tabindex="-1"></a>ChickWeight<span class="sc">$</span>Diet <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(ChickWeight<span class="sc">$</span>Diet)</span>
+<span id="cb584-3"><a href="mixed-effect-models.html#cb584-3" tabindex="-1"></a>?ChickWeight</span></code></pre></div>
+<p>Plot out the chick weight data</p>
+<div class="sourceCode" id="cb585"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb585-1"><a href="mixed-effect-models.html#cb585-1" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>ChickWeight)<span class="sc">+</span></span>
+<span id="cb585-2"><a href="mixed-effect-models.html#cb585-2" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data=</span>ChickWeight, <span class="fu">aes</span>(<span class="at">x=</span>Time,<span class="at">y=</span>weight, <span class="at">color=</span><span class="fu">as.numeric</span>(Chick)))<span class="sc">+</span></span>
+<span id="cb585-3"><a href="mixed-effect-models.html#cb585-3" tabindex="-1"></a>  <span class="fu">scale_color_viridis</span>() <span class="sc">+</span></span>
+<span id="cb585-4"><a href="mixed-effect-models.html#cb585-4" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Diet)<span class="sc">+</span></span>
+<span id="cb585-5"><a href="mixed-effect-models.html#cb585-5" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">data=</span>ChickWeight, <span class="at">method=</span><span class="st">&quot;lm&quot;</span>,<span class="fu">aes</span>(<span class="at">x=</span>Time,<span class="at">y=</span>weight))<span class="sc">+</span></span>
+<span id="cb585-6"><a href="mixed-effect-models.html#cb585-6" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">16</span>)</span></code></pre></div>
+<pre><code>## `geom_smooth()` using formula = &#39;y ~ x&#39;</code></pre>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-68"></span>
+<img src="04-Module_5_files/figure-html/unnamed-chunk-68-1.png" alt="Chick weight data." width="672" />
+<p class="caption">
+Figure 5.4: Chick weight data.
+</p>
+</div>
+<p>We’ve used the chick weight data before, but to refresh there are 50 chicks each given one of four diets. Chicks are weighed through time and we are interested in comparing the growth rate or final weight among the four diets. We will start by making the same model we used in Section 5.3.2 for looking at variance components. The model has weight as the response variable, time as the (fixed-effect) predictor and Chick as a random (block) effect.</p>
+<div class="sourceCode" id="cb587"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb587-1"><a href="mixed-effect-models.html#cb587-1" tabindex="-1"></a>cw1 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(weight <span class="sc">~</span> Time <span class="sc">*</span> Diet <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>Chick), <span class="at">data=</span>ChickWeight)</span>
+<span id="cb587-2"><a href="mixed-effect-models.html#cb587-2" tabindex="-1"></a><span class="fu">summary</span>(cw1) </span></code></pre></div>
+<pre><code>##  Family: gaussian  ( identity )
+## Formula:          weight ~ Time * Diet + (1 | Chick)
+## Data: ChickWeight
+## 
+##      AIC      BIC   logLik deviance df.resid 
+##   5508.0   5551.6  -2744.0   5488.0      568 
+## 
+## Random effects:
+## 
+## Conditional model:
+##  Groups   Name        Variance Std.Dev.
+##  Chick    (Intercept) 498.0    22.32   
+##  Residual             638.4    25.27   
+## Number of obs: 578, groups:  Chick, 50
+## 
+## Dispersion estimate for gaussian family (sigma^2):  638 
+## 
+## Conditional model:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  31.5079     5.9114   5.330 9.82e-08 ***
+## Time          6.7130     0.2573  26.086  &lt; 2e-16 ***
+## Diet2        -2.8807    10.1920  -0.283    0.777    
+## Diet3       -13.2565    10.1920  -1.301    0.193    
+## Diet4        -0.3930    10.2008  -0.039    0.969    
+## Time:Diet2    1.8962     0.4267   4.444 8.85e-06 ***
+## Time:Diet3    4.7098     0.4267  11.037  &lt; 2e-16 ***
+## Time:Diet4    2.9494     0.4323   6.823 8.91e-12 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<div class="sourceCode" id="cb589"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb589-1"><a href="mixed-effect-models.html#cb589-1" tabindex="-1"></a><span class="fu">Anova</span>(cw1) </span></code></pre></div>
+<pre><code>## Analysis of Deviance Table (Type II Wald chisquare tests)
+## 
+## Response: weight
+##              Chisq Df Pr(&gt;Chisq)    
+## Time      3088.536  1  &lt; 2.2e-16 ***
+## Diet        20.221  3  0.0001527 ***
+## Time:Diet  131.333  3  &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Remember that the residuals from this model look weird. The histogram is great, but the residuals ~ fitted plot has funneling and curvature.</p>
+<div class="sourceCode" id="cb591"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb591-1"><a href="mixed-effect-models.html#cb591-1" tabindex="-1"></a><span class="fu">hist</span>(<span class="fu">resid</span>(cw1)) <span class="do">## resids from first model</span></span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-70-1"></span>
+<img src="04-Module_5_files/figure-html/unnamed-chunk-70-1.png" alt="Histograms of residuals." width="672" />
+<p class="caption">
+Figure 5.5: Histograms of residuals.
+</p>
+</div>
+<div class="sourceCode" id="cb592"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb592-1"><a href="mixed-effect-models.html#cb592-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">residuals</span>(cw1)<span class="sc">~</span><span class="fu">fitted</span>(cw1)) <span class="do">## resids from first model</span></span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-70-2"></span>
+<img src="04-Module_5_files/figure-html/unnamed-chunk-70-2.png" alt="Histograms of residuals." width="672" />
+<p class="caption">
+Figure 5.6: Histograms of residuals.
+</p>
+</div>
+<p>One of the ‘unique’ aspects of temporal data is that measurements closer in time are likely to be much more highly correlated than time points further apart. For example, if we correlate all the chick weights from week 2 with week 4, they will be very highly correlated, whereas week 2 vs week 10 will be less correlated:</p>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-71"></span>
+<img src="04-Module_5_files/figure-html/unnamed-chunk-71-1.png" alt="Correlations of chick weights between different weeks." width="672" />
+<p class="caption">
+Figure 5.7: Correlations of chick weights between different weeks.
+</p>
+</div>
+<p>We can capture that temporal autocorrelation by fitting a special covariation or correlation structure via a random effect (more about this in lecture). Below is a model incorporating an <strong>autoregressive covariance</strong> (ar1) structure to account for the temporal autocorrelation:</p>
+<div class="sourceCode" id="cb593"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb593-1"><a href="mixed-effect-models.html#cb593-1" tabindex="-1"></a>cw1ar <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(weight <span class="sc">~</span> Time <span class="sc">*</span> Diet <span class="sc">+</span> <span class="fu">ar1</span>(<span class="dv">0</span> <span class="sc">+</span> <span class="fu">as.factor</span>(Time)<span class="sc">|</span>Chick), <span class="at">data=</span>ChickWeight)</span></code></pre></div>
+<p>In the <code>summary()</code> output notice that for the ‘Chick’ random effect, we have the usual variance component plus now we also get a correlation coeffiect “Corr”, which is 0.97, which is very high indicating strong temporal autocorrelation. The parameter estimates are a little different, but everything else is similar to the previous model.</p>
+<div class="sourceCode" id="cb594"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb594-1"><a href="mixed-effect-models.html#cb594-1" tabindex="-1"></a><span class="fu">summary</span>(cw1ar)</span></code></pre></div>
+<pre><code>##  Family: gaussian  ( identity )
+## Formula:          weight ~ Time * Diet + ar1(0 + as.factor(Time) | Chick)
+## Data: ChickWeight
+## 
+##      AIC      BIC   logLik deviance df.resid 
+##   4484.3   4532.2  -2231.1   4462.3      567 
+## 
+## Random effects:
+## 
+## Conditional model:
+##  Groups   Name             Variance  Std.Dev.  Corr      
+##  Chick    as.factor(Time)0 1.651e+03 4.063e+01 0.97 (ar1)
+##  Residual                  2.620e-07 5.118e-04           
+## Number of obs: 578, groups:  Chick, 50
+## 
+## Dispersion estimate for gaussian family (sigma^2): 2.62e-07 
+## 
+## Conditional model:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  40.3595     9.0781   4.446 8.76e-06 ***
+## Time          6.0679     0.3465  17.510  &lt; 2e-16 ***
+## Diet2        -0.9268    15.7205  -0.059 0.952989    
+## Diet3        -2.3392    15.7239  -0.149 0.881736    
+## Diet4        -1.0019    15.7209  -0.064 0.949183    
+## Time:Diet2    2.2042     0.5837   3.776 0.000159 ***
+## Time:Diet3    4.8553     0.5837   8.319  &lt; 2e-16 ***
+## Time:Diet4    3.1306     0.5864   5.339 9.36e-08 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<div class="sourceCode" id="cb596"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb596-1"><a href="mixed-effect-models.html#cb596-1" tabindex="-1"></a><span class="fu">Anova</span>(cw1ar)</span></code></pre></div>
+<pre><code>## Analysis of Deviance Table (Type II Wald chisquare tests)
+## 
+## Response: weight
+##              Chisq Df Pr(&gt;Chisq)    
+## Time      1459.447  1  &lt; 2.2e-16 ***
+## Diet        11.624  3    0.00879 ** 
+## Time:Diet   75.942  3  2.277e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Let’s take a look at the residuals:</p>
+<div class="sourceCode" id="cb598"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb598-1"><a href="mixed-effect-models.html#cb598-1" tabindex="-1"></a><span class="fu">hist</span>(<span class="fu">residuals</span>(cw1ar)) <span class="do">## hist looks ok</span></span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-74-1"></span>
+<img src="04-Module_5_files/figure-html/unnamed-chunk-74-1.png" alt="Histograms of residuals." width="672" />
+<p class="caption">
+Figure 5.8: Histograms of residuals.
+</p>
+</div>
+<div class="sourceCode" id="cb599"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb599-1"><a href="mixed-effect-models.html#cb599-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">residuals</span>(cw1ar)<span class="sc">~</span><span class="fu">fitted</span>(cw1ar)) <span class="do">## resids look great </span></span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-74-2"></span>
+<img src="04-Module_5_files/figure-html/unnamed-chunk-74-2.png" alt="Histograms of residuals." width="672" />
+<p class="caption">
+Figure 5.9: Histograms of residuals.
+</p>
+</div>
+<p>They look great! It seems that the model that accounts for temporal autocorrelation fits much better than just incorporating chick as a regular random effect. We can also compare the AIC of the two models to make sure. Indeed, it is much lower for the ar1 model.</p>
+<div class="sourceCode" id="cb600"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb600-1"><a href="mixed-effect-models.html#cb600-1" tabindex="-1"></a><span class="fu">AIC</span>(cw0,cw1ar)</span></code></pre></div>
+<pre><code>##       df      AIC
+## cw0    9 5728.997
+## cw1ar 11 4484.270</code></pre>
+<p>Now we can look at the emmeans for the two models. Notice the estimates are similar, but the SE is much higher for the AR1 model. This changes the p-values for the contrasts a little bit too. It is important we interpret the results from the AR1 model because it is much better, even though the SEs are higher.</p>
+<div class="sourceCode" id="cb602"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb602-1"><a href="mixed-effect-models.html#cb602-1" tabindex="-1"></a><span class="fu">emmeans</span>(cw1, pairwise<span class="sc">~</span>Diet, <span class="at">at=</span><span class="fu">list</span>(<span class="at">Time=</span><span class="dv">20</span>)) <span class="co"># Yes, 4 of 6 differ at time 20</span></span></code></pre></div>
+<pre><code>## NOTE: Results may be misleading due to involvement in interactions</code></pre>
+<pre><code>## $emmeans
+##  Diet emmean   SE  df lower.CL upper.CL
+##  1       166 5.89 568      154      177
+##  2       201 8.04 568      185      217
+##  3       247 8.04 568      231      263
+##  4       224 8.10 568      208      240
+## 
+## Confidence level used: 0.95 
+## 
+## $contrasts
+##  contrast      estimate    SE  df t.ratio p.value
+##  Diet1 - Diet2    -35.0  9.97 568  -3.516  0.0027
+##  Diet1 - Diet3    -80.9  9.97 568  -8.120  &lt;.0001
+##  Diet1 - Diet4    -58.6 10.00 568  -5.852  &lt;.0001
+##  Diet2 - Diet3    -45.9 11.40 568  -4.035  0.0004
+##  Diet2 - Diet4    -23.6 11.40 568  -2.063  0.1665
+##  Diet3 - Diet4     22.3 11.40 568   1.958  0.2055
+## 
+## P value adjustment: tukey method for comparing a family of 4 estimates</code></pre>
+<div class="sourceCode" id="cb605"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb605-1"><a href="mixed-effect-models.html#cb605-1" tabindex="-1"></a><span class="fu">emmeans</span>(cw1ar, pairwise<span class="sc">~</span>Diet, <span class="at">at=</span><span class="fu">list</span>(<span class="at">Time=</span><span class="dv">20</span>)) <span class="co"># Yes, 4 of 6 differ at time 20</span></span></code></pre></div>
+<pre><code>## NOTE: Results may be misleading due to involvement in interactions</code></pre>
+<pre><code>## $emmeans
+##  Diet emmean    SE  df lower.CL upper.CL
+##  1       162  9.15 567      144      180
+##  2       205 12.60 567      180      230
+##  3       256 12.60 567      232      281
+##  4       223 12.70 567      198      248
+## 
+## Confidence level used: 0.95 
+## 
+## $contrasts
+##  contrast      estimate   SE  df t.ratio p.value
+##  Diet1 - Diet2    -43.2 15.6 567  -2.766  0.0298
+##  Diet1 - Diet3    -94.8 15.6 567  -6.072  &lt;.0001
+##  Diet1 - Diet4    -61.6 15.6 567  -3.938  0.0005
+##  Diet2 - Diet3    -51.6 17.9 567  -2.888  0.0210
+##  Diet2 - Diet4    -18.5 17.9 567  -1.030  0.7317
+##  Diet3 - Diet4     33.2 17.9 567   1.851  0.2506
+## 
+## P value adjustment: tukey method for comparing a family of 4 estimates</code></pre>
+<div id="r-challange---repeated-measures" class="section level3 hasAnchor" number="5.5.1">
+<h3><span class="header-section-number">5.5.1</span> R CHALLANGE - REPEATED MEASURES<a href="mixed-effect-models.html#r-challange---repeated-measures" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Take a look at the ‘harris.wateruse’ dataset. The dataset contains information on water use by two species of horticultural trees (S1 and S2). The dataset also contains two age groups, although we will focus on just one group (A1). 10 trees of each species were assessed for water usage for approximately every 5 days over the course of a year. There are some missing values.</p>
+<div class="sourceCode" id="cb608"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb608-1"><a href="mixed-effect-models.html#cb608-1" tabindex="-1"></a><span class="fu">library</span>(agridat)</span>
+<span id="cb608-2"><a href="mixed-effect-models.html#cb608-2" tabindex="-1"></a>wat <span class="ot">&lt;-</span> harris.wateruse <span class="sc">%&gt;%</span> <span class="fu">filter</span>(age<span class="sc">==</span><span class="st">&#39;A1&#39;</span>)</span>
+<span id="cb608-3"><a href="mixed-effect-models.html#cb608-3" tabindex="-1"></a><span class="fu">head</span>(wat)</span></code></pre></div>
+<pre><code>##   species age tree day water
+## 1      S2  A1  T01 161  0.92
+## 2      S2  A1  T01 166  0.93
+## 3      S2  A1  T01 170  0.86
+## 4      S2  A1  T01 174  0.95
+## 5      S2  A1  T01 178  0.90
+## 6      S2  A1  T01 184  1.11</code></pre>
+<div class="sourceCode" id="cb610"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb610-1"><a href="mixed-effect-models.html#cb610-1" tabindex="-1"></a><span class="fu">str</span>(wat)</span></code></pre></div>
+<pre><code>## &#39;data.frame&#39;:    520 obs. of  5 variables:
+##  $ species: Factor w/ 2 levels &quot;S1&quot;,&quot;S2&quot;: 2 2 2 2 2 2 2 2 2 2 ...
+##  $ age    : Factor w/ 2 levels &quot;A1&quot;,&quot;A2&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ tree   : Factor w/ 40 levels &quot;T01&quot;,&quot;T02&quot;,&quot;T03&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ day    : int  161 166 170 174 178 184 189 194 199 206 ...
+##  $ water  : num  0.92 0.93 0.86 0.95 0.9 1.11 NA 1.25 1.14 1.07 ...</code></pre>
+<p>Plot data</p>
+<div class="sourceCode" id="cb612"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb612-1"><a href="mixed-effect-models.html#cb612-1" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>wat, <span class="fu">aes</span>(<span class="at">x=</span>day, <span class="at">y=</span>water, <span class="at">color=</span>species))<span class="sc">+</span></span>
+<span id="cb612-2"><a href="mixed-effect-models.html#cb612-2" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb612-3"><a href="mixed-effect-models.html#cb612-3" tabindex="-1"></a>  <span class="fu">scale_color_viridis</span>(<span class="at">discrete =</span> T, <span class="at">end=</span>.<span class="dv">8</span>) <span class="sc">+</span></span>
+<span id="cb612-4"><a href="mixed-effect-models.html#cb612-4" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">16</span>)</span></code></pre></div>
+<div class="figure"><span style="display:block;" id="fig:unnamed-chunk-78"></span>
+<img src="04-Module_5_files/figure-html/unnamed-chunk-78-1.png" alt="Plot of water usage by two horticultural tree species through time." width="672" />
+<p class="caption">
+Figure 5.10: Plot of water usage by two horticultural tree species through time.
+</p>
+</div>
+<p>To Do:</p>
+<ol style="list-style-type: decimal">
+<li><p>Fit several models, one that accounts for tree ID as a regular random effect and one that accounts for temporal autocorrelation. Additionally, it seems like there is some non-linearity so try a quadratic term. Choose the right fixed effects to answer the question: do the species differ in water use and does this change through time?</p></li>
+<li><p>Examine the residuals and AIC for your models. Which is best? If your model has temporal autocorrelation, how strong is it?</p></li>
+<li><p>Does water use differ between the species at these two time points: 175 days and 275 days?</p></li>
+</ol>
+</div>
+</div>
+<div id="additional-lmm-reading" class="section level2 hasAnchor" number="5.6">
+<h2><span class="header-section-number">5.6</span> Additional LMM reading<a href="mixed-effect-models.html#additional-lmm-reading" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>For those of you interested in other aspects of GLMMs, we will cover other ways we tangle with statistics and data with them in the next module. However, even with another module dedicated to GLMMs we will be barely scratching the surface. If you want more information on what else we can do with these powerful models check out the box below!</p>
+<table>
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><p><strong>Box 1. Mixed Models.</strong></p>
+<p>Mixed-effect models are powerful tools that can help gain stronger inference or predictive power in your analyses. This is especially seen in experimental or hierarchically structured designs of studies. These models have been used to account for pseudoreplication effects but please be wary of this! Because models that don’t have the proper random effect structures may actually not be accounting for the pseudoreplication! For more insight into this please read this <a href="https://arnqvist.org/tree_2020.pdf">paper</a>.</p>
+<p>So what else can be done with GLMMs? One thing it allows is the modeling of specific spatial and temporal structures to account for spatial or temporal autocorrelation! This is a problem with ecological data. In the context of spatial autocorrelation, patterns in your data may be a result of things being generally more similar to one another due to the spatial distance between data points than due to actual biological processes. GLMMs can account for this! For a crash course on this, check this <a href="https://cran.r-project.org/web/packages/glmmTMB/vignettes/covstruct.html">link</a> out!</p></td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="generalized-linear-models.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="generalized-linear-mixed-models.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/04-Module_5.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["_main.pdf", "_main.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+},
+"smooth_scroll": false
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
