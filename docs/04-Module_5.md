@@ -26,6 +26,16 @@ library(performance)
 For this section we will construct data using some code. For this example, we need to "doctor" up a data set. We will use the InsectSprays data set (from previous examples) but we will make a few changes. Don't worry about the changes, but the code below does this. The main one is that we have added a new column to the dataset called 'weeds', which represents the amount of weed cover in the plot.
 
 
+``` r
+# generate a fake dataset to use for the example
+set.seed(17)
+data("InsectSprays")
+d <- InsectSprays %>% filter(spray=='A'|spray=='B'|spray=='C'|spray=='F') %>%
+  droplevels()
+d$count[13:24] <- d$count[13:24]+5
+d$weeds <- abs(round(rnorm(48,2*d$count,10),1))
+d$weeds[25:36] <- c(55.3,46.8,30.2,62.3,24.2,33.2,18.2,12.6,39.7,41.0,46.9,42.8)
+```
 
 Let's plot the raw data to show the count values as a function of spray types using boxplots:
 

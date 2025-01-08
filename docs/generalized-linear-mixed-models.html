@@ -295,24 +295,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="poisson-and-nb-glmms" class="section level2 hasAnchor" number="6.1">
 <h2><span class="header-section-number">6.1</span> Poisson and NB GLMMs<a href="generalized-linear-mixed-models.html#poisson-and-nb-glmms" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>In this module we will go over a variety of advanced models. We will start with Poisson generalized linear mixed effect models. The poisson error distribution is often used to model count data and because of this it is a popular tool for most biologist or ecologists as biological or ecological data is often in the form of counts (e.g., species richness). Let’s first load the libraries we will need:</p>
-<div class="sourceCode" id="cb613"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb613-1"><a href="generalized-linear-mixed-models.html#cb613-1" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb613-2"><a href="generalized-linear-mixed-models.html#cb613-2" tabindex="-1"></a><span class="fu">library</span>(emmeans)</span>
-<span id="cb613-3"><a href="generalized-linear-mixed-models.html#cb613-3" tabindex="-1"></a><span class="fu">library</span>(car)</span>
-<span id="cb613-4"><a href="generalized-linear-mixed-models.html#cb613-4" tabindex="-1"></a><span class="fu">library</span>(agridat)</span>
-<span id="cb613-5"><a href="generalized-linear-mixed-models.html#cb613-5" tabindex="-1"></a><span class="fu">library</span>(glmmTMB)</span>
-<span id="cb613-6"><a href="generalized-linear-mixed-models.html#cb613-6" tabindex="-1"></a><span class="fu">library</span>(DHARMa)</span>
-<span id="cb613-7"><a href="generalized-linear-mixed-models.html#cb613-7" tabindex="-1"></a><span class="fu">library</span>(performance)</span>
-<span id="cb613-8"><a href="generalized-linear-mixed-models.html#cb613-8" tabindex="-1"></a><span class="fu">library</span>(MuMIn)</span>
-<span id="cb613-9"><a href="generalized-linear-mixed-models.html#cb613-9" tabindex="-1"></a><span class="fu">library</span>(bbmle)</span>
-<span id="cb613-10"><a href="generalized-linear-mixed-models.html#cb613-10" tabindex="-1"></a><span class="fu">library</span>(aods3)</span>
-<span id="cb613-11"><a href="generalized-linear-mixed-models.html#cb613-11" tabindex="-1"></a><span class="fu">library</span>(boot)</span></code></pre></div>
+<div class="sourceCode" id="cb614"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb614-1"><a href="generalized-linear-mixed-models.html#cb614-1" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb614-2"><a href="generalized-linear-mixed-models.html#cb614-2" tabindex="-1"></a><span class="fu">library</span>(emmeans)</span>
+<span id="cb614-3"><a href="generalized-linear-mixed-models.html#cb614-3" tabindex="-1"></a><span class="fu">library</span>(car)</span>
+<span id="cb614-4"><a href="generalized-linear-mixed-models.html#cb614-4" tabindex="-1"></a><span class="fu">library</span>(agridat)</span>
+<span id="cb614-5"><a href="generalized-linear-mixed-models.html#cb614-5" tabindex="-1"></a><span class="fu">library</span>(glmmTMB)</span>
+<span id="cb614-6"><a href="generalized-linear-mixed-models.html#cb614-6" tabindex="-1"></a><span class="fu">library</span>(DHARMa)</span>
+<span id="cb614-7"><a href="generalized-linear-mixed-models.html#cb614-7" tabindex="-1"></a><span class="fu">library</span>(performance)</span>
+<span id="cb614-8"><a href="generalized-linear-mixed-models.html#cb614-8" tabindex="-1"></a><span class="fu">library</span>(MuMIn)</span>
+<span id="cb614-9"><a href="generalized-linear-mixed-models.html#cb614-9" tabindex="-1"></a><span class="fu">library</span>(bbmle)</span>
+<span id="cb614-10"><a href="generalized-linear-mixed-models.html#cb614-10" tabindex="-1"></a><span class="fu">library</span>(aods3)</span>
+<span id="cb614-11"><a href="generalized-linear-mixed-models.html#cb614-11" tabindex="-1"></a><span class="fu">library</span>(boot)</span></code></pre></div>
 <p>Let’s load in the primary data set we will be working with and read about the <code>beall.webworms</code> data set. The variables of interest are the y-count of webworms, spray- spray treatment, and lead-lead treatment. Don’t worry about the blocks or other variables for now.</p>
-<div class="sourceCode" id="cb614"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb614-1"><a href="generalized-linear-mixed-models.html#cb614-1" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;beall.webworms&quot;</span>)</span>
-<span id="cb614-2"><a href="generalized-linear-mixed-models.html#cb614-2" tabindex="-1"></a>d1 <span class="ot">&lt;-</span> beall.webworms</span>
-<span id="cb614-3"><a href="generalized-linear-mixed-models.html#cb614-3" tabindex="-1"></a>?beall.webworms  <span class="do">## info about the beall.webworms dataset</span></span></code></pre></div>
+<div class="sourceCode" id="cb615"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb615-1"><a href="generalized-linear-mixed-models.html#cb615-1" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;beall.webworms&quot;</span>)</span>
+<span id="cb615-2"><a href="generalized-linear-mixed-models.html#cb615-2" tabindex="-1"></a>d1 <span class="ot">&lt;-</span> beall.webworms</span>
+<span id="cb615-3"><a href="generalized-linear-mixed-models.html#cb615-3" tabindex="-1"></a>?beall.webworms  <span class="do">## info about the beall.webworms dataset</span></span></code></pre></div>
 <pre><code>## starting httpd help server ... done</code></pre>
 <p>We can also glimpse the first several rows of the data:</p>
-<div class="sourceCode" id="cb616"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb616-1"><a href="generalized-linear-mixed-models.html#cb616-1" tabindex="-1"></a><span class="fu">head</span>(d1) <span class="do">## view data set</span></span></code></pre></div>
+<div class="sourceCode" id="cb617"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb617-1"><a href="generalized-linear-mixed-models.html#cb617-1" tabindex="-1"></a><span class="fu">head</span>(d1) <span class="do">## view data set</span></span></code></pre></div>
 <pre><code>##   row col y block trt spray lead
 ## 1   1   1 1    B1  T1     N    N
 ## 2   2   1 0    B1  T1     N    N
@@ -321,17 +321,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 5   5   1 6    B1  T1     N    N
 ## 6   6   1 0    B2  T1     N    N</code></pre>
 <p>Let’s examine a plot of data where we look at the raw data points as well as violin plots of the y response variable on the y axis and the x-axis as the spray treatment and lead treatment type:</p>
-<div class="sourceCode" id="cb618"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb618-1"><a href="generalized-linear-mixed-models.html#cb618-1" tabindex="-1"></a><span class="fu">ggplot</span>(d1, <span class="fu">aes</span>(<span class="at">x=</span>spray, <span class="at">y=</span>y, <span class="at">fill=</span>lead)) <span class="sc">+</span></span>
-<span id="cb618-2"><a href="generalized-linear-mixed-models.html#cb618-2" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="at">scale=</span><span class="st">&quot;width&quot;</span>, <span class="at">adjust=</span><span class="dv">2</span>) <span class="sc">+</span> </span>
-<span id="cb618-3"><a href="generalized-linear-mixed-models.html#cb618-3" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">position =</span> <span class="fu">position_jitterdodge</span>(<span class="at">jitter.width=</span>.<span class="dv">5</span>,</span>
-<span id="cb618-4"><a href="generalized-linear-mixed-models.html#cb618-4" tabindex="-1"></a>                                             <span class="at">jitter.height=</span>.<span class="dv">1</span>,</span>
-<span id="cb618-5"><a href="generalized-linear-mixed-models.html#cb618-5" tabindex="-1"></a>                                             <span class="at">dodge.width =</span> <span class="dv">1</span>),</span>
-<span id="cb618-6"><a href="generalized-linear-mixed-models.html#cb618-6" tabindex="-1"></a>             <span class="at">alpha=</span>.<span class="dv">1</span>)<span class="sc">+</span></span>
-<span id="cb618-7"><a href="generalized-linear-mixed-models.html#cb618-7" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>block)</span></code></pre></div>
+<div class="sourceCode" id="cb619"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb619-1"><a href="generalized-linear-mixed-models.html#cb619-1" tabindex="-1"></a><span class="fu">ggplot</span>(d1, <span class="fu">aes</span>(<span class="at">x=</span>spray, <span class="at">y=</span>y, <span class="at">fill=</span>lead)) <span class="sc">+</span></span>
+<span id="cb619-2"><a href="generalized-linear-mixed-models.html#cb619-2" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="at">scale=</span><span class="st">&quot;width&quot;</span>, <span class="at">adjust=</span><span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb619-3"><a href="generalized-linear-mixed-models.html#cb619-3" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">position =</span> <span class="fu">position_jitterdodge</span>(<span class="at">jitter.width=</span>.<span class="dv">5</span>,</span>
+<span id="cb619-4"><a href="generalized-linear-mixed-models.html#cb619-4" tabindex="-1"></a>                                             <span class="at">jitter.height=</span>.<span class="dv">1</span>,</span>
+<span id="cb619-5"><a href="generalized-linear-mixed-models.html#cb619-5" tabindex="-1"></a>                                             <span class="at">dodge.width =</span> <span class="dv">1</span>),</span>
+<span id="cb619-6"><a href="generalized-linear-mixed-models.html#cb619-6" tabindex="-1"></a>             <span class="at">alpha=</span>.<span class="dv">1</span>)<span class="sc">+</span></span>
+<span id="cb619-7"><a href="generalized-linear-mixed-models.html#cb619-7" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>block)</span></code></pre></div>
 <p><img src="05-Module_6_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <p>Here we create two models, r1 and r2. They were previously used in module 4C. So let’s first create r1. <code>r1</code> will be a Poisson GLM with the repose variable of y being ,modeled as a function of both the additive and interactive effects of spray and lead treatments.</p>
-<div class="sourceCode" id="cb619"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb619-1"><a href="generalized-linear-mixed-models.html#cb619-1" tabindex="-1"></a>r1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> spray <span class="sc">*</span> lead, <span class="at">data=</span>d1, <span class="at">family=</span><span class="st">&quot;poisson&quot;</span>)</span>
-<span id="cb619-2"><a href="generalized-linear-mixed-models.html#cb619-2" tabindex="-1"></a><span class="fu">summary</span>(r1)</span></code></pre></div>
+<div class="sourceCode" id="cb620"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb620-1"><a href="generalized-linear-mixed-models.html#cb620-1" tabindex="-1"></a>r1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> spray <span class="sc">*</span> lead, <span class="at">data=</span>d1, <span class="at">family=</span><span class="st">&quot;poisson&quot;</span>)</span>
+<span id="cb620-2"><a href="generalized-linear-mixed-models.html#cb620-2" tabindex="-1"></a><span class="fu">summary</span>(r1)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## glm(formula = y ~ spray * lead, family = &quot;poisson&quot;, data = d1)
@@ -352,7 +352,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## AIC: 3125.5
 ## 
 ## Number of Fisher Scoring iterations: 6</code></pre>
-<div class="sourceCode" id="cb621"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb621-1"><a href="generalized-linear-mixed-models.html#cb621-1" tabindex="-1"></a><span class="fu">Anova</span>(r1)</span></code></pre></div>
+<div class="sourceCode" id="cb622"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb622-1"><a href="generalized-linear-mixed-models.html#cb622-1" tabindex="-1"></a><span class="fu">Anova</span>(r1)</span></code></pre></div>
 <pre><code>## Analysis of Deviance Table (Type II tests)
 ## 
 ## Response: y
@@ -362,7 +362,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## spray:lead    4.452  1    0.03485 *  
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<div class="sourceCode" id="cb623"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb623-1"><a href="generalized-linear-mixed-models.html#cb623-1" tabindex="-1"></a><span class="fu">emmeans</span>(r1, <span class="sc">~</span>spray<span class="sc">:</span>lead, <span class="at">type=</span><span class="st">&#39;response&#39;</span>) </span></code></pre></div>
+<div class="sourceCode" id="cb624"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb624-1"><a href="generalized-linear-mixed-models.html#cb624-1" tabindex="-1"></a><span class="fu">emmeans</span>(r1, <span class="sc">~</span>spray<span class="sc">:</span>lead, <span class="at">type=</span><span class="st">&#39;response&#39;</span>) </span></code></pre></div>
 <pre><code>##  spray lead  rate     SE  df asymp.LCL asymp.UCL
 ##  N     N    1.400 0.0656 Inf     1.277     1.535
 ##  Y     N    0.505 0.0394 Inf     0.433     0.588
@@ -372,7 +372,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## Confidence level used: 0.95 
 ## Intervals are back-transformed from the log scale</code></pre>
 <p>We check overdispersion in the model with the <code>check_overdisperson</code> wrapper:</p>
-<div class="sourceCode" id="cb625"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb625-1"><a href="generalized-linear-mixed-models.html#cb625-1" tabindex="-1"></a><span class="fu">check_overdispersion</span>(r1) <span class="co"># overdispersion ratio calculator from performance</span></span></code></pre></div>
+<div class="sourceCode" id="cb626"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb626-1"><a href="generalized-linear-mixed-models.html#cb626-1" tabindex="-1"></a><span class="fu">check_overdispersion</span>(r1) <span class="co"># overdispersion ratio calculator from performance</span></span></code></pre></div>
 <pre><code>## # Overdispersion test
 ## 
 ##        dispersion ratio =    1.355
@@ -385,8 +385,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><p>Poisson models can result in over-dispersion because the variance in real data is often greater than the means. This issue can lead to several problems such as but not limited to: poor model convergence, weak effect sizes of model coefficients, or p-values that are way too low.</p></li>
 <li><p>The negative binomial distribution can be used in the cases above to improve model fit or reach model convergence. Oftentimes it performs better than the poisson even if both models converge successfully. Visually examining simulated residuals is usually the best way to assess model fit. Another way is to compare AIC (Akaike information criterion) of Poisson vs negative binomial models.</p></li>
 </ol>
-<div class="sourceCode" id="cb628"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb628-1"><a href="generalized-linear-mixed-models.html#cb628-1" tabindex="-1"></a>r2 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(y <span class="sc">~</span> spray <span class="sc">*</span> lead, <span class="at">data=</span>d1, <span class="at">family=</span><span class="st">&quot;nbinom2&quot;</span>)</span>
-<span id="cb628-2"><a href="generalized-linear-mixed-models.html#cb628-2" tabindex="-1"></a><span class="fu">Anova</span>(r2)</span></code></pre></div>
+<div class="sourceCode" id="cb629"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb629-1"><a href="generalized-linear-mixed-models.html#cb629-1" tabindex="-1"></a>r2 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(y <span class="sc">~</span> spray <span class="sc">*</span> lead, <span class="at">data=</span>d1, <span class="at">family=</span><span class="st">&quot;nbinom2&quot;</span>)</span>
+<span id="cb629-2"><a href="generalized-linear-mixed-models.html#cb629-2" tabindex="-1"></a><span class="fu">Anova</span>(r2)</span></code></pre></div>
 <pre><code>## Analysis of Deviance Table (Type II Wald chisquare tests)
 ## 
 ## Response: y
@@ -396,7 +396,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## spray:lead   3.3942  1    0.06542 .  
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<div class="sourceCode" id="cb630"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb630-1"><a href="generalized-linear-mixed-models.html#cb630-1" tabindex="-1"></a><span class="fu">emmeans</span>(r2, <span class="sc">~</span>spray<span class="sc">:</span>lead, <span class="at">type=</span><span class="st">&#39;response&#39;</span>) </span></code></pre></div>
+<div class="sourceCode" id="cb631"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb631-1"><a href="generalized-linear-mixed-models.html#cb631-1" tabindex="-1"></a><span class="fu">emmeans</span>(r2, <span class="sc">~</span>spray<span class="sc">:</span>lead, <span class="at">type=</span><span class="st">&#39;response&#39;</span>) </span></code></pre></div>
 <pre><code>##  spray lead response     SE  df asymp.LCL asymp.UCL
 ##  N     N       1.400 0.0855 Inf     1.242     1.578
 ##  Y     N       0.505 0.0441 Inf     0.425     0.599
@@ -406,18 +406,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## Confidence level used: 0.95 
 ## Intervals are back-transformed from the log scale</code></pre>
 <p>Now let’s simulate residuals for poisson:</p>
-<div class="sourceCode" id="cb632"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb632-1"><a href="generalized-linear-mixed-models.html#cb632-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">simulateResiduals</span>(r1))</span></code></pre></div>
+<div class="sourceCode" id="cb633"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb633-1"><a href="generalized-linear-mixed-models.html#cb633-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">simulateResiduals</span>(r1))</span></code></pre></div>
 <pre><code>## DHARMa:testOutliers with type = binomial may have inflated Type I error rates for integer-valued distributions. To get a more exact result, it is recommended to re-run testOutliers with type = &#39;bootstrap&#39;. See ?testOutliers for details</code></pre>
 <p><img src="05-Module_6_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
-<div class="sourceCode" id="cb634"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb634-1"><a href="generalized-linear-mixed-models.html#cb634-1" tabindex="-1"></a><span class="fu">hist</span>(<span class="fu">simulateResiduals</span>(r1)) <span class="do">## histogram should be flat</span></span></code></pre></div>
+<div class="sourceCode" id="cb635"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb635-1"><a href="generalized-linear-mixed-models.html#cb635-1" tabindex="-1"></a><span class="fu">hist</span>(<span class="fu">simulateResiduals</span>(r1)) <span class="do">## histogram should be flat</span></span></code></pre></div>
 <p><img src="05-Module_6_files/figure-html/unnamed-chunk-8-2.png" width="672" /></p>
 <p>Here are the residuals for the negative binomial model:</p>
-<div class="sourceCode" id="cb635"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb635-1"><a href="generalized-linear-mixed-models.html#cb635-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">simulateResiduals</span>(r2))</span></code></pre></div>
+<div class="sourceCode" id="cb636"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb636-1"><a href="generalized-linear-mixed-models.html#cb636-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">simulateResiduals</span>(r2))</span></code></pre></div>
 <p><img src="05-Module_6_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
-<div class="sourceCode" id="cb636"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb636-1"><a href="generalized-linear-mixed-models.html#cb636-1" tabindex="-1"></a><span class="fu">hist</span>(<span class="fu">simulateResiduals</span>(r2)) <span class="do">## histogram should be flat</span></span></code></pre></div>
+<div class="sourceCode" id="cb637"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb637-1"><a href="generalized-linear-mixed-models.html#cb637-1" tabindex="-1"></a><span class="fu">hist</span>(<span class="fu">simulateResiduals</span>(r2)) <span class="do">## histogram should be flat</span></span></code></pre></div>
 <p><img src="05-Module_6_files/figure-html/unnamed-chunk-9-2.png" width="672" /></p>
 <p>We can also compare the AIC:</p>
-<div class="sourceCode" id="cb637"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb637-1"><a href="generalized-linear-mixed-models.html#cb637-1" tabindex="-1"></a><span class="fu">AIC</span>(r1,r2)</span></code></pre></div>
+<div class="sourceCode" id="cb638"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb638-1"><a href="generalized-linear-mixed-models.html#cb638-1" tabindex="-1"></a><span class="fu">AIC</span>(r1,r2)</span></code></pre></div>
 <pre><code>##    df      AIC
 ## r1  4 3125.478
 ## r2  5 3052.969</code></pre>
@@ -426,7 +426,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>How can we improve the models? What’s next? Are there any aspects of the experimental design missing from the model that we should maybe account for similar to the grass cover predictor from the previous module?</p>
 <p>We did notice some dispersion issues in the previous model and one way we can wrestle and address this is to implement an individual-level random effect to use for overdispersed Poission GLMs. For more information of this approach please see <a href="https://peerj.com/articles/616/">this paper</a>.</p>
 <p>To do this we can construct models that includes any missing factors. In the case of overdispersed Poission GLMs we can create an observation level random effect variable by simple creating another column titled <code>obs</code> and filling it with unique number for each observation such as a sequence of numbers from 1 to the number of observations we have in the dataset:</p>
-<div class="sourceCode" id="cb639"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb639-1"><a href="generalized-linear-mixed-models.html#cb639-1" tabindex="-1"></a>d1<span class="sc">$</span>obs <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(d1<span class="sc">$</span>y) <span class="do">## makes a unique number for each row in dataset</span></span></code></pre></div>
+<div class="sourceCode" id="cb640"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb640-1"><a href="generalized-linear-mixed-models.html#cb640-1" tabindex="-1"></a>d1<span class="sc">$</span>obs <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(d1<span class="sc">$</span>y) <span class="do">## makes a unique number for each row in dataset</span></span></code></pre></div>
 <p>We can also create other models that include different random effects that account for blocks. In total let’s run 6 different models. For the sake of clarity we have built a table to showcase the 6 different models and we have also coded them in:</p>
 <table style="width:100%;">
 <colgroup>
@@ -490,15 +490,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb640"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb640-1"><a href="generalized-linear-mixed-models.html#cb640-1" tabindex="-1"></a>r0 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(y <span class="sc">~</span> spray <span class="sc">*</span> lead, <span class="at">data=</span>d1, <span class="at">family=</span><span class="st">&quot;gaussian&quot;</span>)              <span class="do">### gaussian glm just to see how bad it really is</span></span>
-<span id="cb640-2"><a href="generalized-linear-mixed-models.html#cb640-2" tabindex="-1"></a>r1 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(y <span class="sc">~</span> spray <span class="sc">*</span> lead, <span class="at">data=</span>d1, <span class="at">family=</span><span class="st">&quot;poisson&quot;</span>)               <span class="do">### poisson glm</span></span>
-<span id="cb640-3"><a href="generalized-linear-mixed-models.html#cb640-3" tabindex="-1"></a>r2 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(y <span class="sc">~</span> spray <span class="sc">*</span> lead, <span class="at">data=</span>d1, <span class="at">family=</span><span class="st">&quot;nbinom2&quot;</span>)               <span class="do">### nb glm</span></span>
-<span id="cb640-4"><a href="generalized-linear-mixed-models.html#cb640-4" tabindex="-1"></a>r3 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(y <span class="sc">~</span> spray <span class="sc">*</span> lead <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>obs), <span class="at">data=</span>d1, <span class="at">family=</span><span class="st">&quot;poisson&quot;</span>)     <span class="do">### overdispersed poisson glm</span></span>
-<span id="cb640-5"><a href="generalized-linear-mixed-models.html#cb640-5" tabindex="-1"></a>r4 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(y <span class="sc">~</span> spray <span class="sc">*</span> lead <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>block), <span class="at">data=</span>d1, <span class="at">family=</span><span class="st">&quot;nbinom2&quot;</span>)   <span class="do">### nb w/ block</span></span>
-<span id="cb640-6"><a href="generalized-linear-mixed-models.html#cb640-6" tabindex="-1"></a>r5 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(y <span class="sc">~</span> spray <span class="sc">*</span> lead <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>obs) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>block), <span class="at">data=</span>d1, <span class="at">family=</span><span class="st">&quot;poisson&quot;</span>)   <span class="do">### OD poisson w/ block</span></span></code></pre></div>
+<div class="sourceCode" id="cb641"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb641-1"><a href="generalized-linear-mixed-models.html#cb641-1" tabindex="-1"></a>r0 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(y <span class="sc">~</span> spray <span class="sc">*</span> lead, <span class="at">data=</span>d1, <span class="at">family=</span><span class="st">&quot;gaussian&quot;</span>)              <span class="do">### gaussian glm just to see how bad it really is</span></span>
+<span id="cb641-2"><a href="generalized-linear-mixed-models.html#cb641-2" tabindex="-1"></a>r1 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(y <span class="sc">~</span> spray <span class="sc">*</span> lead, <span class="at">data=</span>d1, <span class="at">family=</span><span class="st">&quot;poisson&quot;</span>)               <span class="do">### poisson glm</span></span>
+<span id="cb641-3"><a href="generalized-linear-mixed-models.html#cb641-3" tabindex="-1"></a>r2 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(y <span class="sc">~</span> spray <span class="sc">*</span> lead, <span class="at">data=</span>d1, <span class="at">family=</span><span class="st">&quot;nbinom2&quot;</span>)               <span class="do">### nb glm</span></span>
+<span id="cb641-4"><a href="generalized-linear-mixed-models.html#cb641-4" tabindex="-1"></a>r3 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(y <span class="sc">~</span> spray <span class="sc">*</span> lead <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>obs), <span class="at">data=</span>d1, <span class="at">family=</span><span class="st">&quot;poisson&quot;</span>)     <span class="do">### overdispersed poisson glm</span></span>
+<span id="cb641-5"><a href="generalized-linear-mixed-models.html#cb641-5" tabindex="-1"></a>r4 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(y <span class="sc">~</span> spray <span class="sc">*</span> lead <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>block), <span class="at">data=</span>d1, <span class="at">family=</span><span class="st">&quot;nbinom2&quot;</span>)   <span class="do">### nb w/ block</span></span>
+<span id="cb641-6"><a href="generalized-linear-mixed-models.html#cb641-6" tabindex="-1"></a>r5 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(y <span class="sc">~</span> spray <span class="sc">*</span> lead <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>obs) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>block), <span class="at">data=</span>d1, <span class="at">family=</span><span class="st">&quot;poisson&quot;</span>)   <span class="do">### OD poisson w/ block</span></span></code></pre></div>
 <p>Six models above differ only distribution and random effects. Fixed effects are the same. We can now use the AIC framework for selecting the most appropriate or most plausible model, distribution, and random effect structure. One key thing to remember is that the more complex models will be penalized in the calculation of AIC values:</p>
-<div class="sourceCode" id="cb641"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb641-1"><a href="generalized-linear-mixed-models.html#cb641-1" tabindex="-1"></a><span class="do">#### for model selection, use AIC or likihood ratio test</span></span>
-<span id="cb641-2"><a href="generalized-linear-mixed-models.html#cb641-2" tabindex="-1"></a><span class="fu">model.sel</span>(r0,r1,r2,r3,r4,r5) <span class="do">## from MuMIn</span></span></code></pre></div>
+<div class="sourceCode" id="cb642"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb642-1"><a href="generalized-linear-mixed-models.html#cb642-1" tabindex="-1"></a><span class="do">#### for model selection, use AIC or likihood ratio test</span></span>
+<span id="cb642-2"><a href="generalized-linear-mixed-models.html#cb642-2" tabindex="-1"></a><span class="fu">model.sel</span>(r0,r1,r2,r3,r4,r5) <span class="do">## from MuMIn</span></span></code></pre></div>
 <pre><code>## Model selection table 
 ##    cnd((Int)) dsp((Int)) cnd(led) cnd(spr) cnd(led:spr) family    random df
 ## r4     0.2835          +        +        +            + n2(lg)      c(b)  6
@@ -521,7 +521,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## Random terms: 
 ##  c(b): cond(1 | block)
 ##  c(o): cond(1 | obs)</code></pre>
-<div class="sourceCode" id="cb643"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb643-1"><a href="generalized-linear-mixed-models.html#cb643-1" tabindex="-1"></a><span class="fu">AICtab</span>(r0,r1,r2,r3,r4,r5,<span class="at">base=</span>T,<span class="at">logLik=</span>T,<span class="at">weights=</span>T)    <span class="do">## from bbmle</span></span></code></pre></div>
+<div class="sourceCode" id="cb644"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb644-1"><a href="generalized-linear-mixed-models.html#cb644-1" tabindex="-1"></a><span class="fu">AICtab</span>(r0,r1,r2,r3,r4,r5,<span class="at">base=</span>T,<span class="at">logLik=</span>T,<span class="at">weights=</span>T)    <span class="do">## from bbmle</span></span></code></pre></div>
 <pre><code>##    logLik  AIC     dLogLik dAIC    df weight
 ## r4 -1497.7  3007.4   431.6     0.0 6  0.903 
 ## r5 -1499.9  3011.9   429.4     4.5 6  0.097 
@@ -535,12 +535,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="binomial-glmms" class="section level2 hasAnchor" number="6.2">
 <h2><span class="header-section-number">6.2</span> Binomial GLMMs<a href="generalized-linear-mixed-models.html#binomial-glmms" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>In this section we look at the binomial distribution. We often implement this distribution when we have a binary outcome in our data. For example survival is often coded as a binary where the only results can be that there is survival or there is no survival. Let’s load in the data we will use:</p>
-<div class="sourceCode" id="cb645"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb645-1"><a href="generalized-linear-mixed-models.html#cb645-1" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;wheatley.carrot&quot;</span>)</span>
-<span id="cb645-2"><a href="generalized-linear-mixed-models.html#cb645-2" tabindex="-1"></a>?wheatley.carrot</span></code></pre></div>
+<div class="sourceCode" id="cb646"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb646-1"><a href="generalized-linear-mixed-models.html#cb646-1" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;wheatley.carrot&quot;</span>)</span>
+<span id="cb646-2"><a href="generalized-linear-mixed-models.html#cb646-2" tabindex="-1"></a>?wheatley.carrot</span></code></pre></div>
 <p>Let’s clean up the data by filtering out any insecticide value that was coded as ‘nil’. Let’s also create a new variable called <code>propdmg</code> which stand for damage proportion. This new variable is calculated by dividing the number of damaged plants (<code>damaged</code>) by the number of total plants (<code>total)</code>.</p>
-<div class="sourceCode" id="cb646"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb646-1"><a href="generalized-linear-mixed-models.html#cb646-1" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> wheatley.carrot <span class="sc">%&gt;%</span> <span class="fu">filter</span>(insecticide<span class="sc">!=</span><span class="st">&#39;nil&#39;</span>)</span>
-<span id="cb646-2"><a href="generalized-linear-mixed-models.html#cb646-2" tabindex="-1"></a>dat1<span class="sc">$</span>propdmg <span class="ot">&lt;-</span> dat1<span class="sc">$</span>damaged<span class="sc">/</span>dat1<span class="sc">$</span>total</span>
-<span id="cb646-3"><a href="generalized-linear-mixed-models.html#cb646-3" tabindex="-1"></a><span class="fu">head</span>(dat1) </span></code></pre></div>
+<div class="sourceCode" id="cb647"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb647-1"><a href="generalized-linear-mixed-models.html#cb647-1" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> wheatley.carrot <span class="sc">%&gt;%</span> <span class="fu">filter</span>(insecticide<span class="sc">!=</span><span class="st">&#39;nil&#39;</span>)</span>
+<span id="cb647-2"><a href="generalized-linear-mixed-models.html#cb647-2" tabindex="-1"></a>dat1<span class="sc">$</span>propdmg <span class="ot">&lt;-</span> dat1<span class="sc">$</span>damaged<span class="sc">/</span>dat1<span class="sc">$</span>total</span>
+<span id="cb647-3"><a href="generalized-linear-mixed-models.html#cb647-3" tabindex="-1"></a><span class="fu">head</span>(dat1) </span></code></pre></div>
 <pre><code>##   treatment insecticide depth rep damaged total    propdmg
 ## 1       T01    diazinon   1.0  R1     120   187 0.64171123
 ## 2       T02    diazinon   2.5  R1      60   184 0.32608696
@@ -549,13 +549,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 5       T05    diazinon  25.0  R1      66   182 0.36263736
 ## 6       T06  disulfoton   1.0  R1      97   187 0.51871658</code></pre>
 <p>Let’s visualize the distribution of the new variable as well:</p>
-<div class="sourceCode" id="cb648"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb648-1"><a href="generalized-linear-mixed-models.html#cb648-1" tabindex="-1"></a><span class="fu">hist</span>(dat1<span class="sc">$</span>propdmg)</span></code></pre></div>
+<div class="sourceCode" id="cb649"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb649-1"><a href="generalized-linear-mixed-models.html#cb649-1" tabindex="-1"></a><span class="fu">hist</span>(dat1<span class="sc">$</span>propdmg)</span></code></pre></div>
 <p><img src="05-Module_6_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 <p>Now let’s plot out some of the data. Let’s visualize the damage proportion across different depths as well as the insecticide variable (diazinon vs. disulfoton). Because the variable depth is so wide ranging it’ll be easier for us to visualize the axis if depth is log-transformed.</p>
-<div class="sourceCode" id="cb649"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb649-1"><a href="generalized-linear-mixed-models.html#cb649-1" tabindex="-1"></a><span class="fu">ggplot</span>(dat1, <span class="fu">aes</span>(<span class="at">x=</span><span class="fu">log</span>(depth),</span>
-<span id="cb649-2"><a href="generalized-linear-mixed-models.html#cb649-2" tabindex="-1"></a>                 <span class="at">y=</span>(damaged<span class="sc">/</span>total), <span class="at">color=</span>insecticide)) <span class="sc">+</span></span>
-<span id="cb649-3"><a href="generalized-linear-mixed-models.html#cb649-3" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size=</span><span class="dv">3</span>) <span class="sc">+</span> </span>
-<span id="cb649-4"><a href="generalized-linear-mixed-models.html#cb649-4" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">16</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb650"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb650-1"><a href="generalized-linear-mixed-models.html#cb650-1" tabindex="-1"></a><span class="fu">ggplot</span>(dat1, <span class="fu">aes</span>(<span class="at">x=</span><span class="fu">log</span>(depth),</span>
+<span id="cb650-2"><a href="generalized-linear-mixed-models.html#cb650-2" tabindex="-1"></a>                 <span class="at">y=</span>(damaged<span class="sc">/</span>total), <span class="at">color=</span>insecticide)) <span class="sc">+</span></span>
+<span id="cb650-3"><a href="generalized-linear-mixed-models.html#cb650-3" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size=</span><span class="dv">3</span>) <span class="sc">+</span> </span>
+<span id="cb650-4"><a href="generalized-linear-mixed-models.html#cb650-4" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">16</span>)</span></code></pre></div>
 <div class="figure"><span style="display:block;" id="fig:unnamed-chunk-17"></span>
 <img src="05-Module_6_files/figure-html/unnamed-chunk-17-1.png" alt="Plot of carrot data." width="672" />
 <p class="caption">
@@ -563,12 +563,12 @@ Figure 2.13: Plot of carrot data.
 </p>
 </div>
 <p>It would be useful to also plot a line of best fit across these data points. Note that for plotting we can use the “beta_family” although for analysis we use “binomial”.</p>
-<div class="sourceCode" id="cb650"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb650-1"><a href="generalized-linear-mixed-models.html#cb650-1" tabindex="-1"></a><span class="fu">ggplot</span>(dat1, <span class="fu">aes</span>(<span class="at">x=</span><span class="fu">log</span>(depth), <span class="at">y=</span>(damaged<span class="sc">/</span>total), <span class="at">color=</span>insecticide)) <span class="sc">+</span></span>
-<span id="cb650-2"><a href="generalized-linear-mixed-models.html#cb650-2" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size=</span><span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb650-3"><a href="generalized-linear-mixed-models.html#cb650-3" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&#39;glm&#39;</span>,</span>
-<span id="cb650-4"><a href="generalized-linear-mixed-models.html#cb650-4" tabindex="-1"></a>              <span class="at">method.args=</span><span class="fu">list</span>(<span class="at">family=</span><span class="st">&quot;beta_family&quot;</span>),</span>
-<span id="cb650-5"><a href="generalized-linear-mixed-models.html#cb650-5" tabindex="-1"></a>              <span class="at">formula =</span> y<span class="sc">~</span>x) <span class="sc">+</span></span>
-<span id="cb650-6"><a href="generalized-linear-mixed-models.html#cb650-6" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">16</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb651"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb651-1"><a href="generalized-linear-mixed-models.html#cb651-1" tabindex="-1"></a><span class="fu">ggplot</span>(dat1, <span class="fu">aes</span>(<span class="at">x=</span><span class="fu">log</span>(depth), <span class="at">y=</span>(damaged<span class="sc">/</span>total), <span class="at">color=</span>insecticide)) <span class="sc">+</span></span>
+<span id="cb651-2"><a href="generalized-linear-mixed-models.html#cb651-2" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size=</span><span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb651-3"><a href="generalized-linear-mixed-models.html#cb651-3" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&#39;glm&#39;</span>,</span>
+<span id="cb651-4"><a href="generalized-linear-mixed-models.html#cb651-4" tabindex="-1"></a>              <span class="at">method.args=</span><span class="fu">list</span>(<span class="at">family=</span><span class="st">&quot;beta_family&quot;</span>),</span>
+<span id="cb651-5"><a href="generalized-linear-mixed-models.html#cb651-5" tabindex="-1"></a>              <span class="at">formula =</span> y<span class="sc">~</span>x) <span class="sc">+</span></span>
+<span id="cb651-6"><a href="generalized-linear-mixed-models.html#cb651-6" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">16</span>)</span></code></pre></div>
 <pre><code>## Warning: deviance residuals not defined for family &#39;beta&#39;: returning NA
 ## Warning: deviance residuals not defined for family &#39;beta&#39;: returning NA</code></pre>
 <div class="figure"><span style="display:block;" id="fig:unnamed-chunk-18"></span>
@@ -594,11 +594,11 @@ Figure 6.1: Plot of carrot data with best fit line.
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb652"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb652-1"><a href="generalized-linear-mixed-models.html#cb652-1" tabindex="-1"></a><span class="fu">ggplot</span>(dat1, <span class="fu">aes</span>(<span class="at">x=</span><span class="fu">log</span>(depth), <span class="at">y=</span>(damaged<span class="sc">/</span>total),</span>
-<span id="cb652-2"><a href="generalized-linear-mixed-models.html#cb652-2" tabindex="-1"></a>                 <span class="at">color=</span>insecticide)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb652-3"><a href="generalized-linear-mixed-models.html#cb652-3" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&#39;glm&#39;</span>, </span>
-<span id="cb652-4"><a href="generalized-linear-mixed-models.html#cb652-4" tabindex="-1"></a>              <span class="at">method.args=</span><span class="fu">list</span>(<span class="at">family=</span><span class="st">&quot;beta_family&quot;</span>), </span>
-<span id="cb652-5"><a href="generalized-linear-mixed-models.html#cb652-5" tabindex="-1"></a>              <span class="at">formula =</span> y<span class="sc">~</span>x<span class="sc">+</span><span class="fu">I</span>(x<span class="sc">^</span><span class="dv">2</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb653"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb653-1"><a href="generalized-linear-mixed-models.html#cb653-1" tabindex="-1"></a><span class="fu">ggplot</span>(dat1, <span class="fu">aes</span>(<span class="at">x=</span><span class="fu">log</span>(depth), <span class="at">y=</span>(damaged<span class="sc">/</span>total),</span>
+<span id="cb653-2"><a href="generalized-linear-mixed-models.html#cb653-2" tabindex="-1"></a>                 <span class="at">color=</span>insecticide)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb653-3"><a href="generalized-linear-mixed-models.html#cb653-3" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&#39;glm&#39;</span>, </span>
+<span id="cb653-4"><a href="generalized-linear-mixed-models.html#cb653-4" tabindex="-1"></a>              <span class="at">method.args=</span><span class="fu">list</span>(<span class="at">family=</span><span class="st">&quot;beta_family&quot;</span>), </span>
+<span id="cb653-5"><a href="generalized-linear-mixed-models.html#cb653-5" tabindex="-1"></a>              <span class="at">formula =</span> y<span class="sc">~</span>x<span class="sc">+</span><span class="fu">I</span>(x<span class="sc">^</span><span class="dv">2</span>))</span></code></pre></div>
 <pre><code>## Warning: deviance residuals not defined for family &#39;beta&#39;: returning NA
 ## Warning: deviance residuals not defined for family &#39;beta&#39;: returning NA</code></pre>
 <div class="figure"><span style="display:block;" id="fig:unnamed-chunk-19"></span>
@@ -613,18 +613,18 @@ Figure 2.14: Plot of carrot data with quadratic fit.
 <li>Our response variable needs to be binary but need to account for damaged plants and non-damaged plants. This can be calculated by subtracting the number of damaged plants from the total number of plants: <code>total-damaged</code>. To combine the values of the damaged and the non damaged we use the function <code>cbind()</code> which combines the two into one vector that the model can use for a response variable: <code>cbind(damaged,total-damaged)</code>.</li>
 <li>We need to model a quadratic model for <code>mod2</code>. In order to do this we will essentially follow the same formula as we did with the ggplot above. So for <code>mod2</code> our quadratic predictor of depth would be: <code>depth + I(depth^2)</code>. Notice we do not add a quadratic component to the predictor <code>insecticide</code> as we did not see a non-linear trend with this variable.</li>
 </ol>
-<div class="sourceCode" id="cb654"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb654-1"><a href="generalized-linear-mixed-models.html#cb654-1" tabindex="-1"></a>mod1 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(<span class="fu">cbind</span>(damaged,total<span class="sc">-</span>damaged) <span class="sc">~</span> insecticide <span class="sc">*</span> depth <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>rep), <span class="at">data=</span>dat1, <span class="at">family=</span><span class="st">&#39;binomial&#39;</span>)</span>
-<span id="cb654-2"><a href="generalized-linear-mixed-models.html#cb654-2" tabindex="-1"></a></span>
-<span id="cb654-3"><a href="generalized-linear-mixed-models.html#cb654-3" tabindex="-1"></a>mod2 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(<span class="fu">cbind</span>(damaged,total<span class="sc">-</span>damaged) <span class="sc">~</span> insecticide <span class="sc">*</span> depth <span class="sc">+</span> <span class="fu">I</span>(depth<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>rep), <span class="at">data=</span>dat1, <span class="at">family=</span><span class="st">&#39;binomial&#39;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb655"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb655-1"><a href="generalized-linear-mixed-models.html#cb655-1" tabindex="-1"></a>mod1 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(<span class="fu">cbind</span>(damaged,total<span class="sc">-</span>damaged) <span class="sc">~</span> insecticide <span class="sc">*</span> depth <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>rep), <span class="at">data=</span>dat1, <span class="at">family=</span><span class="st">&#39;binomial&#39;</span>)</span>
+<span id="cb655-2"><a href="generalized-linear-mixed-models.html#cb655-2" tabindex="-1"></a></span>
+<span id="cb655-3"><a href="generalized-linear-mixed-models.html#cb655-3" tabindex="-1"></a>mod2 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(<span class="fu">cbind</span>(damaged,total<span class="sc">-</span>damaged) <span class="sc">~</span> insecticide <span class="sc">*</span> depth <span class="sc">+</span> <span class="fu">I</span>(depth<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>rep), <span class="at">data=</span>dat1, <span class="at">family=</span><span class="st">&#39;binomial&#39;</span>)</span></code></pre></div>
 <p>For easier syntax interpretation note above that mod2 is applying a non-linear modification where we include depth and depth squared. The “^” is another way of saying raise depth to the 2nd power. The I() isolate this and tells the R interpreter that the model is including a second order fixed effect. For more info check ?formula.</p>
 <p>We can plot residuals:</p>
-<div class="sourceCode" id="cb655"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb655-1"><a href="generalized-linear-mixed-models.html#cb655-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">simulateResiduals</span>(mod1))</span></code></pre></div>
+<div class="sourceCode" id="cb656"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb656-1"><a href="generalized-linear-mixed-models.html#cb656-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">simulateResiduals</span>(mod1))</span></code></pre></div>
 <p><img src="05-Module_6_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
-<div class="sourceCode" id="cb656"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb656-1"><a href="generalized-linear-mixed-models.html#cb656-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">simulateResiduals</span>(mod2))</span></code></pre></div>
+<div class="sourceCode" id="cb657"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb657-1"><a href="generalized-linear-mixed-models.html#cb657-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">simulateResiduals</span>(mod2))</span></code></pre></div>
 <p><img src="05-Module_6_files/figure-html/unnamed-chunk-21-2.png" width="672" /></p>
 <p>Which of the two is better? Remember, the <em>best</em> model might not be perfect.</p>
 <p>Finally, we can also run ANOVAs on the models:</p>
-<div class="sourceCode" id="cb657"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb657-1"><a href="generalized-linear-mixed-models.html#cb657-1" tabindex="-1"></a><span class="fu">Anova</span>(mod1)</span></code></pre></div>
+<div class="sourceCode" id="cb658"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb658-1"><a href="generalized-linear-mixed-models.html#cb658-1" tabindex="-1"></a><span class="fu">Anova</span>(mod1)</span></code></pre></div>
 <pre><code>## Analysis of Deviance Table (Type II Wald chisquare tests)
 ## 
 ## Response: cbind(damaged, total - damaged)
@@ -634,7 +634,7 @@ Figure 2.14: Plot of carrot data with quadratic fit.
 ## insecticide:depth 14.525  1  0.0001383 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<div class="sourceCode" id="cb659"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb659-1"><a href="generalized-linear-mixed-models.html#cb659-1" tabindex="-1"></a><span class="fu">Anova</span>(mod2)</span></code></pre></div>
+<div class="sourceCode" id="cb660"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb660-1"><a href="generalized-linear-mixed-models.html#cb660-1" tabindex="-1"></a><span class="fu">Anova</span>(mod2)</span></code></pre></div>
 <pre><code>## Analysis of Deviance Table (Type II Wald chisquare tests)
 ## 
 ## Response: cbind(damaged, total - damaged)
@@ -650,8 +650,8 @@ Figure 2.14: Plot of carrot data with quadratic fit.
 <h2><span class="header-section-number">6.3</span> Beta Distributions<a href="generalized-linear-mixed-models.html#beta-distributions" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>In this section we show an example of applying the beta family using true proportions (or percentages). The beta family has major utility when modeling proportion data as in the past the most suitable distributions would have been the gamma distribution or a arcsin transformation of the y response variable.</p>
 <p>First let’s load data from a case study. The study by Lynn et al. examined herbivory on several plant species at 42 different sites spanning a large latitudinal gradient. They are interested to know if there is more herbivore damage near the equator. If you are interested in the data the paper for this is found (here)[<a href="https://onlinelibrary.wiley.com/doi/10.1111/ecog.06114" class="uri">https://onlinelibrary.wiley.com/doi/10.1111/ecog.06114</a>].Let’s take a look but filter species to just one for simplicity:</p>
-<div class="sourceCode" id="cb661"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb661-1"><a href="generalized-linear-mixed-models.html#cb661-1" tabindex="-1"></a>b1 <span class="ot">&lt;-</span><span class="fu">read_csv</span>(<span class="st">&quot;LynnETAL_2022_Ecography_sodCaseStudy.csv&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb661-2"><a href="generalized-linear-mixed-models.html#cb661-2" tabindex="-1"></a>  <span class="fu">filter</span>(species<span class="sc">==</span><span class="st">&#39;SALA&#39;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb662"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb662-1"><a href="generalized-linear-mixed-models.html#cb662-1" tabindex="-1"></a>b1 <span class="ot">&lt;-</span><span class="fu">read_csv</span>(<span class="st">&quot;LynnETAL_2022_Ecography_sodCaseStudy.csv&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb662-2"><a href="generalized-linear-mixed-models.html#cb662-2" tabindex="-1"></a>  <span class="fu">filter</span>(species<span class="sc">==</span><span class="st">&#39;SALA&#39;</span>)</span></code></pre></div>
 <pre><code>## Rows: 301 Columns: 18
 ## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
@@ -660,7 +660,7 @@ Figure 2.14: Plot of carrot data with quadratic fit.
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<div class="sourceCode" id="cb663"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb663-1"><a href="generalized-linear-mixed-models.html#cb663-1" tabindex="-1"></a><span class="fu">head</span>(b1)</span></code></pre></div>
+<div class="sourceCode" id="cb664"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb664-1"><a href="generalized-linear-mixed-models.html#cb664-1" tabindex="-1"></a><span class="fu">head</span>(b1)</span></code></pre></div>
 <pre><code>## # A tibble: 6 × 18
 ##   study     family species_name species meas_year site  latitude longitude o_lat
 ##   &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;        &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;
@@ -673,11 +673,11 @@ Figure 2.14: Plot of carrot data with quadratic fit.
 ## # ℹ 9 more variables: o_long &lt;dbl&gt;, mean_herb &lt;dbl&gt;, na_wdcpc &lt;dbl&gt;, mat &lt;dbl&gt;,
 ## #   iso &lt;dbl&gt;, dtr &lt;dbl&gt;, precip &lt;dbl&gt;, aet &lt;dbl&gt;, notes &lt;chr&gt;</code></pre>
 <p>Let’s examine a histogram of the response variable <code>mean_herb</code>:</p>
-<div class="sourceCode" id="cb665"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb665-1"><a href="generalized-linear-mixed-models.html#cb665-1" tabindex="-1"></a><span class="fu">hist</span>(b1<span class="sc">$</span>mean_herb) <span class="do">## examine histogram. Data are entered as percentage (0-100%)</span></span></code></pre></div>
+<div class="sourceCode" id="cb666"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb666-1"><a href="generalized-linear-mixed-models.html#cb666-1" tabindex="-1"></a><span class="fu">hist</span>(b1<span class="sc">$</span>mean_herb) <span class="do">## examine histogram. Data are entered as percentage (0-100%)</span></span></code></pre></div>
 <p><img src="05-Module_6_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
 <p>Let’s plot out the data. Note: data was collected at 42 unique sites (one data point per site).</p>
-<div class="sourceCode" id="cb666"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb666-1"><a href="generalized-linear-mixed-models.html#cb666-1" tabindex="-1"></a><span class="fu">ggplot</span>(b1 , <span class="fu">aes</span>(<span class="at">x=</span>latitude, <span class="at">y=</span>mean_herb)) <span class="sc">+</span></span>
-<span id="cb666-2"><a href="generalized-linear-mixed-models.html#cb666-2" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb667"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb667-1"><a href="generalized-linear-mixed-models.html#cb667-1" tabindex="-1"></a><span class="fu">ggplot</span>(b1 , <span class="fu">aes</span>(<span class="at">x=</span>latitude, <span class="at">y=</span>mean_herb)) <span class="sc">+</span></span>
+<span id="cb667-2"><a href="generalized-linear-mixed-models.html#cb667-2" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code></pre></div>
 <div class="figure"><span style="display:block;" id="fig:unnamed-chunk-25"></span>
 <img src="05-Module_6_files/figure-html/unnamed-chunk-25-1.png" alt="Plot of herbivory data." width="672" />
 <p class="caption">
@@ -686,13 +686,13 @@ Figure 3.1: Plot of herbivory data.
 </div>
 <p>We see a potential decreasing of mean_herb across a latitudinal gradient (from latitude 42 to ~48 degrees).</p>
 <p>Now we need to convert <code>mean_herb</code> to a proportion and then do a small transformation to remove 0s and 1s:</p>
-<div class="sourceCode" id="cb667"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb667-1"><a href="generalized-linear-mixed-models.html#cb667-1" tabindex="-1"></a>b1<span class="sc">$</span>mean_herb1 <span class="ot">&lt;-</span> (b1<span class="sc">$</span>mean_herb<span class="sc">/</span><span class="dv">100</span>)</span>
-<span id="cb667-2"><a href="generalized-linear-mixed-models.html#cb667-2" tabindex="-1"></a>b1<span class="sc">$</span>mean_herb1 <span class="ot">&lt;-</span> (b1<span class="sc">$</span>mean_herb1<span class="sc">*</span>(<span class="fu">length</span>(b1<span class="sc">$</span>mean_herb1)<span class="sc">-</span><span class="dv">1</span>)<span class="sc">+</span>.<span class="dv">5</span>)<span class="sc">/</span><span class="fu">length</span>(b1<span class="sc">$</span>mean_herb1)</span></code></pre></div>
+<div class="sourceCode" id="cb668"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb668-1"><a href="generalized-linear-mixed-models.html#cb668-1" tabindex="-1"></a>b1<span class="sc">$</span>mean_herb1 <span class="ot">&lt;-</span> (b1<span class="sc">$</span>mean_herb<span class="sc">/</span><span class="dv">100</span>)</span>
+<span id="cb668-2"><a href="generalized-linear-mixed-models.html#cb668-2" tabindex="-1"></a>b1<span class="sc">$</span>mean_herb1 <span class="ot">&lt;-</span> (b1<span class="sc">$</span>mean_herb1<span class="sc">*</span>(<span class="fu">length</span>(b1<span class="sc">$</span>mean_herb1)<span class="sc">-</span><span class="dv">1</span>)<span class="sc">+</span>.<span class="dv">5</span>)<span class="sc">/</span><span class="fu">length</span>(b1<span class="sc">$</span>mean_herb1)</span></code></pre></div>
 <p>Let’s plot this along with a trend line applying the beta family as done previously above:</p>
-<div class="sourceCode" id="cb668"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb668-1"><a href="generalized-linear-mixed-models.html#cb668-1" tabindex="-1"></a><span class="fu">ggplot</span>(b1, <span class="fu">aes</span>(<span class="at">x=</span>latitude, <span class="at">y=</span>mean_herb1)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb668-2"><a href="generalized-linear-mixed-models.html#cb668-2" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&#39;glm&#39;</span>, </span>
-<span id="cb668-3"><a href="generalized-linear-mixed-models.html#cb668-3" tabindex="-1"></a>              <span class="at">method.args=</span><span class="fu">list</span>(<span class="at">family=</span><span class="st">&quot;beta_family&quot;</span>),</span>
-<span id="cb668-4"><a href="generalized-linear-mixed-models.html#cb668-4" tabindex="-1"></a>              <span class="at">formula =</span> y<span class="sc">~</span>x)</span></code></pre></div>
+<div class="sourceCode" id="cb669"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb669-1"><a href="generalized-linear-mixed-models.html#cb669-1" tabindex="-1"></a><span class="fu">ggplot</span>(b1, <span class="fu">aes</span>(<span class="at">x=</span>latitude, <span class="at">y=</span>mean_herb1)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb669-2"><a href="generalized-linear-mixed-models.html#cb669-2" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&#39;glm&#39;</span>, </span>
+<span id="cb669-3"><a href="generalized-linear-mixed-models.html#cb669-3" tabindex="-1"></a>              <span class="at">method.args=</span><span class="fu">list</span>(<span class="at">family=</span><span class="st">&quot;beta_family&quot;</span>),</span>
+<span id="cb669-4"><a href="generalized-linear-mixed-models.html#cb669-4" tabindex="-1"></a>              <span class="at">formula =</span> y<span class="sc">~</span>x)</span></code></pre></div>
 <pre><code>## Warning: deviance residuals not defined for family &#39;beta&#39;: returning NA</code></pre>
 <div class="figure"><span style="display:block;" id="fig:unnamed-chunk-27"></span>
 <img src="05-Module_6_files/figure-html/unnamed-chunk-27-1.png" alt="Plot of herbivory by latitude with best fit line." width="672" />
@@ -701,8 +701,8 @@ Figure 2.21: Plot of herbivory by latitude with best fit line.
 </p>
 </div>
 <p>Now let’s build a GLMM with a beta distribution. Implementing this model structure is relatively simple with <code>glmmTMB</code>. In the code below we simply specify the family argument with <code>beta_family.</code></p>
-<div class="sourceCode" id="cb670"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb670-1"><a href="generalized-linear-mixed-models.html#cb670-1" tabindex="-1"></a>bm1 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(mean_herb1 <span class="sc">~</span> latitude, <span class="at">data=</span>b1, <span class="at">family=</span><span class="st">&#39;beta_family&#39;</span>)</span>
-<span id="cb670-2"><a href="generalized-linear-mixed-models.html#cb670-2" tabindex="-1"></a><span class="fu">Anova</span>(bm1)</span></code></pre></div>
+<div class="sourceCode" id="cb671"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb671-1"><a href="generalized-linear-mixed-models.html#cb671-1" tabindex="-1"></a>bm1 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(mean_herb1 <span class="sc">~</span> latitude, <span class="at">data=</span>b1, <span class="at">family=</span><span class="st">&#39;beta_family&#39;</span>)</span>
+<span id="cb671-2"><a href="generalized-linear-mixed-models.html#cb671-2" tabindex="-1"></a><span class="fu">Anova</span>(bm1)</span></code></pre></div>
 <pre><code>## Analysis of Deviance Table (Type II Wald chisquare tests)
 ## 
 ## Response: mean_herb1
@@ -711,7 +711,7 @@ Figure 2.21: Plot of herbivory by latitude with best fit line.
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <p>Let’s check the summary:</p>
-<div class="sourceCode" id="cb672"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb672-1"><a href="generalized-linear-mixed-models.html#cb672-1" tabindex="-1"></a><span class="fu">summary</span>(bm1)</span></code></pre></div>
+<div class="sourceCode" id="cb673"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb673-1"><a href="generalized-linear-mixed-models.html#cb673-1" tabindex="-1"></a><span class="fu">summary</span>(bm1)</span></code></pre></div>
 <pre><code>##  Family: beta  ( logit )
 ## Formula:          mean_herb1 ~ latitude
 ## Data: b1
@@ -730,7 +730,7 @@ Figure 2.21: Plot of herbivory by latitude with best fit line.
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <p>The model indicates a strong statistical effect of latitude on <code>mean_herb</code> with lower values of <code>mean_herb</code> tracking an increase in latitude.</p>
 <p>Plot and check residuals:</p>
-<div class="sourceCode" id="cb674"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb674-1"><a href="generalized-linear-mixed-models.html#cb674-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">simulateResiduals</span>(bm1)) </span></code></pre></div>
+<div class="sourceCode" id="cb675"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb675-1"><a href="generalized-linear-mixed-models.html#cb675-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">simulateResiduals</span>(bm1)) </span></code></pre></div>
 <p><img src="05-Module_6_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
 <p>The QQ plot is good. The residuals versus prediction plot and line is not ideal but is probably ok.</p>
 <div id="r-challenge-1" class="section level3 hasAnchor" number="6.3.1">
@@ -740,8 +740,8 @@ Figure 2.21: Plot of herbivory by latitude with best fit line.
 </ol>
 <p>Herbivory data was collected from 43 populations of an aquatic plant across a latitudinal gradient in Canada. At each population, many plants (~5-15) were examined for herbivory damage. Some additional covariates were recorded, such as competition around the plant (1-3 from less to more) and plant height (cm).</p>
 <p>Read in data, look at the data structure, and plot the variable of interest, lead damage:</p>
-<div class="sourceCode" id="cb675"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb675-1"><a href="generalized-linear-mixed-models.html#cb675-1" tabindex="-1"></a>d1 <span class="ot">&lt;-</span><span class="fu">read.csv</span>(<span class="st">&quot;ajb21098-sup-0002-appendixs2.csv&quot;</span>)</span>
-<span id="cb675-2"><a href="generalized-linear-mixed-models.html#cb675-2" tabindex="-1"></a><span class="fu">head</span>(d1)</span></code></pre></div>
+<div class="sourceCode" id="cb676"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb676-1"><a href="generalized-linear-mixed-models.html#cb676-1" tabindex="-1"></a>d1 <span class="ot">&lt;-</span><span class="fu">read.csv</span>(<span class="st">&quot;ajb21098-sup-0002-appendixs2.csv&quot;</span>)</span>
+<span id="cb676-2"><a href="generalized-linear-mixed-models.html#cb676-2" tabindex="-1"></a><span class="fu">head</span>(d1)</span></code></pre></div>
 <pre><code>##   Population Latitude Longitude Competition Individual PlantHeight LeafDamage
 ## 1     ACT-ON 44.54829 -77.32384           2          4        41.0 0.02000000
 ## 2     ACT-ON 44.54829 -77.32384           2          6        43.0 0.03000000
@@ -756,16 +756,16 @@ Figure 2.21: Plot of herbivory by latitude with best fit line.
 ## 4               1
 ## 5               0
 ## 6               0</code></pre>
-<div class="sourceCode" id="cb677"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb677-1"><a href="generalized-linear-mixed-models.html#cb677-1" tabindex="-1"></a><span class="fu">hist</span>(d1<span class="sc">$</span>LeafDamage)</span></code></pre></div>
+<div class="sourceCode" id="cb678"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb678-1"><a href="generalized-linear-mixed-models.html#cb678-1" tabindex="-1"></a><span class="fu">hist</span>(d1<span class="sc">$</span>LeafDamage)</span></code></pre></div>
 <p><img src="05-Module_6_files/figure-html/unnamed-chunk-31-1.png" width="672" /></p>
 <p>Let’s remove 0’s and 1’s (see Smithson &amp; Verkuilen 2006 (here)[<a href="https://psycnet.apa.org/doiLanding?doi=10.1037%2F1082-989X.11.1.54" class="uri">https://psycnet.apa.org/doiLanding?doi=10.1037%2F1082-989X.11.1.54</a>] or Douma &amp; Weedon 2018 (here)[<a href="https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.13234" class="uri">https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.13234</a>]):</p>
-<div class="sourceCode" id="cb678"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb678-1"><a href="generalized-linear-mixed-models.html#cb678-1" tabindex="-1"></a>d1<span class="sc">$</span>LeafDamage <span class="ot">&lt;-</span> (d1<span class="sc">$</span>LeafDamage<span class="sc">*</span>(<span class="fu">length</span>(d1<span class="sc">$</span>LeafDamage)<span class="sc">-</span><span class="dv">1</span>)<span class="sc">+</span>.<span class="dv">5</span>)<span class="sc">/</span><span class="fu">length</span>(d1<span class="sc">$</span>LeafDamage)</span></code></pre></div>
+<div class="sourceCode" id="cb679"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb679-1"><a href="generalized-linear-mixed-models.html#cb679-1" tabindex="-1"></a>d1<span class="sc">$</span>LeafDamage <span class="ot">&lt;-</span> (d1<span class="sc">$</span>LeafDamage<span class="sc">*</span>(<span class="fu">length</span>(d1<span class="sc">$</span>LeafDamage)<span class="sc">-</span><span class="dv">1</span>)<span class="sc">+</span>.<span class="dv">5</span>)<span class="sc">/</span><span class="fu">length</span>(d1<span class="sc">$</span>LeafDamage)</span></code></pre></div>
 <p>Now plot data where we have a proportion value of leaf damage on the y-axis along the x-axis of latitude. Let’s also fit a best fit line using the beta family:</p>
-<div class="sourceCode" id="cb679"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb679-1"><a href="generalized-linear-mixed-models.html#cb679-1" tabindex="-1"></a><span class="fu">ggplot</span>(d1 , <span class="fu">aes</span>(<span class="at">x=</span>Latitude, <span class="at">y=</span>LeafDamage)) <span class="sc">+</span></span>
-<span id="cb679-2"><a href="generalized-linear-mixed-models.html#cb679-2" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb679-3"><a href="generalized-linear-mixed-models.html#cb679-3" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&#39;glm&#39;</span>, </span>
-<span id="cb679-4"><a href="generalized-linear-mixed-models.html#cb679-4" tabindex="-1"></a>              <span class="at">method.args=</span><span class="fu">list</span>(<span class="at">family=</span><span class="st">&quot;beta_family&quot;</span>),</span>
-<span id="cb679-5"><a href="generalized-linear-mixed-models.html#cb679-5" tabindex="-1"></a>              <span class="at">formula =</span> y<span class="sc">~</span>x)</span></code></pre></div>
+<div class="sourceCode" id="cb680"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb680-1"><a href="generalized-linear-mixed-models.html#cb680-1" tabindex="-1"></a><span class="fu">ggplot</span>(d1 , <span class="fu">aes</span>(<span class="at">x=</span>Latitude, <span class="at">y=</span>LeafDamage)) <span class="sc">+</span></span>
+<span id="cb680-2"><a href="generalized-linear-mixed-models.html#cb680-2" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb680-3"><a href="generalized-linear-mixed-models.html#cb680-3" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&#39;glm&#39;</span>, </span>
+<span id="cb680-4"><a href="generalized-linear-mixed-models.html#cb680-4" tabindex="-1"></a>              <span class="at">method.args=</span><span class="fu">list</span>(<span class="at">family=</span><span class="st">&quot;beta_family&quot;</span>),</span>
+<span id="cb680-5"><a href="generalized-linear-mixed-models.html#cb680-5" tabindex="-1"></a>              <span class="at">formula =</span> y<span class="sc">~</span>x)</span></code></pre></div>
 <pre><code>## Warning: deviance residuals not defined for family &#39;beta&#39;: returning NA</code></pre>
 <p><img src="05-Module_6_files/figure-html/unnamed-chunk-33-1.png" width="672" /></p>
 <p>Question: Does herbivory increase towards the equator? How do residuals look? Any way to improve them?</p>
@@ -773,16 +773,16 @@ Figure 2.21: Plot of herbivory by latitude with best fit line.
 <li>For this part of the problem set we will use the Rats data set with only females. Half treated with a drug and the other half were untreated. Then they were checked for tumors. Does the drug reduce probability of developing tumor? After 50 days? After 100 days?</li>
 </ol>
 <p>Load data:</p>
-<div class="sourceCode" id="cb681"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb681-1"><a href="generalized-linear-mixed-models.html#cb681-1" tabindex="-1"></a><span class="fu">library</span>(survival)</span></code></pre></div>
+<div class="sourceCode" id="cb682"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb682-1"><a href="generalized-linear-mixed-models.html#cb682-1" tabindex="-1"></a><span class="fu">library</span>(survival)</span></code></pre></div>
 <pre><code>## Warning: package &#39;survival&#39; was built under R version 4.3.3</code></pre>
 <pre><code>## 
 ## Attaching package: &#39;survival&#39;</code></pre>
 <pre><code>## The following object is masked from &#39;package:boot&#39;:
 ## 
 ##     aml</code></pre>
-<div class="sourceCode" id="cb685"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb685-1"><a href="generalized-linear-mixed-models.html#cb685-1" tabindex="-1"></a>rats <span class="ot">&lt;-</span> (survival<span class="sc">::</span>rats) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(sex<span class="sc">==</span><span class="st">&#39;f&#39;</span>) </span>
-<span id="cb685-2"><a href="generalized-linear-mixed-models.html#cb685-2" tabindex="-1"></a>?rats</span>
-<span id="cb685-3"><a href="generalized-linear-mixed-models.html#cb685-3" tabindex="-1"></a><span class="fu">head</span>(rats)</span></code></pre></div>
+<div class="sourceCode" id="cb686"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb686-1"><a href="generalized-linear-mixed-models.html#cb686-1" tabindex="-1"></a>rats <span class="ot">&lt;-</span> (survival<span class="sc">::</span>rats) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(sex<span class="sc">==</span><span class="st">&#39;f&#39;</span>) </span>
+<span id="cb686-2"><a href="generalized-linear-mixed-models.html#cb686-2" tabindex="-1"></a>?rats</span>
+<span id="cb686-3"><a href="generalized-linear-mixed-models.html#cb686-3" tabindex="-1"></a><span class="fu">head</span>(rats)</span></code></pre></div>
 <pre><code>##   litter rx time status sex
 ## 1      1  1  101      0   f
 ## 2      1  0   49      1   f
@@ -791,12 +791,12 @@ Figure 2.21: Plot of herbivory by latitude with best fit line.
 ## 5      3  0  102      0   f
 ## 6      3  0  104      0   f</code></pre>
 <p>Plot data:</p>
-<div class="sourceCode" id="cb687"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb687-1"><a href="generalized-linear-mixed-models.html#cb687-1" tabindex="-1"></a><span class="fu">ggplot</span>(rats , <span class="fu">aes</span>(<span class="at">x=</span>time, <span class="at">y=</span>status)) <span class="sc">+</span> </span>
-<span id="cb687-2"><a href="generalized-linear-mixed-models.html#cb687-2" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb687-3"><a href="generalized-linear-mixed-models.html#cb687-3" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&#39;glm&#39;</span>, </span>
-<span id="cb687-4"><a href="generalized-linear-mixed-models.html#cb687-4" tabindex="-1"></a>              <span class="at">method.args=</span><span class="fu">list</span>(<span class="at">family=</span><span class="st">&quot;binomial&quot;</span>), </span>
-<span id="cb687-5"><a href="generalized-linear-mixed-models.html#cb687-5" tabindex="-1"></a>              <span class="at">formula =</span> y<span class="sc">~</span>x) <span class="sc">+</span> </span>
-<span id="cb687-6"><a href="generalized-linear-mixed-models.html#cb687-6" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>rx)</span></code></pre></div>
+<div class="sourceCode" id="cb688"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb688-1"><a href="generalized-linear-mixed-models.html#cb688-1" tabindex="-1"></a><span class="fu">ggplot</span>(rats , <span class="fu">aes</span>(<span class="at">x=</span>time, <span class="at">y=</span>status)) <span class="sc">+</span> </span>
+<span id="cb688-2"><a href="generalized-linear-mixed-models.html#cb688-2" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb688-3"><a href="generalized-linear-mixed-models.html#cb688-3" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&#39;glm&#39;</span>, </span>
+<span id="cb688-4"><a href="generalized-linear-mixed-models.html#cb688-4" tabindex="-1"></a>              <span class="at">method.args=</span><span class="fu">list</span>(<span class="at">family=</span><span class="st">&quot;binomial&quot;</span>), </span>
+<span id="cb688-5"><a href="generalized-linear-mixed-models.html#cb688-5" tabindex="-1"></a>              <span class="at">formula =</span> y<span class="sc">~</span>x) <span class="sc">+</span> </span>
+<span id="cb688-6"><a href="generalized-linear-mixed-models.html#cb688-6" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>rx)</span></code></pre></div>
 <p><img src="05-Module_6_files/figure-html/unnamed-chunk-35-1.png" width="672" /></p>
 </div>
 </div>
@@ -808,25 +808,25 @@ Figure 2.21: Plot of herbivory by latitude with best fit line.
 <li>Therefore, because there are likely to be two distinct processes that generate zeros in a dataset a zero-inflated model will apply two types of models. The first model is a logit model that will model the excess zeros while the second model can be a count model such as a poisson or negative binomial GLM.</li>
 </ol>
 <p>Now let’s load the data (wheatley carrot infection by carrot fly larvae):</p>
-<div class="sourceCode" id="cb688"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb688-1"><a href="generalized-linear-mixed-models.html#cb688-1" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;ridout.appleshoots&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb689"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb689-1"><a href="generalized-linear-mixed-models.html#cb689-1" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;ridout.appleshoots&quot;</span>)</span></code></pre></div>
 <p>Let’s clean up the data and check out the distribution of the data in question:</p>
-<div class="sourceCode" id="cb689"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb689-1"><a href="generalized-linear-mixed-models.html#cb689-1" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> ridout.appleshoots <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">photo=</span><span class="fu">as.factor</span>(photo))</span>
-<span id="cb689-2"><a href="generalized-linear-mixed-models.html#cb689-2" tabindex="-1"></a><span class="fu">hist</span>(dat1<span class="sc">$</span>roots)</span></code></pre></div>
+<div class="sourceCode" id="cb690"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb690-1"><a href="generalized-linear-mixed-models.html#cb690-1" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> ridout.appleshoots <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">photo=</span><span class="fu">as.factor</span>(photo))</span>
+<span id="cb690-2"><a href="generalized-linear-mixed-models.html#cb690-2" tabindex="-1"></a><span class="fu">hist</span>(dat1<span class="sc">$</span>roots)</span></code></pre></div>
 <p><img src="05-Module_6_files/figure-html/unnamed-chunk-37-1.png" width="672" /></p>
 <p>Now let’s run several models: a Poisson, a negative binomial, and a negative binomial with a general intercept for zero inflation:</p>
-<div class="sourceCode" id="cb690"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb690-1"><a href="generalized-linear-mixed-models.html#cb690-1" tabindex="-1"></a><span class="do">## poisson model</span></span>
-<span id="cb690-2"><a href="generalized-linear-mixed-models.html#cb690-2" tabindex="-1"></a>mod1 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(roots <span class="sc">~</span> photo <span class="sc">*</span> bap , <span class="at">data=</span>dat1, <span class="at">family=</span><span class="st">&#39;poisson&#39;</span>)</span>
-<span id="cb690-3"><a href="generalized-linear-mixed-models.html#cb690-3" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">simulateResiduals</span>(mod1))</span></code></pre></div>
+<div class="sourceCode" id="cb691"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb691-1"><a href="generalized-linear-mixed-models.html#cb691-1" tabindex="-1"></a><span class="do">## poisson model</span></span>
+<span id="cb691-2"><a href="generalized-linear-mixed-models.html#cb691-2" tabindex="-1"></a>mod1 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(roots <span class="sc">~</span> photo <span class="sc">*</span> bap , <span class="at">data=</span>dat1, <span class="at">family=</span><span class="st">&#39;poisson&#39;</span>)</span>
+<span id="cb691-3"><a href="generalized-linear-mixed-models.html#cb691-3" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">simulateResiduals</span>(mod1))</span></code></pre></div>
 <p><img src="05-Module_6_files/figure-html/unnamed-chunk-38-1.png" width="672" /></p>
-<div class="sourceCode" id="cb691"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb691-1"><a href="generalized-linear-mixed-models.html#cb691-1" tabindex="-1"></a><span class="do">## negative binomial model</span></span>
-<span id="cb691-2"><a href="generalized-linear-mixed-models.html#cb691-2" tabindex="-1"></a>mod2 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(roots <span class="sc">~</span> photo <span class="sc">*</span> bap , <span class="at">data=</span>dat1, <span class="at">family=</span><span class="st">&#39;nbinom2&#39;</span>)</span>
-<span id="cb691-3"><a href="generalized-linear-mixed-models.html#cb691-3" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">simulateResiduals</span>(mod2))</span></code></pre></div>
+<div class="sourceCode" id="cb692"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb692-1"><a href="generalized-linear-mixed-models.html#cb692-1" tabindex="-1"></a><span class="do">## negative binomial model</span></span>
+<span id="cb692-2"><a href="generalized-linear-mixed-models.html#cb692-2" tabindex="-1"></a>mod2 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(roots <span class="sc">~</span> photo <span class="sc">*</span> bap , <span class="at">data=</span>dat1, <span class="at">family=</span><span class="st">&#39;nbinom2&#39;</span>)</span>
+<span id="cb692-3"><a href="generalized-linear-mixed-models.html#cb692-3" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">simulateResiduals</span>(mod2))</span></code></pre></div>
 <p><img src="05-Module_6_files/figure-html/unnamed-chunk-39-1.png" width="672" /></p>
-<div class="sourceCode" id="cb692"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb692-1"><a href="generalized-linear-mixed-models.html#cb692-1" tabindex="-1"></a><span class="do">## negative binomial w/ a general intercept for zero inflation (ie. ZI equal for all observations)</span></span>
-<span id="cb692-2"><a href="generalized-linear-mixed-models.html#cb692-2" tabindex="-1"></a>mod3 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(roots <span class="sc">~</span> photo <span class="sc">*</span> bap , <span class="at">data=</span>dat1, <span class="at">family=</span><span class="st">&#39;nbinom2&#39;</span>, <span class="at">zi=</span><span class="sc">~</span><span class="dv">1</span>)</span>
-<span id="cb692-3"><a href="generalized-linear-mixed-models.html#cb692-3" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">simulateResiduals</span>(mod3))</span></code></pre></div>
+<div class="sourceCode" id="cb693"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb693-1"><a href="generalized-linear-mixed-models.html#cb693-1" tabindex="-1"></a><span class="do">## negative binomial w/ a general intercept for zero inflation (ie. ZI equal for all observations)</span></span>
+<span id="cb693-2"><a href="generalized-linear-mixed-models.html#cb693-2" tabindex="-1"></a>mod3 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(roots <span class="sc">~</span> photo <span class="sc">*</span> bap , <span class="at">data=</span>dat1, <span class="at">family=</span><span class="st">&#39;nbinom2&#39;</span>, <span class="at">zi=</span><span class="sc">~</span><span class="dv">1</span>)</span>
+<span id="cb693-3"><a href="generalized-linear-mixed-models.html#cb693-3" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">simulateResiduals</span>(mod3))</span></code></pre></div>
 <p><img src="05-Module_6_files/figure-html/unnamed-chunk-40-1.png" width="672" /></p>
-<div class="sourceCode" id="cb693"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb693-1"><a href="generalized-linear-mixed-models.html#cb693-1" tabindex="-1"></a><span class="fu">summary</span>(mod3) <span class="do">## back-transform ZI intercept (exp(p)/(1+exp(p)))</span></span></code></pre></div>
+<div class="sourceCode" id="cb694"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb694-1"><a href="generalized-linear-mixed-models.html#cb694-1" tabindex="-1"></a><span class="fu">summary</span>(mod3) <span class="do">## back-transform ZI intercept (exp(p)/(1+exp(p)))</span></span></code></pre></div>
 <pre><code>##  Family: nbinom2  ( log )
 ## Formula:          roots ~ photo * bap
 ## Zero inflation:         ~1
@@ -852,17 +852,17 @@ Figure 2.21: Plot of herbivory by latitude with best fit line.
 ## (Intercept)   -1.226      0.151  -8.125 4.49e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<div class="sourceCode" id="cb695"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb695-1"><a href="generalized-linear-mixed-models.html#cb695-1" tabindex="-1"></a><span class="fu">inv.logit</span>(<span class="fu">fixef</span>(mod3)<span class="sc">$</span>zi) <span class="do">## use inv.logit from boot package to backtransform</span></span></code></pre></div>
+<div class="sourceCode" id="cb696"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb696-1"><a href="generalized-linear-mixed-models.html#cb696-1" tabindex="-1"></a><span class="fu">inv.logit</span>(<span class="fu">fixef</span>(mod3)<span class="sc">$</span>zi) <span class="do">## use inv.logit from boot package to backtransform</span></span></code></pre></div>
 <pre><code>## (Intercept) 
 ##   0.2267941</code></pre>
 <p>The zero-inflated model is much better than without, so there is definately some zero-inflation. To understand the zero-inflation parameter (-1.226) we need to back-transform it. The zero-inflated model uses a logit-link fuction, which is seperate from the distribution and link function of the main model (although in this example with the beta family, it also has a logit-link). We can do this manually or use the <code>inv.logit</code> function from the boot package. We get a value of 0.22, meaning there is a 22% change any observation will be a zero beyond what is expected by the main model assuming a beta distribution. We don’t really know what causes the extra zeros, but this model does an ok job of caturing them.</p>
 <p>Maybe we can do a little better though. What do we expect to cause the zero inflation? We can check out further details in the data’s metadata:</p>
-<div class="sourceCode" id="cb697"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb697-1"><a href="generalized-linear-mixed-models.html#cb697-1" tabindex="-1"></a>??ridout.appleshoots</span></code></pre></div>
+<div class="sourceCode" id="cb698"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb698-1"><a href="generalized-linear-mixed-models.html#cb698-1" tabindex="-1"></a>??ridout.appleshoots</span></code></pre></div>
 <p>The metadata state that “Almost all of the shoots in the 8 hour photoperiod rooted. Under the 16 hour photoperiod only about half rooted.” Perhaps the photoperiod treatment is a better predictor of extra zeros?</p>
-<div class="sourceCode" id="cb698"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb698-1"><a href="generalized-linear-mixed-models.html#cb698-1" tabindex="-1"></a><span class="fu">ggplot</span>(dat1, <span class="fu">aes</span>(<span class="at">x=</span>roots)) <span class="sc">+</span> </span>
-<span id="cb698-2"><a href="generalized-linear-mixed-models.html#cb698-2" tabindex="-1"></a>  <span class="fu">geom_histogram</span>() <span class="sc">+</span></span>
-<span id="cb698-3"><a href="generalized-linear-mixed-models.html#cb698-3" tabindex="-1"></a>  <span class="fu">facet_grid</span>(bap<span class="sc">~</span>photo) <span class="sc">+</span> </span>
-<span id="cb698-4"><a href="generalized-linear-mixed-models.html#cb698-4" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size=</span><span class="dv">16</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb699"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb699-1"><a href="generalized-linear-mixed-models.html#cb699-1" tabindex="-1"></a><span class="fu">ggplot</span>(dat1, <span class="fu">aes</span>(<span class="at">x=</span>roots)) <span class="sc">+</span> </span>
+<span id="cb699-2"><a href="generalized-linear-mixed-models.html#cb699-2" tabindex="-1"></a>  <span class="fu">geom_histogram</span>() <span class="sc">+</span></span>
+<span id="cb699-3"><a href="generalized-linear-mixed-models.html#cb699-3" tabindex="-1"></a>  <span class="fu">facet_grid</span>(bap<span class="sc">~</span>photo) <span class="sc">+</span> </span>
+<span id="cb699-4"><a href="generalized-linear-mixed-models.html#cb699-4" tabindex="-1"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size=</span><span class="dv">16</span>)</span></code></pre></div>
 <pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
 <div class="figure"><span style="display:block;" id="fig:unnamed-chunk-43"></span>
 <img src="05-Module_6_files/figure-html/unnamed-chunk-43-1.png" alt="Plot of apple shoot data." width="672" />
@@ -871,8 +871,8 @@ Figure 6.2: Plot of apple shoot data.
 </p>
 </div>
 <p>Now let’s run a negative binomial with zero inflation modeled as a function of treatment:</p>
-<div class="sourceCode" id="cb700"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb700-1"><a href="generalized-linear-mixed-models.html#cb700-1" tabindex="-1"></a>mod4 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(roots <span class="sc">~</span> photo <span class="sc">*</span> bap , <span class="at">data=</span>dat1, <span class="at">family=</span><span class="st">&#39;nbinom2&#39;</span>, <span class="at">zi=</span><span class="sc">~</span>photo)</span>
-<span id="cb700-2"><a href="generalized-linear-mixed-models.html#cb700-2" tabindex="-1"></a><span class="fu">summary</span>(mod4)</span></code></pre></div>
+<div class="sourceCode" id="cb701"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb701-1"><a href="generalized-linear-mixed-models.html#cb701-1" tabindex="-1"></a>mod4 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(roots <span class="sc">~</span> photo <span class="sc">*</span> bap , <span class="at">data=</span>dat1, <span class="at">family=</span><span class="st">&#39;nbinom2&#39;</span>, <span class="at">zi=</span><span class="sc">~</span>photo)</span>
+<span id="cb701-2"><a href="generalized-linear-mixed-models.html#cb701-2" tabindex="-1"></a><span class="fu">summary</span>(mod4)</span></code></pre></div>
 <pre><code>##  Family: nbinom2  ( log )
 ## Formula:          roots ~ photo * bap
 ## Zero inflation:         ~photo
@@ -900,11 +900,11 @@ Figure 6.2: Plot of apple shoot data.
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <p>Plot residuals:</p>
-<div class="sourceCode" id="cb702"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb702-1"><a href="generalized-linear-mixed-models.html#cb702-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">simulateResiduals</span>(mod4))</span></code></pre></div>
+<div class="sourceCode" id="cb703"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb703-1"><a href="generalized-linear-mixed-models.html#cb703-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">simulateResiduals</span>(mod4))</span></code></pre></div>
 <p><img src="05-Module_6_files/figure-html/unnamed-chunk-45-1.png" width="672" /></p>
 <p>Now let’s compare all models with AIC. Which one was the best? Why do you think?</p>
-<div class="sourceCode" id="cb703"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb703-1"><a href="generalized-linear-mixed-models.html#cb703-1" tabindex="-1"></a><span class="do">### check with AIC</span></span>
-<span id="cb703-2"><a href="generalized-linear-mixed-models.html#cb703-2" tabindex="-1"></a><span class="fu">AIC</span>(mod1,mod2,mod3,mod4)</span></code></pre></div>
+<div class="sourceCode" id="cb704"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb704-1"><a href="generalized-linear-mixed-models.html#cb704-1" tabindex="-1"></a><span class="do">### check with AIC</span></span>
+<span id="cb704-2"><a href="generalized-linear-mixed-models.html#cb704-2" tabindex="-1"></a><span class="fu">AIC</span>(mod1,mod2,mod3,mod4)</span></code></pre></div>
 <pre><code>##      df      AIC
 ## mod1  4 1575.916
 ## mod2  5 1412.415
@@ -914,8 +914,8 @@ Figure 6.2: Plot of apple shoot data.
 <div id="model-app-exercise" class="section level2 hasAnchor" number="6.5">
 <h2><span class="header-section-number">6.5</span> Model App exercise<a href="generalized-linear-mixed-models.html#model-app-exercise" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>This shinyapp will allow you to practice and implement a variety of model types to fit randomly generated data. You can test yourself by randomly generating data and then choosing which models you would apply based on plots of the data as well as the data structure (e.g. count data vs. binary).</p>
-<div class="sourceCode" id="cb705"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb705-1"><a href="generalized-linear-mixed-models.html#cb705-1" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_app</span>(<span class="st">&quot;https://leoohyama.shinyapps.io/adv_residuals/&quot;</span>,</span>
-<span id="cb705-2"><a href="generalized-linear-mixed-models.html#cb705-2" tabindex="-1"></a>                   <span class="at">height =</span> <span class="dv">1000</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb706"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb706-1"><a href="generalized-linear-mixed-models.html#cb706-1" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_app</span>(<span class="st">&quot;https://leoohyama.shinyapps.io/adv_residuals/&quot;</span>,</span>
+<span id="cb706-2"><a href="generalized-linear-mixed-models.html#cb706-2" tabindex="-1"></a>                   <span class="at">height =</span> <span class="dv">1000</span>)</span></code></pre></div>
 <iframe src="https://leoohyama.shinyapps.io/adv_residuals/?showcase=0" width="100%" height="1000" data-external="1">
 </iframe>
 
