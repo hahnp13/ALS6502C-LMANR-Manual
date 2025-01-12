@@ -1,7 +1,7 @@
 ---
 title: "Linear models in Agriculture and Natural Resources"
 author: "Phil Hahn & Leo Ohyama"
-date: "2025-01-08"
+date: "2025-01-12"
 output:
   html_document2:
     fig_caption: yes
@@ -16,12 +16,13 @@ description: "This book contains code associated with ALS6502C. \nThe HTML outpu
   format for this example is bookdown::gitbook,\nset in the _output.yml file.\n"
 link-citations: yes
 github-repo: rstudio/bookdown-demo
+version: "1.0.0"
 site: bookdown::bookdown_site
 ---
 
 # Preface
 
-This is a book written in **Markdown** for ALS6502C at the University of Florida, instructed by Dr. Phil Hahn ([hahnp\@ufl.edu](mailto:hahnp@ufl.edu){.email}). Currently, this is a draft version and is still a work in progress.
+This is a book written in **Markdown** for ALS6502C at the University of Florida, instructed by Dr. Phil Hahn ([hahnp\@ufl.edu](mailto:hahnp@ufl.edu){.email}). This is Version 1.0 and will be updated periodically.
 
 This book is meant to be used in conjunction with the class lectures and is not meant to replace lectures. With that being said, this book is written to be semi-standalone and to provide students to review the material. Please visit to course canvas page for syllabus and additional materials.
 
@@ -40,6 +41,8 @@ By the end of the course, students will be able to:
 -   Select R documentation and use new R packages and functions.
 
 ## Overview of statistical analysis workflow
+
+Below is the general workflow we will use for our analyses, starting with things that need to be done before data is collected (pre-analysis) and then for the analysis stage. In future versions of the book, this will be fleshed out into a chapter. Another great source is [Zuur and Ieno 2016](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.12577).
 
 ### Workflow pre-analysis
 

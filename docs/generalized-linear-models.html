@@ -29,7 +29,7 @@ set in the _output.yml file.</p>" />
 <meta name="author" content="Phil Hahn &amp; Leo Ohyama" />
 
 
-<meta name="date" content="2025-01-08" />
+<meta name="date" content="2025-01-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -130,7 +130,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 </style>
 
-<link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 
 <body>
@@ -143,9 +142,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <nav role="navigation">
 
 <ul class="summary">
-<li><a href="./">Linear Models in Agriculture and Natural Resources</a></li>
-
-<li class="divider"></li>
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Preface</a>
 <ul>
 <li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#learning-outcomes"><i class="fa fa-check"></i><b>1.1</b> Learning outcomes:</a></li>
@@ -266,9 +262,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6.4" data-path="generalized-linear-mixed-models.html"><a href="generalized-linear-mixed-models.html#zero-inflated-models"><i class="fa fa-check"></i><b>6.4</b> Zero-Inflated Models</a></li>
 <li class="chapter" data-level="6.5" data-path="generalized-linear-mixed-models.html"><a href="generalized-linear-mixed-models.html#model-app-exercise"><i class="fa fa-check"></i><b>6.5</b> Model App exercise</a></li>
 </ul></li>
-<li class="divider"></li>
-<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
-
 </ul>
 
       </nav>
@@ -297,7 +290,87 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <div id="overview-of-generalized-linear-models" class="section level2 hasAnchor" number="4.1">
 <h2><span class="header-section-number">4.1</span> Overview of Generalized Linear Models<a href="generalized-linear-models.html#overview-of-generalized-linear-models" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Generalized linear models (GLMs) are a class of linear-based regression models developed to handle varying types of error distributions. These class of models are extremely useful for data types that may not conform to what is typically expected given Gaussian expectations or assumptions. For example, data that is binary (e.g. 0 or 1, alive or dead) or count data that is never negative all have different properties. While data transformations prior to model implementation can be done, it may be difficult to interpret results or may not help in meeting the assumptions of the model. In this section we first start with basic data transformations that can be applied to ordinary linear models and then move into different types of GLMs.</p>
+<p>Generalized linear models (GLMs) are a class of linear models developed to handle varying types of error distributions. These class of models are extremely useful for data types that may not conform to what is typically expected given Gaussian expectations or assumptions. For example, data that is binary (e.g. 0 or 1, alive or dead) or count data that is never negative all have different properties. While data transformations prior to model implementation can be done to improve model fit, it may be difficult to interpret results or may not totally help in meeting the assumptions of the model. On the other hand, GLM’s have a transformation built into them through what is called a <strong>link</strong> function. The model’s are linear on the link (or transformed) scale and can easily be back-transformed to the original scale of the data for interpretation while still retaining the other properties of linear models. Therefore, they are called <strong>generalized</strong> linear models because they are more general or flexible than ordinary linear models.</p>
+<p>The beauty of the GLM is that the link function works on the model predictions rather than on the actual data and therefore does not change or transform the raw data in any way. This provides a better and more natural fit between the model and data than raw transformations directly on the data. We will get into the details of how this works in this section. The table below describes some common statistical distributions, the type of data they are useful for analyzing, the overdispersion parameter (more on this later), and the link function.</p>
+<table>
+<colgroup>
+<col width="22%" />
+<col width="33%" />
+<col width="22%" />
+<col width="22%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Distribution</th>
+<th>Type of data</th>
+<th>Overdispersion parameter?</th>
+<th>Link</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Gaussian</td>
+<td>Continuous numeric variable</td>
+<td>No</td>
+<td>Identity</td>
+</tr>
+<tr class="even">
+<td>Log-normal</td>
+<td>Continuous numeric variable</td>
+<td>No</td>
+<td>Identity</td>
+</tr>
+<tr class="odd">
+<td>Poisson</td>
+<td>Integers, counts</td>
+<td>No</td>
+<td>Natural log</td>
+</tr>
+<tr class="even">
+<td>Negative binomial</td>
+<td>Integers, counts</td>
+<td>Yes</td>
+<td>Natural log</td>
+</tr>
+<tr class="odd">
+<td>Binomial</td>
+<td>Success/failure, presence/absence, ratio</td>
+<td>No</td>
+<td>Logit, cloglog</td>
+</tr>
+<tr class="even">
+<td>Beta-binomial</td>
+<td>Success/failure, presence/absence, ratio</td>
+<td>Yes</td>
+<td>Logit, cloglog</td>
+</tr>
+<tr class="odd">
+<td>Beta</td>
+<td>Proportion (when the denominator is not known)</td>
+<td>Yes</td>
+<td>Logit</td>
+</tr>
+<tr class="even">
+<td>ordbeta</td>
+<td>Proportion (when the denominator is not known), can have zeros</td>
+<td>Yes</td>
+<td>Logit</td>
+</tr>
+<tr class="odd">
+<td>Gamma</td>
+<td>Continuous, positive variable</td>
+<td>Yes</td>
+<td>Inverse, log</td>
+</tr>
+<tr class="even">
+<td>ziGamma</td>
+<td>Continuous, positive variable, can have zeros</td>
+<td>Yes</td>
+<td>Log</td>
+</tr>
+</tbody>
+</table>
+<p>We will start with basic data transformations that can be applied to ordinary linear models and then move into different types of GLMs. Let’s load some packages.</p>
 <div class="sourceCode" id="cb231"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb231-1"><a href="generalized-linear-models.html#cb231-1" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb231-2"><a href="generalized-linear-models.html#cb231-2" tabindex="-1"></a><span class="fu">library</span>(emmeans)</span>
 <span id="cb231-3"><a href="generalized-linear-models.html#cb231-3" tabindex="-1"></a><span class="fu">library</span>(car)</span>
@@ -306,7 +379,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb231-6"><a href="generalized-linear-models.html#cb231-6" tabindex="-1"></a><span class="fu">library</span>(viridis)</span></code></pre></div>
 <div id="example-one-way-anova-with-non-normal-data" class="section level3 hasAnchor" number="4.1.1">
 <h3><span class="header-section-number">4.1.1</span> Example: One-way ANOVA with non-normal data<a href="generalized-linear-models.html#example-one-way-anova-with-non-normal-data" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>In this example we will run an ANOVA with non-normal data. To do this we first must load the InsectSprays data:</p>
+<p>In this example we will run an ANOVA with non-normal (count) data. To do this we first must load the InsectSprays data:</p>
 <div class="sourceCode" id="cb232"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb232-1"><a href="generalized-linear-models.html#cb232-1" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;InsectSprays&quot;</span>)<span class="co"># available from base R  </span></span></code></pre></div>
 <p>Now we need to filter the data to just 4 treatments (A, B, C, F):</p>
 <div class="sourceCode" id="cb233"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb233-1"><a href="generalized-linear-models.html#cb233-1" tabindex="-1"></a>d <span class="ot">&lt;-</span> InsectSprays <span class="sc">%&gt;%</span> <span class="fu">filter</span>(spray<span class="sc">==</span><span class="st">&#39;A&#39;</span><span class="sc">|</span>spray<span class="sc">==</span><span class="st">&#39;B&#39;</span><span class="sc">|</span>spray<span class="sc">==</span><span class="st">&#39;C&#39;</span><span class="sc">|</span>spray<span class="sc">==</span><span class="st">&#39;F&#39;</span>) <span class="sc">%&gt;%</span> </span>
@@ -334,7 +407,7 @@ Figure 2.1: Insect count data by spray type
 Figure 2.2: Histogram of insect counts.
 </p>
 </div>
-<p>The distribution is not visually normal but remember, with linear models the assumption of normality is not necessarily with the response variable but is instead about the errors (residuals of the model). Therefore, this histogram can hint of what sort of transformations we may want to use to have a model that better meets assumptions.</p>
+<p>The distribution does not quite look normal. Remember that with linear models the assumption of normality is not necessarily with the response variable but is instead about the errors (residuals of the model). Therefore, this histogram can hint of what sort of transformations (or distribution) we may want to use to have a model that better meets assumptions.</p>
 <p>While not ideal let’s construct a linear model to examine the effect of the different sprays on insect counts without executing any data transformations or applying fancy GLMs:</p>
 <div class="sourceCode" id="cb236"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb236-1"><a href="generalized-linear-models.html#cb236-1" tabindex="-1"></a>lm1 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(count<span class="sc">~</span>spray, <span class="at">data=</span>d)</span>
 <span id="cb236-2"><a href="generalized-linear-models.html#cb236-2" tabindex="-1"></a><span class="fu">Anova</span>(lm1, <span class="at">type=</span><span class="dv">2</span>)  <span class="do">## car::Anova will print out an ANOVA table</span></span></code></pre></div>
@@ -369,7 +442,7 @@ Figure 2.5: QQ plot
 </p>
 </div>
 <pre><code>## [1] 45 46</code></pre>
-<p>Normality of the residuals would pass an eye check. However when we look at the variance of the residuals across spray treatment types we see evidence of violation where the variances are not necessarily homogeneous for each group:</p>
+<p>The histogram of the residuals actually doesn’t look too bad. However, there are issues in the other residual plots and when we look at the variance of the residuals across spray treatment types we see evidence of violation where the variances are not homogeneous for each group:</p>
 <div class="sourceCode" id="cb242"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb242-1"><a href="generalized-linear-models.html#cb242-1" tabindex="-1"></a><span class="fu">boxplot</span>(<span class="fu">resid</span>(lm1) <span class="sc">~</span> d<span class="sc">$</span>spray)  <span class="do">## variances should be homogeneous for each group</span></span></code></pre></div>
 <div class="figure"><span style="display:block;" id="fig:unnamed-chunk-9"></span>
 <img src="03-Module_4_files/figure-html/unnamed-chunk-9-1.png" alt="Boxplot of residuals to check for heterogeneity." width="672" />
@@ -386,11 +459,11 @@ Figure 4.3: Boxplot of residuals to check for heterogeneity.
 ##  F      16.67 1.26 43   14.127    19.21
 ## 
 ## Confidence level used: 0.95</code></pre>
-<p>Note all the standard error estimates are the same and the lower CL can be negative (although we know that counts can never be negative). Is this ok?</p>
+<p>Note all the standard error estimates are the same and the lower CL can be negative. The negative CL is weird because we know that counts can never be negative. Is this ok?</p>
 </div>
 <div id="log-linear-model" class="section level3 hasAnchor" number="4.1.2">
 <h3><span class="header-section-number">4.1.2</span> Log-linear model<a href="generalized-linear-models.html#log-linear-model" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>Now let’s use a log-linear model to examine the effect of the different sprays on insect counts. To implement a log-linear model we can log transform the counts with the <code>log()</code> function. Note that the this function applies a natural logarithmic transformation to the specified variable or vector. If you want to use a base 10 logarithmic transformation then the correct function to use would be <code>log10</code>. Notice add 1 to the variable before the transformation because log(0) is undefined. You could add any small constant (e.g. 0.01 or 0.0001) but +1 is convenient because zeros go back to zero after the transformation.</p>
+<p>Now let’s use a log-linear model to examine the effect of the different sprays on insect counts. To implement a log-linear model we can log transform the counts with the <code>log()</code> function. Note that the this function applies a natural logarithmic transformation to the specified variable or vector. If you want to use a base 10 logarithmic transformation then the correct function to use would be <code>log10</code>. Notice that we need to add 1 to the variable before the transformation because log(0) is undefined. You could add any small constant (e.g. 0.01 or 0.0001) but +1 is convenient because zeros go back to zero after the transformation.</p>
 <div class="sourceCode" id="cb245"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb245-1"><a href="generalized-linear-models.html#cb245-1" tabindex="-1"></a><span class="fu">log</span>(<span class="dv">0</span>)</span></code></pre></div>
 <pre><code>## [1] -Inf</code></pre>
 <div class="sourceCode" id="cb247"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb247-1"><a href="generalized-linear-models.html#cb247-1" tabindex="-1"></a><span class="fu">log</span>(<span class="dv">1</span>)</span></code></pre></div>
@@ -437,7 +510,7 @@ Figure 4.6: QQ and box plots.
 Figure 4.7: QQ and box plots.
 </p>
 </div>
-<p>We can see above that the transformation makes the homogeneity of the residuals a little but more constant and consistent across treatment types. This seems to help especially treatment C relative to the model without the log transformation. However, the residuals of treatment C are still highly variable compared to treatments A, B, and C.</p>
+<p>We can see above that the transformation makes the homogeneity of the residuals a little but more constant and consistent across treatment types. This seems to help especially treatment C relative to the model without the log transformation. However, the residuals of treatment C are still highly variable compared to treatments A, B, and F.</p>
 <p>Let’s use emmeans again:</p>
 <div class="sourceCode" id="cb257"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb257-1"><a href="generalized-linear-models.html#cb257-1" tabindex="-1"></a><span class="fu">emmeans</span>(lm2, <span class="sc">~</span>spray) <span class="do">## note that all means still transformd to be on the log-scale</span></span></code></pre></div>
 <pre><code>##  spray emmean    SE df lower.CL upper.CL
@@ -464,7 +537,7 @@ Figure 4.7: QQ and box plots.
 <h3><span class="header-section-number">4.1.3</span> Generalized linear models (GLMs)<a href="generalized-linear-models.html#generalized-linear-models-glms" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Now let’s use GLMs to examine the effect of the different sprays:</p>
 <div class="sourceCode" id="cb261"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb261-1"><a href="generalized-linear-models.html#cb261-1" tabindex="-1"></a>glm1 <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(count<span class="sc">~</span>spray, <span class="at">data=</span>d, <span class="at">family=</span><span class="st">&#39;poisson&#39;</span>) </span></code></pre></div>
-<p>The nice thing about using <code>glmmTMB()</code> is that it is a general function that conducts can a <em>generalized</em> linear model. To do this, we simply specify the ‘family’ (aka error distribution). The default is the ‘Gaussian’ distribution (normal), so if we don’t specify a family it run a simple linear model. In the example above we implement a Poisson distribution, a distribution that is frequently used with count data. All the model “calculations” are saved in an object we called ‘glm1’. An alternative to the <code>glmmTMB()</code> function is <code>glm()</code> which is available in base R.</p>
+<p>The nice thing about using <code>glmmTMB()</code> is that it is a general function that conducts can a <strong>generalized</strong> linear model. To do this, we simply specify the ‘family’ (aka error distribution). The default is the ‘Gaussian’ distribution (normal), so if we don’t specify a family it runs a simple linear model. In the example above we implement a Poisson distribution, a distribution that is frequently used with count data. All the model “calculations” are saved in an object we called ‘glm1’. An alternative to the <code>glmmTMB()</code> function is <code>glm()</code> which is available in base R.</p>
 <div class="sourceCode" id="cb262"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb262-1"><a href="generalized-linear-models.html#cb262-1" tabindex="-1"></a><span class="fu">Anova</span>(glm1, <span class="at">type=</span><span class="dv">2</span>)  <span class="do">## car::Anova will print out an ANOVA table testing </span></span></code></pre></div>
 <pre><code>## Analysis of Deviance Table (Type II Wald chisquare tests)
 ## 
@@ -491,7 +564,7 @@ Figure 4.7: QQ and box plots.
 ## sprayF       0.13926    0.10367    1.34    0.179    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<p>The coefficients allow you rebuild the means from the linear model, just like we did in 2.3. In this case, rebuilding the model from the coefficients is not super helpful because they are still on the log-scale and the p-values aren’t as meaningful. Residual deviance should be about equal to the degrees of freedom. More than twice as high is problematic (note: we will come back to this problem when we discuss “overdispersion” in the next section).</p>
+<p>The coefficients allow you rebuild the means from the linear model, just like we did in 2.3. In this case, rebuilding the model from the coefficients is not super helpful because they are still on the log-scale. Additionally, the p-values from <code>summary()</code> aren’t always super meaningful. Residual deviance should be about equal to the degrees of freedom. More than twice as high is problematic (note: we will come back to this problem when we discuss “overdispersion” in the next section).</p>
 <p>Now let’s check assumptions of model by examining residuals:</p>
 <div class="sourceCode" id="cb266"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb266-1"><a href="generalized-linear-models.html#cb266-1" tabindex="-1"></a><span class="fu">hist</span>(<span class="fu">resid</span>(glm1)) <span class="do">## residuals should be normally distributed, but don&#39;t need to be for GLMs</span></span></code></pre></div>
 <div class="figure"><span style="display:block;" id="fig:unnamed-chunk-20-1"></span>
@@ -524,7 +597,7 @@ Figure 4.10: QQ and box plots.
 Figure 4.11: QQ and box plots.
 </p>
 </div>
-<p>Above, we see further improvement in the residual variances across treatment types. Diagnosing complex GLMs can be very difficult. Residuals are often NOT NORMALLY DISTRIBUTED, even though they should be. We will return to this later.</p>
+<p>Above, we see further improvement in the residual variances across treatment types. Diagnosing complex GLMs can be very difficult. Residuals are often <em>not normally distributed</em>, even though in theory they should be. We will return to this later.</p>
 <div class="sourceCode" id="cb271"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb271-1"><a href="generalized-linear-models.html#cb271-1" tabindex="-1"></a><span class="fu">emmeans</span>(glm1, <span class="sc">~</span>spray) <span class="do">## emmeans::emmmeans will rebuild the model for you</span></span></code></pre></div>
 <pre><code>##  spray emmean     SE  df asymp.LCL asymp.UCL
 ##  A      2.674 0.0758 Inf     2.526      2.82
@@ -604,7 +677,7 @@ Figure 2.19: Residual plots for all models.
 <div id="overdispersion" class="section level2 hasAnchor" number="4.2">
 <h2><span class="header-section-number">4.2</span> Overdispersion<a href="generalized-linear-models.html#overdispersion" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>In this section we will go over how to deal with overdispersion. While overdispersion is covered more extensively in the lecture portion of the class, we will quickly outline what it is.</p>
-<p>Overdispersion is when variation is higher than what would be expected. A great example of how overdispersion would biologically come about in a given dataset is found from this <a href="http://biometry.github.io/APES//LectureNotes/2016-JAGS/Overdispersion/OverdispersionJAGS.html">website</a>. To summarize it briefly, imagine if you are collecting tree seedlings within a forest. These seedlings are naturally not uniformly distributed throughout the forest area. Instead they are more likely clumped, where most plots don’t have any seedlings but a few have a ton. Therefore your counts of seedlings for a given plot can vary from 0 to numbers that are extremely high. This sort of variation can cause overdispersion to be observed in the model if it is not appropriately accounted for.</p>
+<p>Overdispersion is when variation in the data is higher than what would be expected by the distribution. A great example of how overdispersion would biologically come about in a given dataset is found from this <a href="http://biometry.github.io/APES//LectureNotes/2016-JAGS/Overdispersion/OverdispersionJAGS.html">website</a>. To summarize it briefly, imagine if you are collecting tree seedlings within a forest. These seedlings are naturally not uniformly distributed throughout the forest area. Instead they are more likely clumped, where most plots don’t have any seedlings but a few have a ton. Therefore your counts of seedlings for a given plot can vary from 0 to numbers that are extremely high. This sort of variation can cause overdispersion to be observed in the model if it is not appropriately accounted for.</p>
 <p>Let’s load the necessary libraries:</p>
 <div class="sourceCode" id="cb283"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb283-1"><a href="generalized-linear-models.html#cb283-1" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb283-2"><a href="generalized-linear-models.html#cb283-2" tabindex="-1"></a><span class="fu">library</span>(emmeans)</span>
@@ -1424,8 +1497,8 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/USERNAME/REPO/edit/BRANCH/03-Module_4.Rmd",
-"text": "Edit"
+"link": null,
+"text": null
 },
 "history": {
 "link": null,
@@ -1435,15 +1508,14 @@ gitbook.start({
 "link": null,
 "text": null
 },
-"download": ["_main.pdf", "_main.epub"],
+"download": null,
 "search": {
 "engine": "fuse",
 "options": null
 },
 "toc": {
 "collapse": "subsection"
-},
-"smooth_scroll": false
+}
 });
 });
 </script>

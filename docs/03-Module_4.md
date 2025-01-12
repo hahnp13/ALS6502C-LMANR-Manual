@@ -2,17 +2,34 @@
 
 After completing this module, students will be able to:
 
-* 4.1 Describe common statistical distributions and types of data they generate
+-   4.1 Describe common statistical distributions and types of data they generate
 
-* 4.2 Analyze data using non-normal distributions in R
+-   4.2 Analyze data using non-normal distributions in R
 
-* 4.3 Evaluate and justify model fit
+-   4.3 Evaluate and justify model fit
 
-* 4.4 Interpret and report results from statistical analysis
+-   4.4 Interpret and report results from statistical analysis
 
 ## Overview of Generalized Linear Models
 
-Generalized linear models (GLMs) are a class of linear-based regression models developed to handle varying types of error distributions. These class of models are extremely useful for data types that may not conform to what is typically expected given Gaussian expectations or assumptions. For example, data that is binary (e.g. 0 or 1, alive or dead) or count data that is never negative all have different properties. While data transformations prior to model implementation can be done, it may be difficult to interpret results or may not help in meeting the assumptions of the model. In this section we first start with basic data transformations that can be applied to ordinary linear models and then move into different types of GLMs.
+Generalized linear models (GLMs) are a class of linear models developed to handle varying types of error distributions. These class of models are extremely useful for data types that may not conform to what is typically expected given Gaussian expectations or assumptions. For example, data that is binary (e.g. 0 or 1, alive or dead) or count data that is never negative all have different properties. While data transformations prior to model implementation can be done to improve model fit, it may be difficult to interpret results or may not totally help in meeting the assumptions of the model. On the other hand, GLM's have a transformation built into them through what is called a **link** function. The model's are linear on the link (or transformed) scale and can easily be back-transformed to the original scale of the data for interpretation while still retaining the other properties of linear models. Therefore, they are called **generalized** linear models because they are more general or flexible than ordinary linear models.
+
+The beauty of the GLM is that the link function works on the model predictions rather than on the actual data and therefore does not change or transform the raw data in any way. This provides a better and more natural fit between the model and data than raw transformations directly on the data. We will get into the details of how this works in this section. The table below describes some common statistical distributions, the type of data they are useful for analyzing, the overdispersion parameter (more on this later), and the link function.
+
+| Distribution | Type of data | Overdispersion parameter? | Link |
+|----------------|------------------------|----------------|----------------|
+| Gaussian | Continuous numeric variable | No | Identity |
+| Log-normal | Continuous numeric variable | No | Identity |
+| Poisson | Integers, counts | No | Natural log |
+| Negative binomial | Integers, counts | Yes | Natural log |
+| Binomial | Success/failure, presence/absence, ratio | No | Logit, cloglog |
+| Beta-binomial | Success/failure, presence/absence, ratio | Yes | Logit, cloglog |
+| Beta | Proportion (when the denominator is not known) | Yes | Logit |
+| ordbeta | Proportion (when the denominator is not known), can have zeros | Yes | Logit |
+| Gamma | Continuous, positive variable | Yes | Inverse, log |
+| ziGamma | Continuous, positive variable, can have zeros | Yes | Log |
+
+We will start with basic data transformations that can be applied to ordinary linear models and then move into different types of GLMs. Let's load some packages.
 
 
 ``` r
@@ -26,7 +43,7 @@ library(viridis)
 
 ### Example: One-way ANOVA with non-normal data
 
-In this example we will run an ANOVA with non-normal data. To do this we first must load the InsectSprays data:
+In this example we will run an ANOVA with non-normal (count) data. To do this we first must load the InsectSprays data:
 
 
 ``` r
@@ -60,7 +77,7 @@ ggplot(d, aes(x=spray,y=count)) +
 <p class="caption">(\#fig:unnamed-chunk-4)Insect count data by spray type</p>
 </div>
 
-Let's examine a histogram of the response variable 'count'. 
+Let's examine a histogram of the response variable 'count'.
 
 
 ``` r
@@ -72,7 +89,7 @@ hist(d$count)
 <p class="caption">(\#fig:unnamed-chunk-5)Histogram of insect counts.</p>
 </div>
 
-The distribution is not visually normal but remember, with linear models the assumption of normality is not necessarily with the response variable but is instead about the errors (residuals of the model). Therefore, this histogram can hint of what sort of transformations we may want to use to have a model that better meets assumptions.
+The distribution does not quite look normal. Remember that with linear models the assumption of normality is not necessarily with the response variable but is instead about the errors (residuals of the model). Therefore, this histogram can hint of what sort of transformations (or distribution) we may want to use to have a model that better meets assumptions.
 
 While not ideal let's construct a linear model to examine the effect of the different sprays on insect counts without executing any data transformations or applying fancy GLMs:
 
@@ -128,7 +145,7 @@ qqPlot(resid(lm1))  ## residuals should line up pretty closely to the blue line
 ## [1] 45 46
 ```
 
-Normality of the residuals would pass an eye check. However when we look at the variance of the residuals across spray treatment types we see evidence of violation where the variances are not necessarily homogeneous for each group:
+The histogram of the residuals actually doesn't look too bad. However, there are issues in the other residual plots and when we look at the variance of the residuals across spray treatment types we see evidence of violation where the variances are not homogeneous for each group:
 
 
 ``` r
@@ -157,11 +174,11 @@ emmeans(lm1, ~spray)
 ## Confidence level used: 0.95
 ```
 
-Note all the standard error estimates are the same and the lower CL can be negative (although we know that counts can never be negative). Is this ok?
+Note all the standard error estimates are the same and the lower CL can be negative. The negative CL is weird because we know that counts can never be negative. Is this ok?
 
 ### Log-linear model
 
-Now let's use a log-linear model to examine the effect of the different sprays on insect counts. To implement a log-linear model we can log transform the counts with the `log()` function. Note that the this function applies a natural logarithmic transformation to the specified variable or vector. If you want to use a base 10 logarithmic transformation then the correct function to use would be `log10`. Notice add 1 to the variable before the transformation because log(0) is undefined. You could add any small constant (e.g. 0.01 or 0.0001) but +1 is convenient because zeros go back to zero after the transformation. 
+Now let's use a log-linear model to examine the effect of the different sprays on insect counts. To implement a log-linear model we can log transform the counts with the `log()` function. Note that the this function applies a natural logarithmic transformation to the specified variable or vector. If you want to use a base 10 logarithmic transformation then the correct function to use would be `log10`. Notice that we need to add 1 to the variable before the transformation because log(0) is undefined. You could add any small constant (e.g. 0.01 or 0.0001) but +1 is convenient because zeros go back to zero after the transformation.
 
 
 ``` r
@@ -247,7 +264,7 @@ boxplot(resid(lm2) ~ d$spray)  ## variances should be homogeneous for each group
 <p class="caption">(\#fig:unnamed-chunk-14-2)QQ and box plots.</p>
 </div>
 
-We can see above that the transformation makes the homogeneity of the residuals a little but more constant and consistent across treatment types. This seems to help especially treatment C relative to the model without the log transformation. However, the residuals of treatment C are still highly variable compared to treatments A, B, and C.
+We can see above that the transformation makes the homogeneity of the residuals a little but more constant and consistent across treatment types. This seems to help especially treatment C relative to the model without the log transformation. However, the residuals of treatment C are still highly variable compared to treatments A, B, and F.
 
 Let's use emmeans again:
 
@@ -296,7 +313,7 @@ Now let's use GLMs to examine the effect of the different sprays:
 glm1 <- glmmTMB(count~spray, data=d, family='poisson') 
 ```
 
-The nice thing about using `glmmTMB()` is that it is a general function that conducts can a *generalized* linear model. To do this, we simply specify the 'family' (aka error distribution). The default is the 'Gaussian' distribution (normal), so if we don't specify a family it run a simple linear model. In the example above we implement a Poisson distribution, a distribution that is frequently used with count data. All the model "calculations" are saved in an object we called 'glm1'. An alternative to the `glmmTMB()` function is `glm()` which is available in base R.
+The nice thing about using `glmmTMB()` is that it is a general function that conducts can a **generalized** linear model. To do this, we simply specify the 'family' (aka error distribution). The default is the 'Gaussian' distribution (normal), so if we don't specify a family it runs a simple linear model. In the example above we implement a Poisson distribution, a distribution that is frequently used with count data. All the model "calculations" are saved in an object we called 'glm1'. An alternative to the `glmmTMB()` function is `glm()` which is available in base R.
 
 
 ``` r
@@ -339,7 +356,7 @@ summary(glm1)   ## summary() will provide the model coefficients (ie. the "guts"
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ```
 
-The coefficients allow you rebuild the means from the linear model, just like we did in 2.3. In this case, rebuilding the model from the coefficients is not super helpful because they are still on the log-scale and the p-values aren't as meaningful. Residual deviance should be about equal to the degrees of freedom. More than twice as high is problematic (note: we will come back to this problem when we discuss "overdispersion" in the next section).
+The coefficients allow you rebuild the means from the linear model, just like we did in 2.3. In this case, rebuilding the model from the coefficients is not super helpful because they are still on the log-scale. Additionally, the p-values from `summary()` aren't always super meaningful. Residual deviance should be about equal to the degrees of freedom. More than twice as high is problematic (note: we will come back to this problem when we discuss "overdispersion" in the next section).
 
 Now let's check assumptions of model by examining residuals:
 
@@ -387,7 +404,7 @@ boxplot(resid(glm1) ~ d$spray)  ## variances should be homogeneous for each grou
 <p class="caption">(\#fig:unnamed-chunk-21-2)QQ and box plots.</p>
 </div>
 
-Above, we see further improvement in the residual variances across treatment types. Diagnosing complex GLMs can be very difficult. Residuals are often NOT NORMALLY DISTRIBUTED, even though they should be. We will return to this later.
+Above, we see further improvement in the residual variances across treatment types. Diagnosing complex GLMs can be very difficult. Residuals are often *not normally distributed*, even though in theory they should be. We will return to this later.
 
 
 ``` r
@@ -405,9 +422,9 @@ emmeans(glm1, ~spray) ## emmeans::emmmeans will rebuild the model for you
 ## Confidence level used: 0.95
 ```
 
-The emmeans code above will print off the means, SE, and confidence intervals for each treatment group. Note, the coefficients are on the log-scale (look at model specifications of glm1 object). 
+The emmeans code above will print off the means, SE, and confidence intervals for each treatment group. Note, the coefficients are on the log-scale (look at model specifications of glm1 object).
 
-We can also use `emmeans()` to make pairwise comparisons to directly compare each spray to the others. 
+We can also use `emmeans()` to make pairwise comparisons to directly compare each spray to the others.
 
 
 ``` r
@@ -512,7 +529,7 @@ What model do you think we should go with?
 
 In this section we will go over how to deal with overdispersion. While overdispersion is covered more extensively in the lecture portion of the class, we will quickly outline what it is.
 
-Overdispersion is when variation is higher than what would be expected. A great example of how overdispersion would biologically come about in a given dataset is found from this [website](http://biometry.github.io/APES//LectureNotes/2016-JAGS/Overdispersion/OverdispersionJAGS.html). To summarize it briefly, imagine if you are collecting tree seedlings within a forest. These seedlings are naturally not uniformly distributed throughout the forest area. Instead they are more likely clumped, where most plots don't have any seedlings but a few have a ton. Therefore your counts of seedlings for a given plot can vary from 0 to numbers that are extremely high. This sort of variation can cause overdispersion to be observed in the model if it is not appropriately accounted for.
+Overdispersion is when variation in the data is higher than what would be expected by the distribution. A great example of how overdispersion would biologically come about in a given dataset is found from this [website](http://biometry.github.io/APES//LectureNotes/2016-JAGS/Overdispersion/OverdispersionJAGS.html). To summarize it briefly, imagine if you are collecting tree seedlings within a forest. These seedlings are naturally not uniformly distributed throughout the forest area. Instead they are more likely clumped, where most plots don't have any seedlings but a few have a ton. Therefore your counts of seedlings for a given plot can vary from 0 to numbers that are extremely high. This sort of variation can cause overdispersion to be observed in the model if it is not appropriately accounted for.
 
 Let's load the necessary libraries:
 
@@ -665,6 +682,7 @@ check_overdispersion(r3) # overdispersion ratio calculator from performance pack
 ```
 ## Overdispersion detected.
 ```
+
 Note that there is overdispersion and the "dispersion ratio = 1.355", which is (approximately) the **Residual deviance** over the **degrees of freedom** from the `summary()` printout.
 
 Now let's implement the negative binomial distribution, which will account for the overdispersion in the data.

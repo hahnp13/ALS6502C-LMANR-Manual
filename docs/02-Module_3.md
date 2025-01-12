@@ -306,12 +306,12 @@ head(spxsite)
 
 ```
 ##   Site_ID sp1 sp2 sp3
-## 1       1   0   1   0
-## 2       2   1   0   1
-## 3       3   0   0   0
-## 4       4   0   0   1
-## 5       5   0   1   0
-## 6       6   0   0   1
+## 1       1   0   0   1
+## 2       2   0   0   1
+## 3       3   1   1   0
+## 4       4   1   1   1
+## 5       5   1   1   0
+## 6       6   1   1   0
 ```
 
 But you may want to reorganize the data so that you had a total count of species for each site in one column. In other words, we want to reshape from "wide" format to "long" format. We can do this using the `pivot_longer` function:
@@ -329,15 +329,15 @@ spxsite %>% pivot_longer(
 ##    Site_ID Species Occurrence
 ##      <int> <chr>        <dbl>
 ##  1       1 sp1              0
-##  2       1 sp2              1
-##  3       1 sp3              0
-##  4       2 sp1              1
+##  2       1 sp2              0
+##  3       1 sp3              1
+##  4       2 sp1              0
 ##  5       2 sp2              0
 ##  6       2 sp3              1
-##  7       3 sp1              0
-##  8       3 sp2              0
+##  7       3 sp1              1
+##  8       3 sp2              1
 ##  9       3 sp3              0
-## 10       4 sp1              0
+## 10       4 sp1              1
 ## # ℹ 50 more rows
 ```
 
